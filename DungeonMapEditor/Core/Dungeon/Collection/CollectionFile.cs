@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon.Collection
 {
-    public class CollectionFile<T> : JsonFile
+    public class CollectionFile<T> : JsonFile<CollectionFile<T>>
     {
         private VeryObservableCollection<T> data;
         private CollectionType collectionType;
@@ -83,7 +83,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                         return;
                 }
 
-                SaveFile(Path.Combine(parentPath, subDirName), JsonConvert.SerializeObject(this));
+                SaveFile(Path.Combine(parentPath, subDirName), this);
             }
             else
             {
@@ -93,8 +93,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 
         public void Load()
         {
-            string json = LoadFile();
-            CollectionFile<T> fileData = JsonConvert.DeserializeObject<CollectionFile<T>>(json);
+            CollectionFile<T> fileData = LoadFile();
 
             switch (fileData.FileName)
             {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core
 {
-    public class JsonFile : ViewModelBase
+    public class JsonFile<T> : ViewModelBase
     {
         protected string filePath;
         protected string fileName;
@@ -68,7 +68,7 @@ namespace DungeonMapEditor.Core
             fromFile = true;
         }
 
-        protected void SaveFile(string filePath, string json)
+        protected void SaveFile(string filePath, T @object)
         {
             if (!Directory.Exists(filePath))
             {
@@ -76,17 +76,18 @@ namespace DungeonMapEditor.Core
             }
 
             this.filePath = filePath;
-            SaveFile(json);
+            SaveFile(JsonConvert.SerializeObject(@object));
         }
 
-        protected string LoadFile()
+        protected T LoadFile()
         {
             if (!fromFile)
             {
-                return null;
+                return default;
             }
 
-            return File.ReadAllText(Path.Combine(filePath, fileName));
+            string json = File.ReadAllText(Path.Combine(filePath, fileName));
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }

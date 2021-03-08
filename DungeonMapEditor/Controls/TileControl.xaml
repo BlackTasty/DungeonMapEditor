@@ -15,4 +15,10 @@
             <RotateTransform Angle="{Binding Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Image.RenderTransform>
     </Image>
+    <TextBlock Text="{Binding Tile.TileText, FallbackValue=T}" VerticalAlignment="Center" HorizontalAlignment="Center"
+               FontSize="{Binding Tile.TextFontSize, FallbackValue=16}" Foreground="White">
+        <TextBlock.Effect>
+            <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
+        </TextBlock.Effect>
+    </TextBlock>
 </Grid>

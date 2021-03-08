@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    public class Placeable : BaseData
+    public class Placeable : BaseData<Placeable>
     {
         private BitmapImage mImage;
         private string mImagePath;
@@ -73,6 +74,20 @@ namespace DungeonMapEditor.Core.Dungeon
             ImagePath = imagePath;
             mTileRatioX = tileRatioX;
             mTileRatioY = tileRatioY;
+        }
+
+        public Placeable(FileInfo fi) : base(fi)
+        {
+            Load();
+        }
+
+        public void Load()
+        {
+            Placeable placeable = LoadFile();
+
+            ImagePath = placeable.ImagePath;
+            TileRatioX = placeable.TileRatioX;
+            TileRatioY = placeable.TileRatioY;
         }
     }
 }

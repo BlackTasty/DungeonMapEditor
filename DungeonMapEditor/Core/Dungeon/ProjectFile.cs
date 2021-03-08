@@ -4,13 +4,14 @@ using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    public class ProjectFile : JsonFile
+    public class ProjectFile : JsonFile<ProjectFile>
     {
         public event EventHandler<NameChangedEventArgs> ProjectNameChanged;
 
@@ -48,6 +49,11 @@ namespace DungeonMapEditor.Core.Dungeon
             mName = name;
         }
 
+        public ProjectFile(DirectoryInfo fi) : base(new FileInfo(fi.Name + ".json"))
+        {
+            Load();
+        }
+
         public void Save(string parentPath = null)
         {
             if (!fromFile)
@@ -57,7 +63,7 @@ namespace DungeonMapEditor.Core.Dungeon
                     throw new Exception("ParentPath needs to have a value if Collection file is being created!");
                 }
 
-                SaveFile(parentPath, JsonConvert.SerializeObject(this));
+                SaveFile(parentPath, this);
             }
             else
             {
@@ -67,7 +73,10 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public void Load()
         {
+            ProjectFile projectFile = LoadFile();
 
+            Name = projectFile.Name;
+            FloorPlans.Add(projectFile.FloorPlans);
         }
 
         protected virtual void OnProjectNameChanged(NameChangedEventArgs e)

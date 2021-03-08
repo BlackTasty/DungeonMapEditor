@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    public class RoomPlan : BaseData
+    public class RoomPlan : BaseData<RoomPlan>
     {
         public List<TileAssignment> TileAssignments { get; set; }
 
         public List<PlaceableAssignment> PlaceableAssignments { get; set; }
 
-        public List<FloorChangeTile> FloorChangeTiles { get; set; }
+        //public List<FloorChangeTile> FloorChangeTiles { get; set; }
 
         /// <summary>
         /// Amount of tiles in X coordinate
@@ -30,12 +30,12 @@ namespace DungeonMapEditor.Core.Dungeon
 
         [JsonConstructor]
         public RoomPlan(string name, string description, double rotation, List<TileAssignment> tileAssignments,
-            List<PlaceableAssignment> placeableAssignments, List<FloorChangeTile> floorChangeTiles, int tilesX, int tilesY) :
+            List<PlaceableAssignment> placeableAssignments/*, List<FloorChangeTile> floorChangeTiles*/, int tilesX, int tilesY) :
             base(name, description, rotation)
         {
             TileAssignments = tileAssignments;
             PlaceableAssignments = placeableAssignments;
-            FloorChangeTiles = floorChangeTiles;
+            //FloorChangeTiles = floorChangeTiles;
             TilesX = tilesX;
             TilesY = tilesY;
         }
@@ -47,31 +47,30 @@ namespace DungeonMapEditor.Core.Dungeon
 
             TileAssignments = new List<TileAssignment>();
             PlaceableAssignments = new List<PlaceableAssignment>();
-            FloorChangeTiles = new List<FloorChangeTile>();
+            //FloorChangeTiles = new List<FloorChangeTile>();
             for (int x = 0; x < tilesX; x++)
             {
                 for (int y = 0; y < tilesY; y++)
                 {
-                    TileAssignments.Add(new TileAssignment(new Tile(), x, y, App.SnapValue));
+                    TileAssignments.Add(new TileAssignment(new Tile(), x, y));
                 }
             }
         }
 
-        private RoomPlan(FileInfo fi) : base(fi)
+        public RoomPlan(FileInfo fi) : base(fi)
         {
-            string json = LoadFile();
-            RoomPlan roomPlan = JsonConvert.DeserializeObject<RoomPlan>(json);
+            Load();
+        }
+
+        public void Load()
+        {
+            RoomPlan roomPlan = LoadFile();
 
             TileAssignments = roomPlan.TileAssignments;
             PlaceableAssignments = roomPlan.PlaceableAssignments;
-            FloorChangeTiles = roomPlan.FloorChangeTiles;
+            //FloorChangeTiles = roomPlan.FloorChangeTiles;
             TilesX = roomPlan.TilesX;
             TilesY = roomPlan.TilesY;
-        }
-
-        public new RoomPlan FromJsonFile(FileInfo fi)
-        {
-            return new RoomPlan(fi);
         }
     }
 }

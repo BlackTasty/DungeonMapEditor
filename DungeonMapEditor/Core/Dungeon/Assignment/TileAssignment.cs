@@ -1,8 +1,10 @@
 ﻿using DungeonMapEditor.Controls;
 using DungeonMapEditor.ViewModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         private double canvasX;
         private double canvasY;
 
+        [JsonIgnore]
         public Tile Tile
         {
             get => mTile;
@@ -27,28 +30,38 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             }
         }
 
+        public string TileFilePath => mTile?.GetFullPath();
+
+        [JsonIgnore]
         public TileControl Control => control;
 
         public int X { get; set; }
 
         public int Y { get; set; }
 
+        [JsonIgnore]
         public double CanvasX => canvasX;
 
+        [JsonIgnore]
         public double CanvasY => canvasY;
 
-        public TileAssignment(Tile tile, int x, int y, double snapValue) : this(tile)
+        [JsonConstructor]
+        public TileAssignment(string tileFilePath, int x, int y) : this(new Tile(new FileInfo(tileFilePath)), x, y)
+        {
+        }
+
+
+        public TileAssignment(Tile tile, int x, int y) : this(tile)
         {
             X = x;
             Y = y;
-
-            canvasX = x * snapValue;
-            canvasY = y * snapValue;
         }
 
         public TileAssignment(Tile tile)
         {
-            this.mTile = tile;
+            mTile = tile;
+            canvasX = X * App.SnapValue;
+            canvasY = Y * App.SnapValue;
         }
 
         public bool SetControl(TileControl control)

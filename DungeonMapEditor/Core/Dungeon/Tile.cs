@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,13 @@ using System.Windows.Media.Imaging;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    public class Tile : BaseData
+    public class Tile : BaseData<Tile>
     {
         private BitmapImage mImage;
         private string mImagePath;
         private CollectionSet mAssignedCollection;
+        private string mTileText;
+        private double mTextFontSize = 16;
 
         [JsonIgnore]
         public BitmapImage Image => mImage;
@@ -28,6 +31,26 @@ namespace DungeonMapEditor.Core.Dungeon
                 mImage = Helper.FileToBitmapImage(value);
                 InvokePropertyChanged();
                 InvokePropertyChanged("Image");
+            }
+        }
+
+        public string TileText
+        {
+            get => mTileText;
+            set
+            {
+                mTileText = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public double TextFontSize
+        {
+            get => mTextFontSize;
+            set
+            {
+                mTextFontSize = value;
+                InvokePropertyChanged();
             }
         }
 
@@ -50,9 +73,17 @@ namespace DungeonMapEditor.Core.Dungeon
         public bool HasAssignedFile => mAssignedCollection != null;
 
         [JsonConstructor]
-        public Tile(string name, string description, double rotation, string imagePath) : base(name, description, rotation)
+        public Tile(string name, string description, double rotation, string imagePath, string tileText, double textFontSize) : 
+            base(name, description, rotation)
         {
             ImagePath = imagePath;
+            TileText = tileText;
+            TextFontSize = textFontSize;
+        }
+
+        public Tile(FileInfo fi) : base(fi)
+        {
+            Load();
         }
 
         public Tile() { }
@@ -60,6 +91,13 @@ namespace DungeonMapEditor.Core.Dungeon
         public void SetAssignedCollection(CollectionSet assignedCollection)
         {
             mAssignedCollection = assignedCollection;
+        }
+
+        public void Load()
+        {
+            Tile tile = LoadFile();
+
+            ImagePath = tile.ImagePath;
         }
     }
 }

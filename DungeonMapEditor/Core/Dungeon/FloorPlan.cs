@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    public class FloorPlan : BaseData
+    public class FloorPlan : BaseData<FloorPlan>
     {
         public event EventHandler<NameChangedEventArgs> FloorNameChanged;
 
@@ -46,9 +46,22 @@ namespace DungeonMapEditor.Core.Dungeon
             mFloorName = floorName;
         }
 
+        public FloorPlan(FileInfo fi) : base(fi)
+        {
+            Load();
+        }
+
         public FloorPlan() : base("Untitled room", "", 0)
         {
             mFloorName = "";
+        }
+
+        public void Load()
+        {
+            FloorPlan floorPlan = LoadFile();
+
+            FloorName = floorPlan.FloorName;
+            RoomAssignments.Add(floorPlan.RoomAssignments);
         }
 
         public void Save(string parentPath = null)
@@ -60,7 +73,7 @@ namespace DungeonMapEditor.Core.Dungeon
                     throw new Exception("ParentPath needs to have a value if Collection file is being created!");
                 }
 
-                SaveFile(parentPath, JsonConvert.SerializeObject(this));
+                SaveFile(parentPath, this);
             }
             else
             {

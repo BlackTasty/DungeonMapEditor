@@ -16,11 +16,11 @@
     <DockPanel.Resources>
         <converter:IntToStringConverter x:Key="IntToStringConverter"/>
     </DockPanel.Resources>
-    <DockPanel DockPanel.Dock="Right" Width="200">
-        <StackPanel DockPanel.Dock="Bottom">
+    <DockPanel DockPanel.Dock="Right" Width="240">
+        <UniformGrid DockPanel.Dock="Bottom" Columns="2" Width="180">
             <Button Content="Save" Margin="8,4" Click="Save_Click"/>
             <Button Content="Cancel" Margin="8,4" Click="Abort_Click"/>
-        </StackPanel>
+        </UniformGrid>
         <StackPanel Margin="8">
             <StackPanel Margin="0,4">
                 <TextBlock Text="Tile name"/>
@@ -37,20 +37,38 @@
                 <TextBlock Text="Rotation"/>
                 <TextBox Text="{Binding Tile.Rotation, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
+            <UniformGrid Columns="2" Margin="0,4">
+                <StackPanel Margin="0,0,4,0">
+                    <TextBlock Text="Layered tile text"/>
+                    <TextBox Text="{Binding Tile.TileText, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel Margin="4,0,0,0">
+                    <TextBlock Text="Font size"/>
+                    <TextBox Text="{Binding Tile.TextFontSize, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </UniformGrid>
             <StackPanel Margin="0,4">
                 <TextBlock Text="Description"/>
                 <TextBox Text="{Binding Tile.Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
-                         Height="90"/>
+                         Height="60"/>
             </StackPanel>
         </StackPanel>
     </DockPanel>
     <Border Background="#dd000000" ClipToBounds="True">
-        <Image Source="{Binding Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="32" 
+        <Grid>
+            <Image Source="{Binding Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="32" 
                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"
                                RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
-            <Image.RenderTransform>
-                <RotateTransform Angle="{Binding Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </Image.RenderTransform>
-        </Image>
+                <Image.RenderTransform>
+                    <RotateTransform Angle="{Binding Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Image.RenderTransform>
+            </Image>
+            <TextBlock Text="{Binding Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
+               FontSize="{Binding Tile.TextFontSize, FallbackValue=16}" Foreground="White">
+                <TextBlock.Effect>
+                    <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </Grid>
     </Border>
 </DockPanel>

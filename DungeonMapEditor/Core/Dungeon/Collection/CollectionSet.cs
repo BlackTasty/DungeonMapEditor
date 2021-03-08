@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon.Collection
 {
-    public class CollectionSet : JsonFile
+    public class CollectionSet : JsonFile<CollectionSet>
     {
         public string Name { get; set; }
 
@@ -52,7 +52,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                     throw new Exception("ParentPath needs to have a value if CollectionSet file is being created!");
                 }
 
-                SaveFile(Path.Combine(parentPath, Name), JsonConvert.SerializeObject(this));
+                SaveFile(Path.Combine(parentPath, Name), this);
             }
             else
             {

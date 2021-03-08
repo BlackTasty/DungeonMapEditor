@@ -15,18 +15,18 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         [JsonIgnore]
         public RoomPlan RoomPlan => roomPlan;
 
-        public string RoomPlanPath => roomPlan?.GetFullPath();
+        public string RoomPlanFile => !string.IsNullOrWhiteSpace(roomPlan.Name) ? roomPlan.Name + ".json" : null;
 
         public int X { get; set; }
 
         public int Y { get; set; }
 
         [JsonConstructor]
-        public RoomAssignment(string roomPlanPath, int x, int y)
+        public RoomAssignment(string roomPlanFile, int x, int y)
         {
-            if (!string.IsNullOrWhiteSpace(roomPlanPath))
+            if (!string.IsNullOrWhiteSpace(roomPlanFile))
             {
-                roomPlan = RoomPlan.FromJsonFile(new FileInfo(roomPlanPath));
+                roomPlan = new RoomPlan(new FileInfo(roomPlanFile));
             }
             X = x;
             Y = y;

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    public class BaseData : JsonFile, IBaseData
+    public class BaseData<T> : JsonFile<T>, IBaseData
     {
         public event EventHandler<NameChangedEventArgs> NameChanged;
 
@@ -62,9 +62,9 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public BaseData() { }
 
-        public BaseData FromJsonFile(FileInfo fi)
+        public BaseData<T> FromJsonFile(FileInfo fi)
         {
-            return new BaseData(fi);
+            return new BaseData<T>(fi);
         }
 
         protected virtual void OnNameChanged(NameChangedEventArgs e)
