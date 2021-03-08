@@ -5,7 +5,6 @@
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
            xmlns:local="clr-namespace:DungeonMapEditor.UI"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
-           xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
            mc:Ignorable="d" 
            d:DesignHeight="320" d:DesignWidth="500" Background="White"
@@ -15,6 +14,7 @@
     </DockPanel.DataContext>
     <DockPanel.Resources>
         <converter:IntToStringConverter x:Key="IntToStringConverter"/>
+        <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
     <DockPanel DockPanel.Dock="Right" Width="240">
         <UniformGrid DockPanel.Dock="Bottom" Columns="2" Width="180">
@@ -35,7 +35,7 @@
             </StackPanel>
             <StackPanel Margin="0,4">
                 <TextBlock Text="Rotation"/>
-                <TextBox Text="{Binding Tile.Rotation, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding Tile.Rotation, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <UniformGrid Columns="2" Margin="0,4">
                 <StackPanel Margin="0,0,4,0">
@@ -44,7 +44,7 @@
                 </StackPanel>
                 <StackPanel Margin="4,0,0,0">
                     <TextBlock Text="Font size"/>
-                    <TextBox Text="{Binding Tile.TextFontSize, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding Tile.TextFontSize, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </UniformGrid>
             <StackPanel Margin="0,4">

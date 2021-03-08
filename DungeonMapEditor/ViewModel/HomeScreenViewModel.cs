@@ -9,23 +9,12 @@ namespace DungeonMapEditor.ViewModel
 {
     class HomeScreenViewModel : ViewModelBase
     {
-        private VeryObservableStackCollection<ProjectFile> mProjectHistory = new VeryObservableStackCollection<ProjectFile>("ProjectHistory", 7);
+        public VeryObservableStackCollection<ProjectFile> ProjectHistory => App.ProjectHistory;
 
-        public VeryObservableStackCollection<ProjectFile> ProjectHistory
-        {
-            get => mProjectHistory;
-            set
-            {
-                mProjectHistory = value;
-                InvokePropertyChanged();
-            }
-        }
-
-        public bool HistoryIsEmpty => ProjectHistory.Count == 0;
+        public bool IsHistoryEmpty => App.IsHistoryEmpty;
 
         public HomeScreenViewModel()
         {
-            mProjectHistory.TriggerAlso("HistoryIsEmpty");
         }
     }
 }

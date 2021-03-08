@@ -16,7 +16,13 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         public CollectionFile<Tile> TileFile { get; set; }
 
         [JsonIgnore]
+        public int TileCount => TileFile?.Data?.Count ?? 0;
+
+        [JsonIgnore]
         public CollectionFile<Placeable> PlaceableFile { get; set; }
+
+        [JsonIgnore]
+        public int PlaceableCount => PlaceableFile?.Data?.Count ?? 0;
 
         public CollectionSet(string name)
         {
@@ -56,7 +62,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             }
             else
             {
-                SaveFile(JsonConvert.SerializeObject(this));
+                //SaveFile(JsonConvert.SerializeObject(this));
             }
 
             if (TileFile.HasData)
@@ -82,19 +88,17 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 
         public void Load()
         {
-            foreach (FileInfo fi in new DirectoryInfo(Path.Combine(filePath, Name)).EnumerateFiles(Name + ".json"))
+            foreach (DirectoryInfo di in new DirectoryInfo(Path.Combine(filePath, Name)).EnumerateDirectories())
             {
-                if (fi.Extension.EndsWith("json"))
+                FileInfo jsonFile = di.EnumerateFiles(di.Name + ".json").FirstOrDefault();
+                switch (jsonFile.Name)
                 {
-                    switch (fi.Name)
-                    {
-                        case "tiles.json":
-                            TileFile = new CollectionFile<Tile>(fi);
-                            break;
-                        case "placeables.json":
-                            PlaceableFile = new CollectionFile<Placeable>(fi);
-                            break;
-                    }
+                    case "tiles.json":
+                        TileFile = new CollectionFile<Tile>(jsonFile);
+                        break;
+                    case "placeables.json":
+                        PlaceableFile = new CollectionFile<Placeable>(jsonFile);
+                        break;
                 }
             }
         }

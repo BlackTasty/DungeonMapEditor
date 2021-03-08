@@ -111,6 +111,10 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="sort">If true, the collection is sorted after adding all items</param>
         public virtual void Add(List<T> items, bool sort = true)
         {
+            if (items == null)
+            {
+                return;
+            }
             foreach (T item in items)
             {
                 if (sort)

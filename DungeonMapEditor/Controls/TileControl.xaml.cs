@@ -22,7 +22,7 @@ namespace DungeonMapEditor.Controls
     /// <summary>
     /// Interaction logic for MapTile.xaml
     /// </summary>
-    public partial class TileControl : Grid
+    public partial class TileControl : Border
     {
         public TileControl()
         {

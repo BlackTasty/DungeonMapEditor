@@ -32,12 +32,16 @@ namespace DungeonMapEditor.Core
         [JsonIgnore]
         public DateTime LastModifyDate => lastModifyDate;
 
+        [JsonIgnore]
+        public string LastModifyDateString => lastModifyDate.ToString("dd.MM.yyyy HH:mm");
+
         public JsonFile() { }
 
         public JsonFile(FileInfo fi)
         {
             filePath = fi.DirectoryName;
             fileName = fi.Name;
+            fi.Refresh();
             lastModifyDate = fi.LastWriteTime;
 
             fromFile = true;
@@ -47,12 +51,13 @@ namespace DungeonMapEditor.Core
         {
             filePath = di.Parent.FullName;
             fileName = di.Name;
+            di.Refresh();
             lastModifyDate = di.LastWriteTime;
 
             fromFile = true;
         }
 
-        public string GetFullPath()
+        public virtual string GetFullPath()
         {
             return Path.Combine(filePath, fileName);
         }
@@ -61,11 +66,12 @@ namespace DungeonMapEditor.Core
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
-                throw new Exception("FilePath must be set! Use SaveFile(string filePath, string json) to create a new file instead!");
+                throw new Exception("FilePath must be set! Use SaveFile(string filePath, T @object) to create a new file instead!");
             }
 
             File.WriteAllText(Path.Combine(filePath, fileName), json);
             fromFile = true;
+            lastModifyDate = DateTime.Now;
         }
 
         protected void SaveFile(string filePath, T @object)

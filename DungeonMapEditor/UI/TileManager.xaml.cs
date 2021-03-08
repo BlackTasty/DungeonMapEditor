@@ -37,21 +37,21 @@ namespace DungeonMapEditor.UI
             {
                 if (!vm.IsEditTile)
                 {
-                    vm.TileFile.Data.Add(e.Tile);
+                    vm.SelectedCollection.TileFile.Data.Add(e.Tile);
                 }
             }
 
-            vm.IsConfiguratorOpen = false;
+            vm.IsTileConfiguratorOpen = false;
         }
 
         private void AddNewTile_Click(object sender, RoutedEventArgs e)
         {
-            ShowConfigurator(false);
+            ShowTileConfigurator(false);
         }
 
         private void EditTile_Click(object sender, RoutedEventArgs e)
         {
-            ShowConfigurator(true);
+            ShowTileConfigurator(true);
         }
 
         private void RemoveTile_Click(object sender, RoutedEventArgs e)
@@ -59,11 +59,11 @@ namespace DungeonMapEditor.UI
 
         }
 
-        private void ShowConfigurator(bool isEdit)
+        private void ShowTileConfigurator(bool isEdit)
         {
             TileManagerViewModel vm = DataContext as TileManagerViewModel;
 
-            vm.IsConfiguratorOpen = true;
+            vm.IsTileConfiguratorOpen = true;
             vm.IsEditTile = isEdit;
             if (isEdit)
             {
@@ -75,26 +75,70 @@ namespace DungeonMapEditor.UI
             }
         }
 
+        private void ShowPlaceableConfigurator(bool isEdit)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+
+            vm.IsPlaceableConfiguratorOpen = true;
+            vm.IsEditPlaceable = isEdit;
+            if (isEdit)
+            {
+                placeableConfigurator.SetPlaceable(vm.GetSelectedPlaceable());
+            }
+            else
+            {
+                placeableConfigurator.SetPlaceable(new Placeable());
+            }
+        }
+
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             TileManagerViewModel vm = DataContext as TileManagerViewModel;
             string collectionDir = Path.Combine(App.BasePath, "Collections", "Default");
             Directory.CreateDirectory(collectionDir);
 
-            vm.TileFile.Save(collectionDir);
+            vm.SelectedCollection.Save(collectionDir);
 
-            OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(vm.TileFile, DialogResult.OK));
+            OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(vm.SelectedCollection.TileFile, DialogResult.OK));
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs((DataContext as TileManagerViewModel).TileFile, 
-                DialogResult.Abort));
+            OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(DialogResult.Abort));
         }
 
         protected virtual void OnDialogButtonClicked(TileManagerDialogButtonClickedEventArgs e)
         {
             DialogButtonClicked?.Invoke(this, e);
+        }
+
+        private void AddPlaceable_Click(object sender, RoutedEventArgs e)
+        {
+            ShowPlaceableConfigurator(false);
+        }
+
+        private void EditPlaceable_Click(object sender, RoutedEventArgs e)
+        {
+            ShowPlaceableConfigurator(true);
+        }
+
+        private void RemovePlaceable_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PlaceableConfigurator_DialogButtonClicked(object sender, PlaceableDialogButtonClickedEventArgs e)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            if (e.DialogResult == DialogResult.OK)
+            {
+                if (!vm.IsEditPlaceable)
+                {
+                    vm.SelectedCollection.PlaceableFile.Data.Add(e.Placeable);
+                }
+            }
+
+            vm.IsPlaceableConfiguratorOpen = false;
         }
     }
 }

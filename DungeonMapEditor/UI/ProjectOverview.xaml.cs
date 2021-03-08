@@ -1,10 +1,12 @@
-﻿using DungeonMapEditor.Core.Dungeon;
+﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +26,11 @@ namespace DungeonMapEditor.UI
     /// </summary>
     public partial class ProjectOverview : TabControl
     {
+        private SolidColorBrush roomTabColor = new SolidColorBrush(Color.FromArgb(128, 255, 128, 0));
+        private SolidColorBrush floorTabColor = new SolidColorBrush(Color.FromArgb(128, 0, 128, 255));
+
         public event EventHandler<NameChangedEventArgs> ProjectNameChanged;
+        public event EventHandler<OpenDialogEventArgs> OpenDialog;
 
         public ProjectOverview() : this(new ProjectFile("Untitled dungeon"))
         {
@@ -50,7 +56,36 @@ namespace DungeonMapEditor.UI
 
         private void AddFloor_Click(object sender, RoutedEventArgs e)
         {
-            OpenFloorPlan(new FloorPlan());
+            DialogCreateFloor dialog = new DialogCreateFloor();
+            dialog.DialogCompleted += FloorPlanDialog_DialogCompleted;
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void AddRoom_Click(object sender, RoutedEventArgs e)
+        {
+            DialogCreateRoom dialog = new DialogCreateRoom((DataContext as ProjectOverviewViewModel).ProjectFile);
+            dialog.DialogCompleted += RoomPlanDialog_DialogCompleted;
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void RoomPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<RoomPlan> e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            {
+                ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                vm.ProjectFile.RoomPlans.Add(new RoomAssignment(e.ResultObject, vm.ProjectFile));
+                OpenRoomPlan(e.ResultObject);
+            }
+        }
+
+        private void FloorPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<FloorPlan> e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            {
+                ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                vm.ProjectFile.FloorPlans.Add(new FloorAssignment(e.ResultObject, vm.ProjectFile));
+                OpenFloorPlan(e.ResultObject);
+            }
         }
 
         private void FloorDataGridRow_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -64,20 +99,39 @@ namespace DungeonMapEditor.UI
             }
         }
 
-        private void OpenFloorPlan(FloorPlan floorPlan)
+        private void RoomDataGridRow_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            FloorPlanGrid floorPlanGrid = new FloorPlanGrid(floorPlan);
-            floorPlanGrid.FloorNameChanged += FloorPlanGrid_FloorNameChanged;
-
-            tabControl.SelectedIndex = AddTab(floorPlanGrid, floorPlan.Name, Guid.NewGuid().ToString());
+            if (sender is DataGridRow row)
+            {
+                if (row.DataContext is RoomAssignment roomAssignment)
+                {
+                    OpenRoomPlan(roomAssignment.RoomPlan);
+                }
+            }
         }
 
-        private void FloorPlanGrid_FloorNameChanged(object sender, NameChangedEventArgs e)
+        public void OpenFloorPlan(FloorPlan floorPlan)
         {
-            if (sender is FloorPlanGrid floorPlanGrid)
+            FloorPlanGrid floorPlanGrid = new FloorPlanGrid(floorPlan);
+            floorPlanGrid.FloorNameChanged += PlanGrid_NameChanged;
+
+            tabControl.SelectedIndex = AddTab(floorPlanGrid, floorPlan.Name, floorTabColor, Guid.NewGuid().ToString());
+        }
+
+        public void OpenRoomPlan(RoomPlan roomPlan)
+        {
+            RoomPlanGrid roomPlanGrid = new RoomPlanGrid(roomPlan);
+            roomPlanGrid.RoomNameChanged += PlanGrid_NameChanged;
+
+            tabControl.SelectedIndex = AddTab(roomPlanGrid, roomPlan.Name, roomTabColor, Guid.NewGuid().ToString());
+        }
+
+        private void PlanGrid_NameChanged(object sender, NameChangedEventArgs e)
+        {
+            if (sender is FrameworkElement target)
             {
-                TabItem target = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Tag == floorPlanGrid.Tag);
-                if (target != null && target.Header is StackPanel headerStack)
+                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Tag == target.Tag);
+                if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
                 {
                     TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
 
@@ -91,6 +145,31 @@ namespace DungeonMapEditor.UI
 
         private int AddTab(FrameworkElement element, string headerString, object tabItemTag = null)
         {
+            return AddTab(element, headerString, Brushes.White, tabItemTag);
+        }
+
+        private int AddTab(FrameworkElement element, string headerString, SolidColorBrush background, object tabItemTag = null)
+        {
+            var existingTabs = tabControl.Items.OfType<TabItem>();
+
+            foreach (var tab in existingTabs)
+            {
+                if (element is FloorPlanGrid elementFloorPlan && tab.Content is FloorPlanGrid tabFloorPlan)
+                {
+                    if (elementFloorPlan.GetFloorPlanGuid() == tabFloorPlan.GetFloorPlanGuid())
+                    {
+                        return tabControl.Items.IndexOf(tab);
+                    }
+                }
+                else if (element is RoomPlanGrid elementRoomPlan && tab.Content is RoomPlanGrid tabRoomPlan)
+                {
+                    if (elementRoomPlan.GetRoomPlanGuid() == tabRoomPlan.GetRoomPlanGuid())
+                    {
+                        return tabControl.Items.IndexOf(tab);
+                    }
+                }
+            }
+
             StackPanel header = new StackPanel()
             {
                 Orientation = Orientation.Horizontal
@@ -111,7 +190,8 @@ namespace DungeonMapEditor.UI
             {
                 Header = header,
                 Content = element,
-                Tag = tabItemTag
+                Tag = tabItemTag,
+                Background = background
             };
             tabCloseButton.Tag = tabItem;
 
@@ -125,17 +205,27 @@ namespace DungeonMapEditor.UI
             ProjectNameChanged?.Invoke(this, e);
         }
 
+        protected virtual void OnOpenDialog(OpenDialogEventArgs e)
+        {
+            OpenDialog?.Invoke(this, e);
+        }
+
         private void TabCloseButton_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button).Tag is TabItem targetTab)
             {
                 if (targetTab.Content is FloorPlanGrid floorPlanGrid)
                 {
-                    floorPlanGrid.FloorNameChanged -= FloorPlanGrid_FloorNameChanged;
+                    floorPlanGrid.FloorNameChanged -= PlanGrid_NameChanged;
                 }
 
                 tabControl.Items.Remove(targetTab);
             }
+        }
+
+        private void SaveProject_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as ProjectOverviewViewModel).ProjectFile.Save();
         }
     }
 }

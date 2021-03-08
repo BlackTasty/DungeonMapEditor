@@ -13,8 +13,9 @@ namespace DungeonMapEditor.ViewModel.DesignTime
     {
         public TileManagerDesignViewModel()
         {
-            TileFile = new CollectionFile<Tile>(CollectionType.Tiles);
-            TileFile.Data.Add(new List<Tile>()
+            SelectedCollection = new CollectionSet("Test");
+            SelectedCollection.TileFile = new CollectionFile<Tile>(CollectionType.Tiles);
+            SelectedCollection.TileFile.Data.Add(new List<Tile>()
             {
                 new Tile()
                 {

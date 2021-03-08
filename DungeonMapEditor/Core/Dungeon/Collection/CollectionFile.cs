@@ -22,21 +22,9 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         [JsonIgnore]
         public bool HasData => data?.Count > 0;
 
-        public CollectionFile(CollectionType collectionType)
-        {
-            this.collectionType = collectionType;
-            data = new VeryObservableCollection<T>("Data");
-            switch (collectionType)
-            {
-                case CollectionType.Placeables:
-                    fileName = "placeables.json";
-                    break;
-                case CollectionType.Tiles:
-                    fileName = "tiles.json";
-                    break;
-            }
-        }
-
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
         public CollectionFile(List<T> data)
         {
@@ -56,6 +44,29 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             this.data.Add(data);
         }
 
+        /// <summary>
+        /// Used to create a new <see cref="CollectionFile{T}"/> with the specified collection type.
+        /// </summary>
+        /// <param name="collectionType">What type is this collection?</param>
+        public CollectionFile(CollectionType collectionType)
+        {
+            this.collectionType = collectionType;
+            data = new VeryObservableCollection<T>("Data");
+            switch (collectionType)
+            {
+                case CollectionType.Placeables:
+                    fileName = "placeables.json";
+                    break;
+                case CollectionType.Tiles:
+                    fileName = "tiles.json";
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Loads an existing <see cref="CollectionFile{T}"/> from a json file.
+        /// </summary>
+        /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the collection file</param>
         public CollectionFile(FileInfo fi) : base(fi)
         {
             Load();

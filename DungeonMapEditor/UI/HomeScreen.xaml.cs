@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.Core.Enum;
+﻿using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,14 @@ namespace DungeonMapEditor.UI
         protected virtual void OnSelectionMade(HomeScreenSelectionMadeEventArgs e)
         {
             SelectionMade?.Invoke(this, e);
+        }
+
+        private void ProjectHistoryItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender as ListBoxItem).DataContext is ProjectFile projectFile)
+            {
+                OnSelectionMade(new HomeScreenSelectionMadeEventArgs(projectFile));
+            }
         }
     }
 }

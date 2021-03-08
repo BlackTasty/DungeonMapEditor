@@ -45,23 +45,49 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         [JsonIgnore]
         public double CanvasY => canvasY;
 
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
-        public TileAssignment(string tileFilePath, int x, int y) : this(new Tile(new FileInfo(tileFilePath)), x, y)
+        public TileAssignment(string tileFilePath, int x, int y)
         {
+            if (!string.IsNullOrWhiteSpace(tileFilePath))
+            {
+                mTile = new Tile(new FileInfo(tileFilePath));
+            }
+            else
+            {
+                mTile = new Tile();
+            }
+            X = x;
+            Y = y;
+
+            canvasX = X * App.SnapValue - 50;
+            canvasY = Y * App.SnapValue - 50;
         }
 
-
+        /// <summary>
+        /// Used to create a new position assignment for a tile.
+        /// </summary>
+        /// <param name="tile">The tile to assign</param>
+        /// <param name="x">The X position</param>
+        /// <param name="y">The Y position</param>
         public TileAssignment(Tile tile, int x, int y) : this(tile)
         {
             X = x;
             Y = y;
+
+            canvasX = X * App.SnapValue - 50;
+            canvasY = Y * App.SnapValue - 50;
         }
 
+        /// <summary>
+        /// Used to create a new position assignment for a tile. Default position: X = 0; Y = 0
+        /// </summary>
+        /// <param name="tile">The tile to assign</param>
         public TileAssignment(Tile tile)
         {
             mTile = tile;
-            canvasX = X * App.SnapValue;
-            canvasY = Y * App.SnapValue;
         }
 
         public bool SetControl(TileControl control)

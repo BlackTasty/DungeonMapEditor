@@ -18,5 +18,10 @@ namespace DungeonMapEditor.Core.Dialog
         {
             this.tileFile = tileFile;
         }
+
+        public TileManagerDialogButtonClickedEventArgs(DialogResult dialogResult) : base(dialogResult)
+        {
+
+        }
     }
 }

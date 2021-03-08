@@ -1,7 +1,10 @@
-﻿using DungeonMapEditor.Core;
+﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core;
+using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.UI;
+using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,12 +76,14 @@ namespace DungeonMapEditor
             switch (e.Selection)
             {
                 case HomeScreenSelectionType.NewProject:
-                    ProjectOverview projectOverview = new ProjectOverview();
-                    projectOverview.Tag = Guid.NewGuid().ToString();
-                    projectOverview.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
-                    selectedTabIndex = AddTab(projectOverview, projectOverview.GetProjectName(), projectOverview.Tag);
+                    MainViewModel vm = DataContext as MainViewModel;
+                    DialogCreateProject dialog = new DialogCreateProject();
+                    dialog.DialogCompleted += Dialog_DialogCompleted;
+
+                    vm.Dialog = dialog;
                     break;
                 case HomeScreenSelectionType.LoadProject:
+                    OpenProject(e.SelectedProject);
                     break;
                 case HomeScreenSelectionType.OpenTileManager:
                     selectedTabIndex = AddTab(new TileManager(), "Tile manager");
@@ -89,6 +94,50 @@ namespace DungeonMapEditor
             {
                 tabControl.SelectedIndex = selectedTabIndex;
             }
+        }
+
+        private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectFile> e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            {
+                e.ResultObject.Save(App.ProjectsPath);
+                OpenProject(e.ResultObject);
+            }
+
+            (DataContext as MainViewModel).ShowDialog = false;
+        }
+
+        private void OpenProject(ProjectFile projectFile)
+        {
+            ProjectOverview projectOverview = new ProjectOverview(projectFile);
+            projectOverview.Tag = Guid.NewGuid().ToString();
+            projectOverview.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
+            projectOverview.OpenDialog += ProjectOverview_OpenDialog;
+            tabControl.SelectedIndex = AddTab(projectOverview, projectOverview.GetProjectName(), projectOverview.Tag);
+            App.LoadHistory();
+        }
+
+        private void ProjectOverview_OpenDialog(object sender, OpenDialogEventArgs e)
+        {
+            if (e.Dialog is DialogCreateFloor createFloor)
+            {
+                createFloor.DialogCompleted += CreateFloor_DialogCompleted;
+            }
+            else if (e.Dialog is DialogCreateRoom createRoom)
+            {
+                createRoom.DialogCompleted += CreateRoom_DialogCompleted;
+            }
+            (DataContext as MainViewModel).Dialog = e.Dialog;
+        }
+
+        private void CreateRoom_DialogCompleted(object sender, CreateDialogCompletedEventArgs<RoomPlan> e)
+        {
+            (DataContext as MainViewModel).ShowDialog = false;
+        }
+
+        private void CreateFloor_DialogCompleted(object sender, CreateDialogCompletedEventArgs<FloorPlan> e)
+        {
+            (DataContext as MainViewModel).ShowDialog = false;
         }
 
         private void ProjectOverview_ProjectNameChanged(object sender, NameChangedEventArgs e)

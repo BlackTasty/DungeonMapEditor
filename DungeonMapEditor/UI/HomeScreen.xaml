@@ -23,10 +23,15 @@
         <Grid Margin="16,4,8,4">
             <ListBox DockPanel.Dock="Right" Background="Transparent" BorderThickness="1,0,0,0" ItemsSource="{Binding ProjectHistory}" 
              HorizontalContentAlignment="Stretch" Height="300" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ProjectHistoryItem_MouseDoubleClick"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <TextBlock Text="{Binding LastModifyDate, StringFormat={}{0:dd.MM.yyyy HH:mm}}" DockPanel.Dock="Right"
+                            <TextBlock Text="{Binding LastModifyDateString}" DockPanel.Dock="Right"
                                VerticalAlignment="Center" Foreground="Gray"/>
                             <StackPanel>
                                 <TextBlock Text="{Binding Name}" DockPanel.Dock="Right" FontSize="14"/>
@@ -37,7 +42,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <TextBlock Text="You haven't worked on any maps yet." VerticalAlignment="Center" HorizontalAlignment="Center"
-                       FontSize="24" Foreground="Gray" Visibility="{Binding HistoryIsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                       FontSize="24" Foreground="Gray" Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
     </StackPanel>
 </DockPanel>

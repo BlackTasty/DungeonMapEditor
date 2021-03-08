@@ -67,18 +67,30 @@ namespace DungeonMapEditor.Core.Dungeon
         [JsonIgnore]
         public double Height => TileRatioY * App.SnapValue;
 
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
-        public Placeable(string name, string description, double rotation, string imagePath, double tileRatioX, double tileRatioY) :
-            base(name, description, rotation)
+        public Placeable(string name, string description, double rotation, string guid, string imagePath, double tileRatioX, double tileRatioY) :
+            base(name, description, rotation, guid)
         {
             ImagePath = imagePath;
             mTileRatioX = tileRatioX;
             mTileRatioY = tileRatioY;
         }
 
+        /// <summary>
+        /// Used to load a <see cref="Placeable"/> from a json file.
+        /// </summary>
+        /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the <see cref="Placeable"/> file</param>
         public Placeable(FileInfo fi) : base(fi)
         {
             Load();
+        }
+
+        public Placeable()
+        {
+
         }
 
         public void Load()

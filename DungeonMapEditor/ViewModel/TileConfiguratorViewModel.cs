@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DungeonMapEditor.Core.Dungeon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace DungeonMapEditor.ViewModel
     {
         public TileConfiguratorViewModel()
         {
-            Tile = new Core.Dungeon.Tile();
+            Tile = new Tile();
         }
     }
 }

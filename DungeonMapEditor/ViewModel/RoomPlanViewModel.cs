@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,9 @@ namespace DungeonMapEditor.ViewModel
 {
     class RoomPlanViewModel : ViewModelBase
     {
+        public event EventHandler<NameChangedEventArgs> RoomNameChanged;
+        public event EventHandler<EventArgs> GridSizeChanged;
+
         private RoomPlan mRoomPlan;
         private TileAssignment mSelectedTileAssignment;
         private VeryObservableCollection<Tile> mAvailableTiles = new VeryObservableCollection<Tile>("Tiles");
@@ -18,6 +22,7 @@ namespace DungeonMapEditor.ViewModel
 
         public RoomPlanViewModel()
         {
+            mAvailableTiles.Add(new Tile());
             mAvailableTiles.Add(App.GetLoadedTiles());
         }
 
@@ -26,9 +31,22 @@ namespace DungeonMapEditor.ViewModel
             get => mRoomPlan;
             set
             {
+                if (mRoomPlan != null)
+                {
+                    mRoomPlan.NameChanged -= RoomPlan_NameChanged;
+                    mRoomPlan.GridSizeChanged -= RoomPlan_GridSizeChanged;
+                }
+
                 mRoomPlan = value;
+                mRoomPlan.NameChanged += RoomPlan_NameChanged;
+                mRoomPlan.GridSizeChanged += RoomPlan_GridSizeChanged;
                 InvokePropertyChanged();
             }
+        }
+
+        private void RoomPlan_GridSizeChanged(object sender, EventArgs e)
+        {
+            OnGridSizeChanged(e);
         }
 
         public TileAssignment SelectedTileAssignment
@@ -66,6 +84,21 @@ namespace DungeonMapEditor.ViewModel
             TileAssignment target = RoomPlan.TileAssignments.FirstOrDefault(x => x.X == SelectedTileAssignment.X && 
                                                                                  x.Y == SelectedTileAssignment.Y);
 
+        }
+
+        private void RoomPlan_NameChanged(object sender, NameChangedEventArgs e)
+        {
+            OnRoomNameChanged(e);
+        }
+
+        protected virtual void OnRoomNameChanged(NameChangedEventArgs e)
+        {
+            RoomNameChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnGridSizeChanged(EventArgs e)
+        {
+            GridSizeChanged?.Invoke(this, e);
         }
     }
 }

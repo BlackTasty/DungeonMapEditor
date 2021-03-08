@@ -13,20 +13,29 @@ namespace DungeonMapEditor.ViewModel
 {
     class TileManagerViewModel : ViewModelBase
     {
-        private CollectionFile<Tile> mTileFile;
+        private CollectionSet mSelectedCollection;
         private int mSelectedTileIndex = -1;
-        private bool mIsConfiguratorOpen;
+        private int mSelectedPlaceableIndex = -1;
+        private bool mIsTileConfiguratorOpen;
+        private bool mIsPlaceableConfiguratorOpen;
         private bool mIsEditTile;
+        private bool mIsEditPlaceable;
 
-        public CollectionFile<Tile> TileFile
+        public CollectionSet SelectedCollection
         {
-            get => mTileFile;
+            get => mSelectedCollection;
             set
             {
-                mTileFile = value;
+                mSelectedCollection = value;
                 InvokePropertyChanged();
+                InvokePropertyChanged("IsCollectionSelected");
+                SelectedTileIndex = -1;
             }
         }
+
+        public bool IsCollectionSelected => SelectedCollection != null;
+
+        public VeryObservableCollection<CollectionSet> LoadedCollections => App.LoadedCollections;
 
         public int SelectedTileIndex
         {
@@ -41,12 +50,35 @@ namespace DungeonMapEditor.ViewModel
 
         public bool IsTileSelected => mSelectedTileIndex > -1;
 
-        public bool IsConfiguratorOpen
+        public int SelectedPlaceableIndex
         {
-            get => mIsConfiguratorOpen;
+            get => mSelectedPlaceableIndex;
             set
             {
-                mIsConfiguratorOpen = value;
+                mSelectedPlaceableIndex = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsPlaceableSelected");
+            }
+        }
+
+        public bool IsPlaceableSelected => mSelectedPlaceableIndex > -1;
+
+        public bool IsTileConfiguratorOpen
+        {
+            get => mIsTileConfiguratorOpen;
+            set
+            {
+                mIsTileConfiguratorOpen = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public bool IsPlaceableConfiguratorOpen
+        {
+            get => mIsPlaceableConfiguratorOpen;
+            set
+            {
+                mIsPlaceableConfiguratorOpen = value;
                 InvokePropertyChanged();
             }
         }
@@ -61,105 +93,28 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
+        public bool IsEditPlaceable
+        {
+            get => mIsEditPlaceable;
+            set
+            {
+                mIsEditPlaceable = value;
+                InvokePropertyChanged();
+            }
+        }
+
         public TileManagerViewModel()
         {
-            if (!App.IsDesignMode)
-            {
-                TileFile = new CollectionFile<Tile>(CollectionType.Tiles);
-
-                string wallCornerPath = Path.Combine(App.BasePath, "Resources", "Demo", "Dungeon_Corner.png");
-                string wallInnerCornerPath = Path.Combine(App.BasePath, "Resources", "Demo", "Dungeon_InnerCorner.png");
-                string wallPath = Path.Combine(App.BasePath, "Resources", "Demo", "Dungeon_Wall.png");
-                TileFile.Data.Add(new List<Tile>()
-            {
-                new Tile()
-                {
-                    Name = "Wall Horizontal Top",
-                    Description = "A horizontal wall",
-                    ImagePath = wallPath
-                },
-                new Tile()
-                {
-                    Name = "Wall Vertical Right",
-                    Description = "A vertical wall",
-                    ImagePath = wallPath,
-                    Rotation = 90
-                },
-                new Tile()
-                {
-                    Name = "Wall Horizontal Bottom",
-                    Description = "A horizontal wall",
-                    ImagePath = wallPath,
-                    Rotation = 180
-                },
-                new Tile()
-                {
-                    Name = "Wall Vertical Left",
-                    Description = "A vertical wall",
-                    ImagePath = wallPath,
-                    Rotation = 270
-                },
-                new Tile()
-                {
-                    Name = "Wall Corner (Top Left)",
-                    Description = "A corner wall",
-                    ImagePath = wallCornerPath
-                },
-                new Tile()
-                {
-                    Name = "Wall Corner (Top Right)",
-                    Description = "A corner wall",
-                    ImagePath = wallCornerPath,
-                    Rotation = 90
-                },
-                new Tile()
-                {
-                    Name = "Wall Corner (Bottom Right)",
-                    Description = "A corner wall",
-                    ImagePath = wallCornerPath,
-                    Rotation = 180
-                },
-                new Tile()
-                {
-                    Name = "Wall Corner (Bottom Left)",
-                    Description = "A corner wall",
-                    ImagePath = wallCornerPath,
-                    Rotation = 270
-                },
-                new Tile()
-                {
-                    Name = "Wall Inner Corner (Top Left)",
-                    Description = "An inner corner wall",
-                    ImagePath = wallInnerCornerPath
-                },
-                new Tile()
-                {
-                    Name = "Wall Inner Corner (Top Right)",
-                    Description = "An inner corner wall",
-                    ImagePath = wallInnerCornerPath,
-                    Rotation = 90
-                },
-                new Tile()
-                {
-                    Name = "Wall Inner Corner (Bottom Right)",
-                    Description = "An inner corner wall",
-                    ImagePath = wallInnerCornerPath,
-                    Rotation = 180
-                },
-                new Tile()
-                {
-                    Name = "Wall Inner Corner (Bottom Left)",
-                    Description = "An inner corner wall",
-                    ImagePath = wallInnerCornerPath,
-                    Rotation = 270
-                }
-            });
-            }
         }
 
         public Tile GetSelectedTile()
         {
-            return mSelectedTileIndex > -1 ? TileFile.Data[mSelectedTileIndex] : null;
+            return mSelectedTileIndex > -1 ? SelectedCollection.TileFile.Data[mSelectedTileIndex] : null;
+        }
+
+        public Placeable GetSelectedPlaceable()
+        {
+            return mSelectedPlaceableIndex > -1 ? SelectedCollection.PlaceableFile.Data[mSelectedPlaceableIndex] : null;
         }
     }
 }

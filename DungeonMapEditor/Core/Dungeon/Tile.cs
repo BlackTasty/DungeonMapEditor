@@ -72,20 +72,33 @@ namespace DungeonMapEditor.Core.Dungeon
         [JsonIgnore]
         public bool HasAssignedFile => mAssignedCollection != null;
 
+        [JsonIgnore]
+        public bool IsEmpty => string.IsNullOrWhiteSpace(mImagePath);
+
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
-        public Tile(string name, string description, double rotation, string imagePath, string tileText, double textFontSize) : 
-            base(name, description, rotation)
+        public Tile(string name, string description, double rotation, string guid, string imagePath, string tileText, double textFontSize) : 
+            base(name, description, rotation, guid)
         {
             ImagePath = imagePath;
             TileText = tileText;
             TextFontSize = textFontSize;
         }
 
+        /// <summary>
+        /// Loads an existing <see cref="Tile"/> from a json file.
+        /// </summary>
+        /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the <see cref="Tile"/> file.</param>
         public Tile(FileInfo fi) : base(fi)
         {
             Load();
         }
 
+        /// <summary>
+        /// Used to create an empty tile.
+        /// </summary>
         public Tile() { }
 
         public void SetAssignedCollection(CollectionSet assignedCollection)
@@ -98,6 +111,11 @@ namespace DungeonMapEditor.Core.Dungeon
             Tile tile = LoadFile();
 
             ImagePath = tile.ImagePath;
+        }
+
+        public override string GetFullPath()
+        {
+            return !IsEmpty ? base.GetFullPath() : null;
         }
     }
 }

@@ -12,36 +12,49 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
     {
         private FloorPlan floorPlan;
 
-        private ProjectFile assignedProject;
-
-        public string AssignedProjectPath => assignedProject.FilePath;
+        public string AssignedProjectPath { get; set; }
 
         [JsonIgnore]
         public FloorPlan FloorPlan => floorPlan;
 
         public string FloorPlanFile => !string.IsNullOrWhiteSpace(floorPlan.Name) ? floorPlan.Name + ".json" : null;
 
-        public double PositionX { get; set; }
+        public double X { get; set; }
 
-        public double PositionY { get; set; }
+        public double Y { get; set; }
 
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
-        public FloorAssignment(string assignedProjectPath, string floorPlanFile, double positionX, double positionY)
+        public FloorAssignment(string assignedProjectPath, string floorPlanFile, double x, double y)
         {
             floorPlan = new FloorPlan(new FileInfo(Path.Combine(assignedProjectPath, floorPlanFile)));
-            PositionX = positionX;
-            PositionY = positionY;
+            AssignedProjectPath = assignedProjectPath;
+            X = x;
+            Y = y;
         }
 
-        public FloorAssignment(FloorPlan floorPlan, double positionX, double positionY) : this(floorPlan)
+        /// <summary>
+        /// Used to create a new position assignment for a floor.
+        /// </summary>
+        /// <param name="floorPlan">The floor plan to assign</param>
+        /// <param name="x">The X position</param>
+        /// <param name="y">The Y position</param>
+        public FloorAssignment(FloorPlan floorPlan, ProjectFile assignedProject, double x, double y) : this(floorPlan, assignedProject)
         {
-            PositionX = positionX;
-            PositionY = positionY;
+            X = x;
+            Y = y;
         }
 
-        public FloorAssignment(FloorPlan floorPlan)
+        /// <summary>
+        /// Used to create a new position assignment for a floor. Default position: X = 0; Y = 0
+        /// </summary>
+        /// <param name="floorPlan">The floor plan to assign</param>
+        public FloorAssignment(FloorPlan floorPlan, ProjectFile assignedProject)
         {
             this.floorPlan = floorPlan;
+            AssignedProjectPath = assignedProject.FilePath;
         }
     }
 }

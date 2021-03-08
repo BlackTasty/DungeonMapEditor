@@ -19,9 +19,72 @@
                 </StackPanel>
             </UniformGrid>
             <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-            <Expander Header="Document preview" DockPanel.Dock="Right" Margin="8" Width="240">
-                <Canvas Margin="8" Background="Gray"/>
-            </Expander>
+            <DockPanel DockPanel.Dock="Bottom" LastChildFill="False" Background="LightGray" Margin="-2">
+                <Button Content="Save" Margin="4" Padding="8,4" DockPanel.Dock="Right" Click="SaveProject_Click"/>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Right" Margin="8" Width="240">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Rooms" FontSize="16"/>
+                        <TextBlock Text="Double-click a row to edit a room" FontSize="10" Foreground="Gray" Margin="4,0"/>
+                    </StackPanel>
+                    <Button Content="Add room" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center" Click="AddRoom_Click"/>
+                </DockPanel>
+                <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <EventSetter Event="PreviewMouseDoubleClick" Handler="RoomDataGridRow_PreviewMouseDoubleClick"/>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding RoomPlan.Name}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Room"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="40">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock>
+                                            <Run Text="{Binding RoomPlan.TilesX, Mode=OneWay}"/><Run Text="x"/><Run Text="{Binding RoomPlan.TilesY, Mode=OneWay}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Size"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding RoomPlan.Description}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Description"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+            <Border BorderThickness="1,0,0,0" DockPanel.Dock="Right" BorderBrush="DarkGray" Margin="0,8"/>
             <DockPanel Margin="8">
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <StackPanel DockPanel.Dock="Left">
@@ -41,7 +104,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding FloorPlan.FloorName}"/>
+                                        <TextBlock Text="{Binding FloorPlan.Name}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

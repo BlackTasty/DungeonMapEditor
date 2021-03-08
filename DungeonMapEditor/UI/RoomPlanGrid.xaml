@@ -15,7 +15,7 @@
         <converter:IntToStringConverter x:Key="IntToStringConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="LightGray" DockPanel.Dock="Right" Width="180" Background="White">
+    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
         <DockPanel>
             <StackPanel DockPanel.Dock="Bottom">
                 <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
@@ -34,11 +34,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Border Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1">
-                    <Image Source="{Binding SelectedAvailableTile.Image, UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin=".5,.5">
-                        <Image.RenderTransform>
-                            <RotateTransform Angle="{Binding SelectedAvailableTile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        </Image.RenderTransform>
-                    </Image>
+                    <local:TileControl x:Name="tilePreview"/>
                 </Border>
             </StackPanel>
             <StackPanel DockPanel.Dock="Top">
@@ -55,6 +51,21 @@
             </StackPanel>
         </DockPanel>
     </Border>
+    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+        <StackPanel Width="140" Margin="8">
+            <TextBlock Text="Name"/>
+            <TextBox Text="{Binding RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Width="140" Margin="32,8,8,8">
+            <TextBlock Text="No. tiles horizontal"/>
+            <TextBox Text="{Binding RoomPlan.TilesX, UpdateSourceTrigger=LostFocus}"/>
+        </StackPanel>
+        <StackPanel Width="140" Margin="8">
+            <TextBlock Text="No. tiles vertical"/>
+            <TextBox Text="{Binding RoomPlan.TilesY, UpdateSourceTrigger=LostFocus}"/>
+        </StackPanel>
+    </StackPanel>
+    <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
     <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
         <Canvas.Background>
             <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,50,50" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 

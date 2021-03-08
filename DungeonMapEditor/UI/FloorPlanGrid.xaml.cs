@@ -25,7 +25,7 @@ namespace DungeonMapEditor.UI
     {
         public event EventHandler<NameChangedEventArgs> FloorNameChanged;
 
-        public FloorPlanGrid() : this(new FloorPlan())
+        public FloorPlanGrid() : this(new FloorPlan("Basement"))
         {
         }
 
@@ -46,6 +46,11 @@ namespace DungeonMapEditor.UI
         protected virtual void OnFloorNameChanged(NameChangedEventArgs e)
         {
             FloorNameChanged?.Invoke(this, e);
+        }
+
+        public string GetFloorPlanGuid()
+        {
+            return (DataContext as FloorPlanViewModel).FloorPlan?.Guid;
         }
     }
 }

@@ -9,63 +9,65 @@ namespace DungeonMapEditor.ViewModel
 {
     public class VeryObservableStackCollection<T> : VeryObservableCollection<T>
     {
-        private int stackSize = 1;
+        private int limit = 1;
+
+        public int Limit => limit;
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="stackSize">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
+        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
         /// <param name="message"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int stackSize, ViewModelMessage message = ViewModelMessage.None) : 
+        public VeryObservableStackCollection(string collectionName, int limit, ViewModelMessage message = ViewModelMessage.None) : 
             base(collectionName, message)
         {
-            this.stackSize = stackSize;
+            this.limit = limit;
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="stackSize">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
+        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
         /// <param name="item"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int stackSize, T item) : base(collectionName, item)
+        public VeryObservableStackCollection(string collectionName, int limit, T item) : base(collectionName, item)
         {
-            this.stackSize = stackSize;
+            this.limit = limit;
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="stackSize">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
-        public VeryObservableStackCollection(string collectionName, int stackSize) : base(collectionName, false)
+        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
+        public VeryObservableStackCollection(string collectionName, int limit) : base(collectionName, false)
         {
-            this.stackSize = stackSize;
+            this.limit = limit;
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="stackSize">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
+        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
         /// <param name="items"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int stackSize, List<T> items) : 
-            base(collectionName, items.Take(stackSize))
+        public VeryObservableStackCollection(string collectionName, int limit, List<T> items) : 
+            base(collectionName, items.Take(limit))
         {
-            this.stackSize = stackSize;
+            this.limit = limit;
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="stackSize">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>S
+        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>S
         /// <param name="items"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int stackSize, IEnumerable<T> items) : 
-            base(collectionName, items.Take(stackSize))
+        public VeryObservableStackCollection(string collectionName, int limit, IEnumerable<T> items) : 
+            base(collectionName, items.Take(limit))
         {
-            this.stackSize = stackSize;
+            this.limit = limit;
         }
 
         /// <summary>
@@ -74,7 +76,7 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="items"><inheritdoc/></param>
         public override void Add(IEnumerable<T> items)
         {
-            base.Add(items.Take(stackSize));
+            base.Add(items.Take(limit));
         }
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="sort"><inheritdoc/></param>
         public override void Add(List<T> items, bool sort = false)
         {
-            base.Add(items.Take(stackSize).ToList(), sort);
+            base.Add(items.Take(limit).ToList(), sort);
         }
 
         /// <summary>
@@ -93,7 +95,7 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="item"><inheritdoc/></param>
         public override void Add(T item)
         {
-            if (Items.Count >= stackSize)
+            if (Items.Count >= limit)
             {
                 Items.RemoveAt(Items.Count - 1);
                 List<T> itemsCopy = this.Reverse().ToList();

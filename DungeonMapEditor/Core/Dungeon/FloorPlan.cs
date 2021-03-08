@@ -38,29 +38,42 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
-        public FloorPlan(string name, string description, double rotation, List<RoomAssignment> roomAssignments, string floorName) : 
-            base(name, description, rotation)
+        public FloorPlan(string name, string description, double rotation, string guid, List<RoomAssignment> roomAssignments, string floorName) : 
+            base(name, description, rotation, guid)
         {
             mRoomAssignments.Add(roomAssignments);
             mFloorName = floorName;
         }
 
+        /// <summary>
+        /// Loads an existing <see cref="FloorPlan"/> from a json file.
+        /// </summary>
+        /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the floor plan</param>
         public FloorPlan(FileInfo fi) : base(fi)
         {
             Load();
         }
 
-        public FloorPlan() : base("Untitled room", "", 0)
+        /// <summary>
+        /// Used to create a new <see cref="FloorPlan"/>
+        /// </summary>
+        /// <param name="floorName">The name of this floor</param>
+        public FloorPlan(string floorName) : base(floorName, "", 0)
         {
             mFloorName = "";
         }
 
         public void Load()
         {
+            filePath = Path.Combine(filePath, "floors");
             FloorPlan floorPlan = LoadFile();
 
-            FloorName = floorPlan.FloorName;
+            Name = floorPlan.Name;
+            FloorName = floorPlan.Name;
             RoomAssignments.Add(floorPlan.RoomAssignments);
         }
 
@@ -73,6 +86,7 @@ namespace DungeonMapEditor.Core.Dungeon
                     throw new Exception("ParentPath needs to have a value if Collection file is being created!");
                 }
 
+                fileName = Name + ".json";
                 SaveFile(parentPath, this);
             }
             else

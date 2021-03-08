@@ -17,6 +17,9 @@ namespace DungeonMapEditor.Core.Dungeon
         private string mName;
         private string mDescription;
         private double mRotation;
+        private string guid;
+
+        public string Guid => guid;
 
         public string Name
         {
@@ -48,23 +51,46 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
+        /// <summary>
+        /// Only required by JSON parser!
+        /// </summary>
         [JsonConstructor]
-        public BaseData(string name, string description, double rotation)
+        public BaseData(string name, string description, double rotation, string guid)
+        {
+            mName = name;
+            mDescription = description;
+            mRotation = rotation;
+            this.guid = guid;
+        }
+
+        /// <summary>
+        /// Used to create a new <see cref="T"/> object.
+        /// </summary>
+        /// <param name="name">The name of this object</param>
+        /// <param name="description">A description for this object</param>
+        /// <param name="rotation">The rotation of this object (clock-wise)</param>
+        public BaseData(string name, string description, double rotation) : this()
         {
             mName = name;
             mDescription = description;
             mRotation = rotation;
         }
 
+        /// <summary>
+        /// Use to load an existing object of type <see cref="T"/>.
+        /// </summary>
+        /// <param name="fi">The file to load</param>
         protected BaseData(FileInfo fi) : base(fi)
         {
+            guid = System.Guid.NewGuid().ToString();
         }
 
-        public BaseData() { }
-
-        public BaseData<T> FromJsonFile(FileInfo fi)
+        /// <summary>
+        /// Base constructor which generates a unique GUID for this object.
+        /// </summary>
+        public BaseData() 
         {
-            return new BaseData<T>(fi);
+            guid = System.Guid.NewGuid().ToString();
         }
 
         protected virtual void OnNameChanged(NameChangedEventArgs e)

@@ -18,6 +18,8 @@ namespace DungeonMapEditor
     /// </summary>
     public partial class App : Application
     {
+        private static VeryObservableStackCollection<ProjectFile> mProjectHistory = new VeryObservableStackCollection<ProjectFile>("ProjectHistory", 7);
+
         private static readonly string collectionPath = Path.Combine(BasePath, "Collections");
 
         public static bool IsDesignMode => DesignerProperties.GetIsInDesignMode(new DependencyObject());
@@ -31,11 +33,17 @@ namespace DungeonMapEditor
 
         public static string ProjectsPath => Path.Combine(BasePath, "Projects");
 
+        public static VeryObservableStackCollection<ProjectFile> ProjectHistory => mProjectHistory;
+
+        public static bool IsHistoryEmpty => ProjectHistory.Count == 0;
 
         [STAThread]
         public static void Main()
         {
+            ProjectHistory.TriggerAlso("IsHistoryEmpty");
+
             LoadCollections();
+            LoadHistory();
 
             App app = new App()
             {
@@ -58,16 +66,26 @@ namespace DungeonMapEditor
                 {
                     foreach (var dir in validDirs)
                     {
-                        LoadedCollections.Add(new CollectionSet(dir));
-
-                        FileInfo fi = dir.EnumerateFiles(dir.Name + ".json", SearchOption.TopDirectoryOnly).FirstOrDefault();
-
-                        if (fi != null)
-                        {
-                        }
+                        LoadedCollections.Add(new CollectionSet(dir.Parent));
                     }
                 }
 
+            }
+        }
+
+        public static void LoadHistory()
+        {
+            ProjectHistory.Clear();
+
+            if (!Directory.Exists(ProjectsPath))
+            {
+                return;
+            }
+
+            foreach (DirectoryInfo di in new DirectoryInfo(ProjectsPath).EnumerateDirectories()
+                .OrderBy(x => x.LastWriteTime).Reverse().Take(ProjectHistory.Limit))
+            {
+                ProjectHistory.Add(new ProjectFile(di));
             }
         }
 
