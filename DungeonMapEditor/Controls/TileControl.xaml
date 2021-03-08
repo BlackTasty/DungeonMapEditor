@@ -1,0 +1,18 @@
+﻿<Grid x:Class="DungeonMapEditor.Controls.TileControl"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+       xmlns:local="clr-namespace:DungeonMapEditor.Controls"
+       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+       mc:Ignorable="d" 
+       MinHeight="48" MinWidth="48" Background="Transparent">
+    <Grid.DataContext>
+        <vm:TileControlViewModel/>
+    </Grid.DataContext>
+    <Image Source="{Binding Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" RenderTransformOrigin=".5,.5">
+        <Image.RenderTransform>
+            <RotateTransform Angle="{Binding Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Image.RenderTransform>
+    </Image>
+</Grid>

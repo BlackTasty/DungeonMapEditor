@@ -1,0 +1,87 @@
+﻿<TabControl x:Class="DungeonMapEditor.UI.ProjectOverview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DungeonMapEditor.UI"
+             xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="650" Background="White" x:Name="tabControl">
+    <TabControl.DataContext>
+        <vm:ProjectOverviewViewModel/>
+    </TabControl.DataContext>
+    <TabItem Header="Project overview">
+        <DockPanel>
+            <UniformGrid Columns="3" DockPanel.Dock="Top">
+                <StackPanel Margin="8">
+                    <TextBlock Text="Dungeon name"/>
+                    <TextBox Text="{Binding ProjectFile.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </UniformGrid>
+            <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
+            <Expander Header="Document preview" DockPanel.Dock="Right" Margin="8" Width="240">
+                <Canvas Margin="8" Background="Gray"/>
+            </Expander>
+            <DockPanel Margin="8">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Floors" FontSize="16"/>
+                        <TextBlock Text="Double-click a row to edit a floor" FontSize="10" Foreground="Gray" Margin="4,0"/>
+                    </StackPanel>
+                    <Button Content="Add floor" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center" Click="AddFloor_Click"/>
+                </DockPanel>
+                <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <EventSetter Event="PreviewMouseDoubleClick" Handler="FloorDataGridRow_PreviewMouseDoubleClick"/>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="40">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FloorPlan.FloorName}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Floor"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FloorPlan.RoomAssignments.Count}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Rooms"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FloorPlan.Description}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Description"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </DockPanel>
+    </TabItem>
+</TabControl>

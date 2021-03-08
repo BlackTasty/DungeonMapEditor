@@ -1,0 +1,108 @@
+﻿<Grid x:Class="DungeonMapEditor.UI.TileManager"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DungeonMapEditor.UI"
+      xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+      xmlns:dvm="clr-namespace:DungeonMapEditor.ViewModel.DesignTime"
+      xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="350" d:DesignWidth="700"
+      d:DataContext="{d:DesignInstance {x:Type dvm:TileManagerDesignViewModel}, IsDesignTimeCreatable=True}">
+    <Grid.DataContext>
+        <vm:TileManagerViewModel/>
+    </Grid.DataContext>
+    <Grid.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Grid.Resources>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="1"/>
+        <ColumnDefinition Width="160"/>
+    </Grid.ColumnDefinitions>
+    <DataGrid ItemsSource="{Binding TileFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+              CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
+              SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedTileIndex}">
+        <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow">
+                <Setter Property="Height" Value="60"/>
+                <Setter Property="Padding" Value="0"/>
+            </Style>
+        </DataGrid.RowStyle>
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Width="60">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" 
+                               RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
+                            <Image.RenderTransform>
+                                <RotateTransform Angle="{Binding Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Image.RenderTransform>
+                        </Image>
+                        <!--<controls:TileControl CurrentTile="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}" Margin="5"/>-->
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                            <TextBlock Text="{Binding Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                <DataGridTemplateColumn.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock><Run Text="Tile name"/></TextBlock>
+                    </DataTemplate>
+                </DataGridTemplateColumn.HeaderTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                            <TextBlock Text="{Binding Description}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                <DataGridTemplateColumn.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock><Run Text="Description"/></TextBlock>
+                    </DataTemplate>
+                </DataGridTemplateColumn.HeaderTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                            <TextBlock Text="{Binding Rotation}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                <DataGridTemplateColumn.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock><Run Text="Rotation"/></TextBlock>
+                    </DataTemplate>
+                </DataGridTemplateColumn.HeaderTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+    <Border Grid.Column="1" Background="Black"/>
+    <DockPanel Grid.Column="2">
+        <StackPanel DockPanel.Dock="Bottom">
+            <Button Content="Save" Margin="8,4" Click="Save_Click"/>
+            <Button Content="Close" Margin="8,4" Click="Close_Click"/>
+        </StackPanel>
+        <StackPanel>
+            <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click"/>
+            <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click"/>
+            <Button Content="Delet tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click"/>
+        </StackPanel>
+    </DockPanel>
+    <Grid Background="#dd000000" Grid.ColumnSpan="3"
+          Visibility="{Binding IsConfiguratorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <local:TileConfigurator x:Name="tileConfigurator" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                DialogButtonClicked="TileConfigurator_DialogButtonClicked"/>
+    </Grid>
+</Grid>
