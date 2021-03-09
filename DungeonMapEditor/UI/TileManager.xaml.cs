@@ -1,5 +1,8 @@
-﻿using DungeonMapEditor.Core.Dialog;
+﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Collection;
+using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -24,6 +27,7 @@ namespace DungeonMapEditor.UI
     public partial class TileManager : Grid
     {
         public event EventHandler<TileManagerDialogButtonClickedEventArgs> DialogButtonClicked;
+        public event EventHandler<OpenDialogEventArgs> OpenDialog;
 
         public TileManager()
         {
@@ -71,7 +75,7 @@ namespace DungeonMapEditor.UI
             }
             else
             {
-                tileConfigurator.SetTile(new Tile());
+                tileConfigurator.SetTile(new Tile(true));
             }
         }
 
@@ -87,14 +91,14 @@ namespace DungeonMapEditor.UI
             }
             else
             {
-                placeableConfigurator.SetPlaceable(new Placeable());
+                placeableConfigurator.SetPlaceable(new Placeable(true));
             }
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             TileManagerViewModel vm = DataContext as TileManagerViewModel;
-            string collectionDir = Path.Combine(App.BasePath, "Collections", "Default");
+            string collectionDir = Path.Combine(App.BasePath, "Collections", vm.SelectedCollection.Name);
             Directory.CreateDirectory(collectionDir);
 
             vm.SelectedCollection.Save(collectionDir);
@@ -105,11 +109,6 @@ namespace DungeonMapEditor.UI
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(DialogResult.Abort));
-        }
-
-        protected virtual void OnDialogButtonClicked(TileManagerDialogButtonClickedEventArgs e)
-        {
-            DialogButtonClicked?.Invoke(this, e);
         }
 
         private void AddPlaceable_Click(object sender, RoutedEventArgs e)
@@ -139,6 +138,33 @@ namespace DungeonMapEditor.UI
             }
 
             vm.IsPlaceableConfiguratorOpen = false;
+        }
+
+        private void CreateCollection_Click(object sender, RoutedEventArgs e)
+        {
+            DialogCreateCollection dialog = new DialogCreateCollection();
+            dialog.DialogCompleted += CollectionDialog_DialogCompleted;
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void CollectionDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<CollectionSet> e)
+        {
+            if (e.DialogResult == DialogResult.OK)
+            {
+                TileManagerViewModel vm = DataContext as TileManagerViewModel;
+                vm.LoadedCollections.Add(e.ResultObject);
+                vm.SelectedCollection = e.ResultObject;
+            }
+        }
+
+        protected virtual void OnDialogButtonClicked(TileManagerDialogButtonClickedEventArgs e)
+        {
+            DialogButtonClicked?.Invoke(this, e);
+        }
+
+        protected virtual void OnOpenDialog(OpenDialogEventArgs e)
+        {
+            OpenDialog?.Invoke(this, e);
         }
     }
 }

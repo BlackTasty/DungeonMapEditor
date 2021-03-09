@@ -86,7 +86,9 @@ namespace DungeonMapEditor
                     OpenProject(e.SelectedProject);
                     break;
                 case HomeScreenSelectionType.OpenTileManager:
-                    selectedTabIndex = AddTab(new TileManager(), "Tile manager");
+                    TileManager tileManager = new TileManager();
+                    tileManager.OpenDialog += Dialog_OpenDialog;
+                    selectedTabIndex = AddTab(tileManager, "Collection manager");
                     break;
             }
 
@@ -112,12 +114,12 @@ namespace DungeonMapEditor
             ProjectOverview projectOverview = new ProjectOverview(projectFile);
             projectOverview.Tag = Guid.NewGuid().ToString();
             projectOverview.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
-            projectOverview.OpenDialog += ProjectOverview_OpenDialog;
+            projectOverview.OpenDialog += Dialog_OpenDialog;
             tabControl.SelectedIndex = AddTab(projectOverview, projectOverview.GetProjectName(), projectOverview.Tag);
             App.LoadHistory();
         }
 
-        private void ProjectOverview_OpenDialog(object sender, OpenDialogEventArgs e)
+        private void Dialog_OpenDialog(object sender, OpenDialogEventArgs e)
         {
             if (e.Dialog is DialogCreateFloor createFloor)
             {
@@ -127,7 +129,16 @@ namespace DungeonMapEditor
             {
                 createRoom.DialogCompleted += CreateRoom_DialogCompleted;
             }
+            else if (e.Dialog is DialogCreateCollection createCollection)
+            {
+                createCollection.DialogCompleted += CreateCollection_DialogCompleted;
+            }
             (DataContext as MainViewModel).Dialog = e.Dialog;
+        }
+
+        private void CreateCollection_DialogCompleted(object sender, CreateDialogCompletedEventArgs<Core.Dungeon.Collection.CollectionSet> e)
+        {
+            (DataContext as MainViewModel).ShowDialog = false;
         }
 
         private void CreateRoom_DialogCompleted(object sender, CreateDialogCompletedEventArgs<RoomPlan> e)

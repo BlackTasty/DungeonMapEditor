@@ -24,7 +24,7 @@ namespace DungeonMapEditor.UI
     /// <summary>
     /// Interaction logic for ProjectOverview.xaml
     /// </summary>
-    public partial class ProjectOverview : TabControl
+    public partial class ProjectOverview : DockPanel
     {
         private SolidColorBrush roomTabColor = new SolidColorBrush(Color.FromArgb(128, 255, 128, 0));
         private SolidColorBrush floorTabColor = new SolidColorBrush(Color.FromArgb(128, 0, 128, 255));

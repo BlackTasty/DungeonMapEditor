@@ -130,20 +130,25 @@ namespace DungeonMapEditor.UI
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             if (updateTile)
             {
-                RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
                 vm.SelectedTileAssignment.Tile = vm.SelectedAvailableTile;
                 vm.SelectedTileAssignment.Control.Tile = vm.SelectedAvailableTile;
 
                 selectedTileControl.Tile = vm.SelectedAvailableTile;
-                tilePreview.Tile = vm.SelectedAvailableTile;
             }
+            tilePreview.Tile = vm.SelectedAvailableTile;
         }
 
         protected virtual void OnRoomNameChanged(NameChangedEventArgs e)
         {
             RoomNameChanged?.Invoke(this, e);
+        }
+
+        private void Placeables_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            PlaceableControl placeableControl = new PlaceableControl();
         }
     }
 }

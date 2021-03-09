@@ -17,7 +17,7 @@ namespace DungeonMapEditor.Core.Dungeon
         private string mName;
         private string mDescription;
         private double mRotation;
-        private string guid;
+        protected string guid;
 
         public string Guid => guid;
 

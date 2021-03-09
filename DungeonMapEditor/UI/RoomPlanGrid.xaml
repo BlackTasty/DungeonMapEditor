@@ -7,7 +7,7 @@
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="600">
+      d:DesignHeight="400" d:DesignWidth="700">
     <DockPanel.DataContext>
         <vm:RoomPlanViewModel/>
     </DockPanel.DataContext>
@@ -16,40 +16,74 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
-        <DockPanel>
-            <StackPanel DockPanel.Dock="Bottom">
-                <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
+        <TabControl>
+            <TabItem Header="Tile settings">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
 
-                <TextBlock Text="Tile" Margin="12,4,12,2"/>
-                <ComboBox ItemsSource="{Binding AvailableTiles}" Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
+                        <TextBlock Text="Tile" Margin="12,4,12,2"/>
+                        <ComboBox ItemsSource="{Binding AvailableTiles}" Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
                           SelectionChanged="ComboBox_SelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Name}"/>
-                                <TextBlock Text="{Binding AssignedFile.FileName}" 
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding AssignedFile.FileName}" 
                                            Visibility="{Binding HasAssignedFile, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <Border Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1">
-                    <local:TileControl x:Name="tilePreview"/>
-                </Border>
-            </StackPanel>
-            <StackPanel DockPanel.Dock="Top">
-                <TextBlock Text="Tile settings" FontSize="20" Margin="4"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Border Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1">
+                            <local:TileControl x:Name="tilePreview"/>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="Tile settings" FontSize="20" Margin="4"/>
 
-                <TextBlock Text="Name" Margin="12,4,12,2"/>
-                <TextBox Text="{Binding SelectedTileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
-                <TextBlock Text="Path" Margin="12,4,12,2"/>
-                <TextBox Text="{Binding SelectedTileAssignment.Tile.ImagePath, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
-                <TextBlock Text="Rotation" Margin="12,4,12,2"/>
-                <TextBox Text="{Binding SelectedTileAssignment.Tile.Rotation, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
-                <TextBlock Text="Description" Margin="12,4,12,2"/>
-                <TextBox Text="{Binding SelectedTileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" TextWrapping="Wrap" Height="90" IsReadOnly="True"/>
-            </StackPanel>
-        </DockPanel>
+                        <TextBlock Text="Name" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
+                        <TextBlock Text="Path" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Tile.ImagePath, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
+                        <TextBlock Text="Rotation" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Rotation, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
+                        <TextBlock Text="Description" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" TextWrapping="Wrap" Height="90" IsReadOnly="True"/>
+                    </StackPanel>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Object catalog">
+                <DockPanel>
+                    <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
+                    <DataGrid ItemsSource="{Binding AvailablePlaceables}" Background="{x:Null}" Foreground="White" AutoGenerateColumns="False" 
+                              CanUserReorderColumns="False"
+                              SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
+                              GridLinesVisibility="None" HeadersVisibility="None">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                <EventSetter Event="PreviewMouseDoubleClick" Handler="Placeables_PreviewMouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Margin="4">
+                                            <Image Height="50" Width="50" Source="{Binding Image}"/>
+                                            <TextBlock Text="{Binding Name}" FontSize="20" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
     </Border>
     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
         <StackPanel Width="140" Margin="8">

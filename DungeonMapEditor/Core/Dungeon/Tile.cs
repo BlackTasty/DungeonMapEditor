@@ -99,7 +99,13 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <summary>
         /// Used to create an empty tile.
         /// </summary>
-        public Tile() { }
+        public Tile(bool generateGuid)
+        {
+            if (!generateGuid)
+            {
+                guid = null;
+            }
+        }
 
         public void SetAssignedCollection(CollectionSet assignedCollection)
         {

@@ -88,9 +88,9 @@ namespace DungeonMapEditor.Core.Dungeon
             Load();
         }
 
-        public Placeable()
+        public Placeable(bool generateGuid)
         {
-
+            guid = null;
         }
 
         public void Load()

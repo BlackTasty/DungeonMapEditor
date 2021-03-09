@@ -58,7 +58,10 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                     throw new Exception("ParentPath needs to have a value if CollectionSet file is being created!");
                 }
 
-                SaveFile(Path.Combine(parentPath, Name), this);
+                Directory.CreateDirectory(Path.Combine(parentPath, "tiles"));
+                Directory.CreateDirectory(Path.Combine(parentPath, "placeables"));
+                filePath = parentPath;
+                //SaveFile(Path.Combine(parentPath, Name), this);
             }
             else
             {
@@ -67,6 +70,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 
             if (TileFile.HasData)
             {
+                #region TODO
                 //TODO: Copy images of tiles into resource folder of this collection
                 /*foreach (Tile tile in TileFile.Data)
                 {
@@ -77,12 +81,27 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 
                     }
                 }*/
-                TileFile.Save();
+                #endregion
+                if (TileFile.FromFile)
+                {
+                    TileFile.Save();
+                }
+                else
+                {
+                    TileFile.Save(parentPath);
+                }
             }
 
             if (PlaceableFile.HasData)
             {
-                PlaceableFile.Save();
+                if (PlaceableFile.FromFile)
+                {
+                    PlaceableFile.Save();
+                }
+                else
+                {
+                    PlaceableFile.Save(parentPath);
+                }
             }
         }
 
@@ -91,6 +110,10 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             foreach (DirectoryInfo di in new DirectoryInfo(Path.Combine(filePath, Name)).EnumerateDirectories())
             {
                 FileInfo jsonFile = di.EnumerateFiles(di.Name + ".json").FirstOrDefault();
+                if (jsonFile == null)
+                {
+                    continue;
+                }
                 switch (jsonFile.Name)
                 {
                     case "tiles.json":

@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.Core.Dungeon.Assignment;
+﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
@@ -18,6 +20,8 @@ namespace DungeonMapEditor.Core.Dungeon
         private string assignedProjectName;
         private int mTilesX = 1;
         private int mTilesY = 1;
+        private string mRoomPlanImagePath;
+        private BitmapImage mRoomPlanImage;
 
         public List<TileAssignment> TileAssignments { get; set; }
 
@@ -57,13 +61,34 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public string AssignedProjectName => assignedProjectName;
 
+        public string RoomPlanImagePath
+        {
+            get => mRoomPlanImagePath;
+            private set
+            {
+                mRoomPlanImagePath = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        public BitmapImage RoomPlanImage
+        {
+            get => mRoomPlanImage;
+            private set
+            {
+                mRoomPlanImage = value;
+                InvokePropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
         public RoomPlan(string name, string description, double rotation, List<TileAssignment> tileAssignments,
             List<PlaceableAssignment> placeableAssignments/*, List<FloorChangeTile> floorChangeTiles*/, int tilesX, int tilesY,
-            string assignedProjectName) :
+            string assignedProjectName, string roomPlanImagePath) :
             base(name, description, rotation)
         {
             TileAssignments = tileAssignments;
@@ -72,6 +97,11 @@ namespace DungeonMapEditor.Core.Dungeon
             mTilesX = tilesX;
             mTilesY = tilesY;
             this.assignedProjectName = assignedProjectName;
+            mRoomPlanImagePath = roomPlanImagePath;
+            if (roomPlanImagePath != null)
+            {
+                mRoomPlanImage = Helper.FileToBitmapImage(roomPlanImagePath);
+            }
         }
 
         /// <summary>
@@ -86,7 +116,7 @@ namespace DungeonMapEditor.Core.Dungeon
             Name = name;
             mTilesX = tilesX;
             mTilesY = tilesY;
-            this.assignedProjectName = assignedProject.Name;
+            assignedProjectName = assignedProject.Name;
 
             TileAssignments = new List<TileAssignment>();
             PlaceableAssignments = new List<PlaceableAssignment>();
@@ -119,6 +149,8 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 SaveFile(JsonConvert.SerializeObject(this));
             }
+
+            SaveRoomPlanImage(Path.Combine(parentPath, Name + ".png"));
         }
 
         public void Load()
@@ -143,7 +175,7 @@ namespace DungeonMapEditor.Core.Dungeon
                 {
                     for (int y = oldY; y <= newY; y++)
                     {
-                        TileAssignments.Add(new TileAssignment(new Tile(), x, y));
+                        TileAssignments.Add(new TileAssignment(new Tile(false), x, y));
                     }
                 }
             }
@@ -173,6 +205,34 @@ namespace DungeonMapEditor.Core.Dungeon
                     }
                 }
             }
+        }
+
+        private void SaveRoomPlanImage(string path)
+        {
+            Canvas canvas = new Canvas()
+            {
+                Width = TilesX * 50,
+                Height = TilesY * 50
+            };
+
+            foreach (TileAssignment tileAssignment in TileAssignments)
+            {
+                TileControl tileControl = new TileControl()
+                {
+                    Width = 50,
+                    Height = 50,
+                    Tile = tileAssignment.Tile,
+                    BorderThickness = new System.Windows.Thickness(0)
+                };
+
+                Canvas.SetLeft(tileControl, tileAssignment.CanvasX);
+                Canvas.SetTop(tileControl, tileAssignment.CanvasY);
+
+                canvas.Children.Add(tileControl);
+            }
+
+            RoomPlanImage = Helper.ExportToPng(path, canvas);
+            RoomPlanImagePath = RoomPlanImage != null ? path : null;
         }
 
         protected virtual void OnGridSizeChanged(EventArgs e)

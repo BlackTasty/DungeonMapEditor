@@ -30,7 +30,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             }
         }
 
-        public string TileFilePath => mTile?.GetFullPath();
+        public string TileGuid => mTile?.Guid;
 
         [JsonIgnore]
         public TileControl Control => control;
@@ -49,15 +49,15 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public TileAssignment(string tileFilePath, int x, int y)
+        public TileAssignment(string tileGuid, int x, int y)
         {
-            if (!string.IsNullOrWhiteSpace(tileFilePath))
+            if (!string.IsNullOrWhiteSpace(tileGuid))
             {
-                mTile = new Tile(new FileInfo(tileFilePath));
+                mTile = App.GetTileByGuid(tileGuid);
             }
             else
             {
-                mTile = new Tile();
+                mTile = new Tile(false);
             }
             X = x;
             Y = y;

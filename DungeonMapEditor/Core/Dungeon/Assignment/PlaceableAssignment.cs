@@ -15,7 +15,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         [JsonIgnore]
         public Placeable Placeable => placeable;
 
-        public string PlaceableFilePath => placeable?.GetFullPath();
+        public string PlaceableGuid => placeable?.Guid;
 
         public double PositionX { get; set; }
 
@@ -25,9 +25,19 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public PlaceableAssignment(string placeableFilePath, double posX, double posY) : 
-            this(new Placeable(new FileInfo(placeableFilePath)), posX, posY)
+        public PlaceableAssignment(string placeableGuid, double posX, double posY)
         {
+            if (!string.IsNullOrWhiteSpace(placeableGuid))
+            {
+                placeable = App.GetPlaceableByGuid(placeableGuid);
+            }
+            else
+            {
+                placeable = new Placeable(false);
+            }
+
+            PositionX = posX;
+            PositionY = posY;
         }
 
         /// <summary>

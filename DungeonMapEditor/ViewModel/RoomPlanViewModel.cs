@@ -18,12 +18,14 @@ namespace DungeonMapEditor.ViewModel
         private RoomPlan mRoomPlan;
         private TileAssignment mSelectedTileAssignment;
         private VeryObservableCollection<Tile> mAvailableTiles = new VeryObservableCollection<Tile>("Tiles");
+        private VeryObservableCollection<Placeable> mAvailablePlaceables = new VeryObservableCollection<Placeable>("Placeables");
         private Tile mSelectedAvailableTile;
 
         public RoomPlanViewModel()
         {
-            mAvailableTiles.Add(new Tile());
+            mAvailableTiles.Add(new Tile(false));
             mAvailableTiles.Add(App.GetLoadedTiles());
+            mAvailablePlaceables.Add(App.GetLoadedPlaceables());
         }
 
         public RoomPlan RoomPlan
@@ -65,6 +67,16 @@ namespace DungeonMapEditor.ViewModel
             set
             {
                 mAvailableTiles = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public VeryObservableCollection<Placeable> AvailablePlaceables
+        {
+            get => mAvailablePlaceables;
+            set
+            {
+                mAvailablePlaceables = value;
                 InvokePropertyChanged();
             }
         }

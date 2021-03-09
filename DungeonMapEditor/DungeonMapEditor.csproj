@@ -58,6 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Controls\DialogCreateCollection.xaml.cs">
+      <DependentUpon>DialogCreateCollection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DialogCreateFloor.xaml.cs">
       <DependentUpon>DialogCreateFloor.xaml</DependentUpon>
     </Compile>
@@ -66,6 +69,9 @@
     </Compile>
     <Compile Include="Controls\DialogCreateRoom.xaml.cs">
       <DependentUpon>DialogCreateRoom.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PlaceableControl.xaml.cs">
+      <DependentUpon>PlaceableControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
@@ -111,6 +117,7 @@
     <Compile Include="ViewModel\Communication\Mediator.cs" />
     <Compile Include="ViewModel\Communication\MultiDictionary.cs" />
     <Compile Include="ViewModel\Communication\ViewModelMessage.cs" />
+    <Compile Include="ViewModel\CreateCollectionViewModel.cs" />
     <Compile Include="ViewModel\CreateFloorViewModel.cs" />
     <Compile Include="ViewModel\CreateProjectViewModel.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
@@ -119,6 +126,7 @@
     <Compile Include="ViewModel\HomeScreenViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PlaceableConfiguratorViewModel.cs" />
+    <Compile Include="ViewModel\PlaceableControlViewModel.cs" />
     <Compile Include="ViewModel\ProjectOverviewViewModel.cs" />
     <Compile Include="ViewModel\RoomPlanViewModel.cs" />
     <Compile Include="ViewModel\TileConfiguratorViewModel.cs" />
@@ -131,6 +139,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\DialogCreateCollection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DialogCreateFloor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -140,6 +152,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DialogCreateRoom.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PlaceableControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

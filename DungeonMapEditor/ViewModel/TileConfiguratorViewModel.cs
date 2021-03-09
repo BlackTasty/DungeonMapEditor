@@ -11,7 +11,7 @@ namespace DungeonMapEditor.ViewModel
     {
         public TileConfiguratorViewModel()
         {
-            Tile = new Tile();
+            Tile = new Tile(false);
         }
     }
 }

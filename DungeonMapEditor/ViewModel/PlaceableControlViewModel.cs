@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.ViewModel
 {
-    class PlaceableConfiguratorViewModel : ViewModelBase
+    class PlaceableControlViewModel : ViewModelBase
     {
-        private Placeable mPlaceable = new Placeable(false);
+        private Placeable mPlaceable;
 
         public Placeable Placeable
         {

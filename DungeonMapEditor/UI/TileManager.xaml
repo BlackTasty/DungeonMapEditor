@@ -17,25 +17,28 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Grid.Resources>
     <Grid.RowDefinitions>
-        <RowDefinition Height="30"/>
+        <RowDefinition Height="54"/>
         <RowDefinition/>
     </Grid.RowDefinitions>
-    <DockPanel Grid.ColumnSpan="2" VerticalAlignment="Center">
-        <Button Content="+" DockPanel.Dock="Right" Margin="4,0,0,0" Padding="6,2"/>
-        <ComboBox ItemsSource="{Binding LoadedCollections, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding SelectedCollection, UpdateSourceTrigger=PropertyChanged}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name, Mode=OneWay}"/>
-                        <TextBlock>
+    <Border Grid.ColumnSpan="2" BorderBrush="DarkGray" BorderThickness="0,0,0,1" Margin="0,0,0,4">
+        <DockPanel VerticalAlignment="Top" Margin="4,4">
+            <TextBlock DockPanel.Dock="Top" Text="Selected collection"/>
+            <Button Content="+" DockPanel.Dock="Right" Margin="4,0,0,0" Padding="6,2" Click="CreateCollection_Click"/>
+            <ComboBox ItemsSource="{Binding LoadedCollections, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding SelectedCollection, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name, Mode=OneWay}"/>
+                            <TextBlock>
                             <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
                             <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-    </DockPanel>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </DockPanel>
+    </Border>
     <TabControl Grid.Row="1">
         <TabItem Header="Tiles">
             <Grid>
@@ -78,7 +81,7 @@
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                                    <StackPanel VerticalAlignment="Center" Margin="6,-6">
                                         <TextBlock Text="{Binding Name}"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -92,7 +95,7 @@
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                                    <StackPanel VerticalAlignment="Center" Margin="6,-6">
                                         <TextBlock Text="{Binding Description}"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -106,7 +109,7 @@
                         <DataGridTemplateColumn Width="60">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                                    <StackPanel VerticalAlignment="Center" Margin="0,-6" HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding Rotation, Mode=OneWay, StringFormat={}{0}°}"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -168,7 +171,7 @@
                         <DataGridTemplateColumn Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                                    <StackPanel VerticalAlignment="Center" Margin="6,-6">
                                         <TextBlock Text="{Binding Name}"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -182,7 +185,7 @@
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                                    <StackPanel VerticalAlignment="Center" Margin="6,-6">
                                         <TextBlock Text="{Binding Description}"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -196,7 +199,22 @@
                         <DataGridTemplateColumn Width="60">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,-6">
+                                    <StackPanel VerticalAlignment="Center" Margin="6,-6">
+                                        <TextBlock Text="{Binding TileRatioX, Mode=OneWay, StringFormat={}X: {0}x}"/>
+                                        <TextBlock Text="{Binding TileRatioY, Mode=OneWay, StringFormat={}Y: {0}x}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Ratio"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center" Margin="0,-6" HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding Rotation, Mode=OneWay, StringFormat={}{0}°}"/>
                                     </StackPanel>
                                 </DataTemplate>

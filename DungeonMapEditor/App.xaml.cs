@@ -56,6 +56,10 @@ namespace DungeonMapEditor
         public static void LoadCollections()
         {
             LoadedCollections.Clear();
+            if (!Directory.Exists(collectionPath))
+            {
+                Directory.CreateDirectory(collectionPath);
+            }
 
             foreach (DirectoryInfo di in new DirectoryInfo(collectionPath).EnumerateDirectories())
             {
@@ -64,12 +68,8 @@ namespace DungeonMapEditor
 
                 if (validDirs.Count > 0)
                 {
-                    foreach (var dir in validDirs)
-                    {
-                        LoadedCollections.Add(new CollectionSet(dir.Parent));
-                    }
+                    LoadedCollections.Add(new CollectionSet(di));
                 }
-
             }
         }
 
@@ -107,6 +107,18 @@ namespace DungeonMapEditor
             return tiles;
         }
 
+        public static Tile GetTileByGuid(string guid)
+        {
+            var tiles = GetLoadedTiles();
+            if (tiles?.Count > 0)
+            {
+                Tile target = tiles.FirstOrDefault(x => x.Guid == guid);
+                return target != null ? target : new Tile(false);
+            }
+
+            return new Tile(false);
+        }
+
         public static List<Placeable> GetLoadedPlaceables()
         {
             List<Placeable> placeables = new List<Placeable>();
@@ -123,6 +135,18 @@ namespace DungeonMapEditor
             }
 
             return placeables;
+        }
+
+        public static Placeable GetPlaceableByGuid(string guid)
+        {
+            var placeables = GetLoadedPlaceables();
+            if (placeables?.Count > 0)
+            {
+                Placeable target = placeables.FirstOrDefault(x => x.Guid == guid);
+                return target != null ? target : new Placeable(false);
+            }
+
+            return new Placeable(false);
         }
     }
 }
