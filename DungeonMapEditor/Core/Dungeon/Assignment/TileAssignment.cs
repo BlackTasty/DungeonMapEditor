@@ -30,10 +30,10 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             }
         }
 
-        public string TileGuid => mTile?.Guid;
-
         [JsonIgnore]
         public TileControl Control => control;
+
+        public string TileGuid => mTile?.Guid;
 
         public int X { get; set; }
 

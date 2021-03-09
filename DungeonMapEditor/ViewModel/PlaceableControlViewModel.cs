@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,14 @@ namespace DungeonMapEditor.ViewModel
 {
     class PlaceableControlViewModel : ViewModelBase
     {
-        private Placeable mPlaceable;
+        private PlaceableAssignment mPlaceableAssignment;
 
-        public Placeable Placeable
+        public PlaceableAssignment PlaceableAssignment
         {
-            get => mPlaceable;
+            get => mPlaceableAssignment;
             set
             {
-                mPlaceable = value;
+                mPlaceableAssignment = value;
                 InvokePropertyChanged();
             }
         }

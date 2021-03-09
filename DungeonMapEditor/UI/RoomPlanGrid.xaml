@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DungeonMapEditor.Controls"
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
-           xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
+      xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
       d:DesignHeight="400" d:DesignWidth="700">
     <DockPanel.DataContext>
@@ -14,9 +14,40 @@
     <DockPanel.Resources>
         <converter:IntToStringConverter x:Key="IntToStringConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
         <TabControl>
+            <TabItem Header=" Object catalog">
+                <DockPanel>
+                    <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
+                    <DataGrid ItemsSource="{Binding AvailablePlaceables}" Background="{x:Null}" AutoGenerateColumns="False" 
+                              CanUserReorderColumns="False"
+                              SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
+                              GridLinesVisibility="None" HeadersVisibility="None">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                <EventSetter Event="PreviewMouseDoubleClick" Handler="Placeables_PreviewMouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Margin="4">
+                                            <Image Height="50" Width="50" Source="{Binding Image}"/>
+                                            <TextBlock Text="{Binding Name}" FontSize="20" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
             <TabItem Header="Tile settings">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Bottom">
@@ -53,34 +84,35 @@
                     </StackPanel>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Object catalog">
+            <TabItem Header="Object settings">
                 <DockPanel>
-                    <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
-                    <DataGrid ItemsSource="{Binding AvailablePlaceables}" Background="{x:Null}" Foreground="White" AutoGenerateColumns="False" 
-                              CanUserReorderColumns="False"
-                              SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
-                              GridLinesVisibility="None" HeadersVisibility="None">
-                        <DataGrid.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
-                        </DataGrid.Resources>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                <EventSetter Event="PreviewMouseDoubleClick" Handler="Placeables_PreviewMouseDoubleClick"/>
-                            </Style>
-                        </DataGrid.RowStyle>
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <DockPanel Margin="4">
-                                            <Image Height="50" Width="50" Source="{Binding Image}"/>
-                                            <TextBlock Text="{Binding Name}" FontSize="20" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="Object settings" FontSize="20" Margin="4"/>
+
+                        <TextBlock Text="Name" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedPlaceableAssignment.Placeable.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsReadOnly="True"/>
+                        <TextBlock Text="Description" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedPlaceableAssignment.Placeable.Description, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" TextWrapping="Wrap" Height="90" IsReadOnly="True"/>
+                        <TextBlock Text="Overrides" Margin="12,20,12,2" FontSize="16"/>
+                        <TextBlock Text="Rotation" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedPlaceableAssignment.RotationOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
+                        <UniformGrid Columns="2" Margin="12,4,12,2">
+                            <StackPanel>
+                                <TextBlock Text="Tile ratio X"/>
+                                <TextBox Text="{Binding SelectedPlaceableAssignment.TileRatioXOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,4,0"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Tile ratio Y"/>
+                                <TextBox Text="{Binding SelectedPlaceableAssignment.TileRatioYOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,4,0"/>
+                            </StackPanel>
+                        </UniformGrid>
+                        <CheckBox Content="Keep aspect ratio" Margin="12,4" IsChecked="{Binding KeepAspectRatio}"/>
+                    </StackPanel>
                 </DockPanel>
             </TabItem>
         </TabControl>

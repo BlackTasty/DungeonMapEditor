@@ -6,7 +6,7 @@
        xmlns:local="clr-namespace:DungeonMapEditor.Controls"
        xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
        mc:Ignorable="d" 
-       Height="52" Width="52" Background="Transparent" BorderBrush="#88FFFFFF" BorderThickness="1">
+       Height="52" Width="52" BorderBrush="#88FFFFFF" BorderThickness="1" Background="Transparent">
     <Border.DataContext>
         <vm:TileControlViewModel/>
     </Border.DataContext>

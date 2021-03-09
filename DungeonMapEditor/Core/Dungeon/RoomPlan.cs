@@ -91,7 +91,17 @@ namespace DungeonMapEditor.Core.Dungeon
             string assignedProjectName, string roomPlanImagePath) :
             base(name, description, rotation)
         {
-            TileAssignments = tileAssignments;
+            TileAssignments = new List<TileAssignment>();
+            GenerateTileGrid(1, tilesX, 1, tilesY);
+            foreach (TileAssignment tileAssignment in tileAssignments.Where(x => x.TileGuid != null))
+            {
+                int index = TileAssignments.FindIndex(x => x.X == tileAssignment.X && x.Y == tileAssignment.Y);
+
+                if (index >= 0)
+                {
+                    TileAssignments[index] = tileAssignment;
+                }
+            }
             PlaceableAssignments = placeableAssignments;
             //FloorChangeTiles = floorChangeTiles;
             mTilesX = tilesX;
@@ -229,6 +239,20 @@ namespace DungeonMapEditor.Core.Dungeon
                 Canvas.SetTop(tileControl, tileAssignment.CanvasY);
 
                 canvas.Children.Add(tileControl);
+            }
+            
+            foreach (PlaceableAssignment placeableAssignment in PlaceableAssignments)
+            {
+                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment)
+                {
+                    Width = placeableAssignment.Width,
+                    Height = placeableAssignment.Height,
+                    BorderThickness = new System.Windows.Thickness(0)
+                };
+
+                Canvas.SetLeft(placeableControl, placeableAssignment.PositionX);
+                Canvas.SetTop(placeableControl, placeableAssignment.PositionY);
+                canvas.Children.Add(placeableControl);
             }
 
             RoomPlanImage = Helper.ExportToPng(path, canvas);

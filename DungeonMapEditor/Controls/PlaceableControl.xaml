@@ -1,4 +1,4 @@
-﻿<Grid x:Class="DungeonMapEditor.Controls.PlaceableControl"
+﻿<Border x:Class="DungeonMapEditor.Controls.PlaceableControl"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,13 +6,16 @@
       xmlns:local="clr-namespace:DungeonMapEditor.Controls"
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
       mc:Ignorable="d" 
-      d:DesignHeight="50" d:DesignWidth="50">
-    <Grid.DataContext>
+      d:DesignHeight="50" d:DesignWidth="50"
+      MouseLeftButtonDown="Control_MouseLeftButtonDown" MouseLeftButtonUp="Control_MouseLeftButtonUp"
+      MouseMove="Control_MouseMove" PreviewKeyDown="Border_PreviewKeyDown">
+    <Border.DataContext>
         <vm:PlaceableControlViewModel/>
-    </Grid.DataContext>
-    <Image Source="{Binding Placeable.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" RenderTransformOrigin=".5,.5">
+    </Border.DataContext>
+    <Image Source="{Binding PlaceableAssignment.Placeable.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
+           RenderTransformOrigin=".5,.5">
         <Image.RenderTransform>
-            <RotateTransform Angle="{Binding Placeable.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <RotateTransform Angle="{Binding PlaceableAssignment.RealRotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Image.RenderTransform>
     </Image>
-</Grid>
+</Border>

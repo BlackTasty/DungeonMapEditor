@@ -28,9 +28,13 @@ namespace DungeonMapEditor.UI
     {
         public event EventHandler<NameChangedEventArgs> RoomNameChanged;
 
-        private int tagIndex = 0;
+        private int tileTagIndex = 0;
+        private int placeableTagIndex = 0;
         private TileControl selectedTileControl;
+        private PlaceableControl selectedPlaceableControl;
         private bool updateTile = true;
+
+        private Size canvasBounds = new Size();
 
         public RoomPlanGrid(RoomPlan roomPlan)
         {
@@ -39,7 +43,7 @@ namespace DungeonMapEditor.UI
             vm.RoomPlan = roomPlan;
             vm.RoomNameChanged += Vm_RoomNameChanged;
             vm.GridSizeChanged += Vm_GridSizeChanged;
-            AddTiles();
+            AddTilesAndPlaceables();
         }
 
         public string GetRoomPlanGuid()
@@ -54,7 +58,7 @@ namespace DungeonMapEditor.UI
 
             roomBorder.Width = vm.RoomPlan.TilesX * 50;
             roomBorder.Height = vm.RoomPlan.TilesY * 50;
-            AddTiles(false);
+            AddTilesAndPlaceables(false);
         }
 
         private void Vm_RoomNameChanged(object sender, NameChangedEventArgs e)
@@ -62,9 +66,10 @@ namespace DungeonMapEditor.UI
             OnRoomNameChanged(e);
         }
 
-        private void AddTiles(bool addRoomBorder = true)
+        private void AddTilesAndPlaceables(bool addRoomBorder = true)
         {
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            canvasBounds = new Size(vm.RoomPlan.TilesX * 50, vm.RoomPlan.TilesY * 50);
 
             if (addRoomBorder)
             {
@@ -74,8 +79,8 @@ namespace DungeonMapEditor.UI
                 Border roomBorder = new Border()
                 {
                     Name = "roomBorder",
-                    Width = lastAssignment.CanvasX + 50,
-                    Height = lastAssignment.CanvasY + 50,
+                    Width = canvasBounds.Width,
+                    Height = canvasBounds.Height,
                     BorderBrush = new SolidColorBrush(Color.FromArgb(128, brushColor.R, brushColor.G, brushColor.B)),
                     BorderThickness = new Thickness(1),
                     Background = new SolidColorBrush(Color.FromArgb(128, 255, 255, 255))
@@ -90,27 +95,48 @@ namespace DungeonMapEditor.UI
                 {
                     Width = 54,
                     Height = 54,
-                    Tag = tagIndex
+                    Tag = tileTagIndex
                 };
                 tileControl.MouseLeftButtonDown += TileControl_MouseLeftButtonDown;
-                tileControl.MouseLeftButtonUp += TileControl_MouseLeftButtonUp;
-                tagIndex++;
+                tileTagIndex++;
 
                 Canvas.SetLeft(tileControl, tileAssignment.CanvasX - 4);
                 Canvas.SetTop(tileControl, tileAssignment.CanvasY - 4);
 
                 grid.Children.Add(tileControl);
-                (tileControl.DataContext as TileControlViewModel).Tile = tileAssignment.Tile;
+                tileControl.Tile = tileAssignment.Tile;
                 tileAssignment.SetControl(tileControl);
+                Console.WriteLine("TileControl generated for position: X={0}; Y={1}", tileAssignment.X, tileAssignment.Y);
             }
-        }
 
-        private void TileControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
+            foreach (PlaceableAssignment placeableAssignment in vm.RoomPlan.PlaceableAssignments.Where(x => x.Control == null))
+            {
+                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment)
+                {
+                    Width = placeableAssignment.Width,
+                    Height = placeableAssignment.Height,
+                    Tag = placeableTagIndex
+                };
+                placeableTagIndex++;
+
+                placeableControl.MouseLeftButtonDown += PlaceableControl_MouseLeftButtonDown;
+                placeableControl.PreviewKeyDown += PlaceableControl_KeyDown;
+
+                Canvas.SetLeft(placeableControl, placeableControl.PlaceableAssignment.PositionX);
+                Canvas.SetTop(placeableControl, placeableControl.PlaceableAssignment.PositionY);
+
+                grid.Children.Add(placeableControl);
+            }
         }
 
         private void TileControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (selectedPlaceableControl != null)
+            {
+                selectedPlaceableControl.Background = Brushes.Transparent;
+                selectedPlaceableControl = null;
+                (DataContext as RoomPlanViewModel).SelectedPlaceableAssignment = null;
+            }
             if (selectedTileControl != null)
             {
                 selectedTileControl.Background = Brushes.Transparent;
@@ -148,7 +174,62 @@ namespace DungeonMapEditor.UI
 
         private void Placeables_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            PlaceableControl placeableControl = new PlaceableControl();
+            if (sender is DataGridRow clickedRow && clickedRow.DataContext is Placeable placeable)
+            {
+                PlaceableControl placeableControl = new PlaceableControl(placeable, canvasBounds)
+                {
+                    Width = placeable.Width,
+                    Height = placeable.Height,
+                    Tag = placeableTagIndex
+                };
+                placeableTagIndex++;
+
+                placeableControl.MouseLeftButtonDown += PlaceableControl_MouseLeftButtonDown;
+                placeableControl.PreviewKeyDown += PlaceableControl_KeyDown;
+
+                Canvas.SetLeft(placeableControl, placeableControl.PlaceableAssignment.PositionX);
+                Canvas.SetTop(placeableControl, placeableControl.PlaceableAssignment.PositionY);
+
+                grid.Children.Add(placeableControl);
+
+                (DataContext as RoomPlanViewModel).RoomPlan.PlaceableAssignments.Add(placeableControl.PlaceableAssignment);
+            }
+
+        }
+
+        private void PlaceableControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                grid.Children.Remove(sender as PlaceableControl);
+            }
+        }
+
+        private void PlaceableControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (selectedTileControl != null)
+            {
+                updateTile = false;
+                selectedTileControl.Background = Brushes.Transparent;
+                selectedTileControl = null;
+                (DataContext as RoomPlanViewModel).SelectedTileAssignment = null;
+                updateTile = true;
+            }
+            if (selectedPlaceableControl != null)
+            {
+                selectedPlaceableControl.Background = Brushes.Transparent;
+            }
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            PlaceableControl placeableControl = sender as PlaceableControl;
+
+            PlaceableAssignment placeableAssignment = vm.RoomPlan.PlaceableAssignments.FirstOrDefault(x => x.Control.Tag == placeableControl.Tag);
+            (DataContext as RoomPlanViewModel).SelectedPlaceableAssignment = placeableAssignment;
+
+            placeableControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
+            selectedPlaceableControl = placeableControl;
+            updateTile = false;
+            vm.SelectedAvailableTile = null;
+            updateTile = true;
         }
     }
 }

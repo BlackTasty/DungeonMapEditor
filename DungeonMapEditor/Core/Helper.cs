@@ -126,5 +126,44 @@ namespace DungeonMapEditor.Core
 
             return FileToBitmapImage(path);
         }
+
+        public static double GetUpdatedAxisLocation(double currentAxisPosition, double clickAxisPosition)
+        {
+            return currentAxisPosition - clickAxisPosition;
+        }
+
+        /*public static double GetUpdatedAxisLocation(double currentAxisPosition, double clickAxisPosition, double maxAxisPosition, double controlAxisSize)
+        {
+            return GetAxisLocation(currentAxisPosition - clickAxisPosition, maxAxisPosition, controlAxisSize);
+        }
+
+        public static double GetAxisLocation(double targetAxisPosition, double maxAxisPosition, double controlAxisSize)
+        {
+            double axisLocation = (Math.Round(targetAxisPosition / App.SnapValue)) * App.SnapValue;
+            axisLocation = Math.Max(axisLocation, 0);
+            axisLocation = Math.Min(axisLocation, maxAxisPosition - controlAxisSize);
+            return axisLocation;
+        }*/
+
+        public static System.Windows.Size ChangeSize_KeepAspectRatio(System.Windows.Size currentSize, System.Windows.Size desiredSize)
+        {
+            bool adjustingHeight = currentSize.Height != desiredSize.Height;
+
+            if ((adjustingHeight && currentSize.Height == 0) || (!adjustingHeight && currentSize.Width == 0))
+            {
+                return desiredSize;
+            }
+
+            double scaling = adjustingHeight ? desiredSize.Height / currentSize.Height : desiredSize.Width / currentSize.Width;
+
+            if (!adjustingHeight)
+            {
+                return new System.Windows.Size(desiredSize.Width, desiredSize.Height * scaling);
+            }
+            else
+            {
+                return new System.Windows.Size(desiredSize.Width * scaling, desiredSize.Height);
+            }
+        }
     }
 }

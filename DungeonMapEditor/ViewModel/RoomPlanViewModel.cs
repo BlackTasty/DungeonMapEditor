@@ -17,15 +17,31 @@ namespace DungeonMapEditor.ViewModel
 
         private RoomPlan mRoomPlan;
         private TileAssignment mSelectedTileAssignment;
+        private PlaceableAssignment mSelectedPlaceableAssignment;
         private VeryObservableCollection<Tile> mAvailableTiles = new VeryObservableCollection<Tile>("Tiles");
         private VeryObservableCollection<Placeable> mAvailablePlaceables = new VeryObservableCollection<Placeable>("Placeables");
         private Tile mSelectedAvailableTile;
+        private bool mKeepAspectRatio;
 
         public RoomPlanViewModel()
         {
             mAvailableTiles.Add(new Tile(false));
             mAvailableTiles.Add(App.GetLoadedTiles());
             mAvailablePlaceables.Add(App.GetLoadedPlaceables());
+        }
+
+        public bool KeepAspectRatio
+        {
+            get => mKeepAspectRatio;
+            set
+            {
+                mKeepAspectRatio = value;
+                InvokePropertyChanged();
+                if (SelectedPlaceableAssignment != null)
+                {
+                    SelectedPlaceableAssignment.KeepAspectRatio = value;
+                }
+            }
         }
 
         public RoomPlan RoomPlan
@@ -61,6 +77,23 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
+        public PlaceableAssignment SelectedPlaceableAssignment
+        {
+            get => mSelectedPlaceableAssignment;
+            set
+            {
+                mSelectedPlaceableAssignment = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsPlaceableAssignmentSelected");
+                if (SelectedPlaceableAssignment != null)
+                {
+                    SelectedPlaceableAssignment.KeepAspectRatio = mKeepAspectRatio;
+                }
+            }
+        }
+
+        public bool IsPlaceableAssignmentSelected => mSelectedPlaceableAssignment != null;
+
         public VeryObservableCollection<Tile> AvailableTiles
         {
             get => mAvailableTiles;
@@ -89,13 +122,6 @@ namespace DungeonMapEditor.ViewModel
                 mSelectedAvailableTile = value;
                 InvokePropertyChanged();
             }
-        }
-
-        public void UpdateTileOnSelectedTile(Tile newTile)
-        {
-            TileAssignment target = RoomPlan.TileAssignments.FirstOrDefault(x => x.X == SelectedTileAssignment.X && 
-                                                                                 x.Y == SelectedTileAssignment.Y);
-
         }
 
         private void RoomPlan_NameChanged(object sender, NameChangedEventArgs e)
