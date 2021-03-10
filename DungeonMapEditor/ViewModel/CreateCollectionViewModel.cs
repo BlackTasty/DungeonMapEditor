@@ -9,6 +9,7 @@ namespace DungeonMapEditor.ViewModel
     class CreateCollectionViewModel : ViewModelBase
     {
         private string mCollectionName = "Super awesome collection";
+        private bool mCollectionNameExists;
 
         public string CollectionName
         {
@@ -21,6 +22,17 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(mCollectionName);
+        public bool CollectionNameExists
+        {
+            get => mCollectionNameExists;
+            set
+            {
+                mCollectionNameExists = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
+            }
+        }
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(mCollectionName) && !CollectionNameExists;
     }
 }

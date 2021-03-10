@@ -10,11 +10,18 @@
     <Border.DataContext>
         <vm:CreateProjectViewModel/>
     </Border.DataContext>
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
     <DockPanel LastChildFill="False">
         <TextBlock Text="Create a new dungeon" FontSize="20" Margin="4,0" DockPanel.Dock="Top"/>
         <StackPanel Margin="8" DockPanel.Dock="Top">
-            <TextBlock Text="Dungeon name"/>
-            <TextBox Text="{Binding ProjectName}"/>
+            <DockPanel>
+                <TextBlock Text="Exists already!" Foreground="Red" FontWeight="Bold" DockPanel.Dock="Right"
+                               Visibility="{Binding ProjectNameExists, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Text="Dungeon name"/>
+            </DockPanel>
+            <TextBox Text="{Binding ProjectName,UpdateSourceTrigger=PropertyChanged}" TextChanged="ProjectName_TextChanged"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateProject_Click" IsEnabled="{Binding IsValid}"/>

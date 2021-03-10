@@ -82,8 +82,8 @@ namespace DungeonMapEditor.UI
                     Name = "roomBorder",
                     Width = canvasBounds.Width,
                     Height = canvasBounds.Height,
-                    BorderBrush = new SolidColorBrush(Color.FromArgb(128, brushColor.R, brushColor.G, brushColor.B)),
-                    BorderThickness = new Thickness(1),
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 255, 0)),
+                    BorderThickness = new Thickness(2),
                     Background = new SolidColorBrush(Color.FromArgb(128, 255, 255, 255))
                 };
 

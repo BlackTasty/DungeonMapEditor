@@ -26,9 +26,13 @@ namespace DungeonMapEditor.Controls
     {
         public event EventHandler<CreateDialogCompletedEventArgs<FloorPlan>> DialogCompleted;
 
-        public DialogCreateFloor()
+        private ProjectFile projectFile;
+
+        public DialogCreateFloor(ProjectFile projectFile)
         {
             InitializeComponent();
+            this.projectFile = projectFile;
+            CheckFloorNameExists();
         }
 
         private void CreateFloor_Click(object sender, RoutedEventArgs e)
@@ -45,6 +49,20 @@ namespace DungeonMapEditor.Controls
         protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<FloorPlan> e)
         {
             DialogCompleted?.Invoke(this, e);
+        }
+
+        private void FloorName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CheckFloorNameExists();
+        }
+
+        private void CheckFloorNameExists()
+        {
+            if (projectFile != null)
+            {
+                CreateFloorViewModel vm = DataContext as CreateFloorViewModel;
+                vm.FloorNameExists = projectFile.FloorPlans.Any(x => x.FloorPlan.Name == vm.FloorName);
+            }
         }
     }
 }

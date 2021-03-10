@@ -9,6 +9,7 @@ namespace DungeonMapEditor.ViewModel
     class CreateProjectViewModel : ViewModelBase
     {
         private string mProjectName = "Dangerous dungeon of danger";
+        private bool mProjectNameExists;
 
         public string ProjectName
         {
@@ -21,6 +22,17 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(mProjectName);
+        public bool ProjectNameExists
+        {
+            get => mProjectNameExists;
+            set
+            {
+                mProjectNameExists = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
+            }
+        }
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(mProjectName) && !ProjectNameExists;
     }
 }

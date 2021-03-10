@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.Core.Dungeon.Assignment;
+﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
@@ -9,6 +10,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
@@ -19,6 +24,8 @@ namespace DungeonMapEditor.Core.Dungeon
         private VeryObservableCollection<RoomAssignment> mRoomAssignments = new VeryObservableCollection<RoomAssignment>("RoomAssignments",
                                                                                 ViewModelMessage.RoomsChanged);
         private string mFloorName;
+        private string mFloorPlanImageFileName;
+        private BitmapImage mFloorPlanImage;
 
         public VeryObservableCollection<RoomAssignment> RoomAssignments
         {
@@ -40,16 +47,42 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
+        public string FloorPlanImageFileName
+        {
+            get => mFloorPlanImageFileName;
+            private set
+            {
+                mFloorPlanImageFileName = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        public BitmapImage FloorPlanImage
+        {
+            get => mFloorPlanImage;
+            private set
+            {
+                mFloorPlanImage = value;
+                InvokePropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public FloorPlan(string name, string description, double rotation, string guid, List<RoomAssignment> roomAssignments, string floorName) : 
+        public FloorPlan(string name, string description, double rotation, string guid, List<RoomAssignment> roomAssignments, string floorName,
+            string floorPlanImageFileName) : 
             base(name, description, rotation, guid)
         {
             RoomAssignments.Clear();
             RoomAssignments.Add(roomAssignments);
             mFloorName = floorName;
+            if (floorPlanImageFileName != null)
+            {
+                FloorPlanImageFileName = floorPlanImageFileName;
+            }
         }
 
         /// <summary>
@@ -86,6 +119,7 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public void Save(string parentPath = null)
         {
+            SaveFloorPlanImage(Path.Combine(parentPath, Name + ".png"));
             if (!fromFile)
             {
                 if (string.IsNullOrWhiteSpace(parentPath))
@@ -99,6 +133,82 @@ namespace DungeonMapEditor.Core.Dungeon
             else
             {
                 SaveFile(JsonConvert.SerializeObject(this));
+            }
+        }
+
+        public BitmapImage SaveFloorPlanImage(string path)
+        {
+            RoomAssignment mostRightRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, true));
+            RoomAssignment mostBottomRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, false));
+
+            double width = mostRightRoomAssignment.X + (mostRightRoomAssignment.RoomPlan.TilesX * 25);
+            double height = mostBottomRoomAssignment.Y + (mostBottomRoomAssignment.RoomPlan.TilesY * 25);
+
+            double roomPlansTopOffset = 68;
+
+            Canvas canvas = new Canvas()
+            {
+                Width = width,
+                Height = height + roomPlansTopOffset
+            };
+
+            foreach (RoomAssignment roomAssignment in mRoomAssignments)
+            {
+                RoomControl roomControl = new RoomControl(roomAssignment)
+                {
+                    Width = roomAssignment.RoomPlan.TilesX * 25,
+                    Height = roomAssignment.RoomPlan.TilesY * 25,
+                    BorderThickness = new Thickness(0)
+                };
+
+                Canvas.SetLeft(roomControl, roomAssignment.X);
+                Canvas.SetTop(roomControl, roomAssignment.Y + roomPlansTopOffset);
+
+                canvas.Children.Add(roomControl);
+            }
+
+            TextBlock floorNameText = new TextBlock()
+            {
+                Text = mFloorName,
+                TextAlignment = TextAlignment.Center,
+                Width = canvas.Width,
+                Foreground = Brushes.White,
+                FontSize = 46,
+                FontWeight = FontWeights.Bold
+            };
+
+            TextBlock floorNameTextShadow = new TextBlock()
+            {
+                Text = floorNameText.Text,
+                TextAlignment = floorNameText.TextAlignment,
+                Width = floorNameText.Width,
+                Foreground = Brushes.Black,
+                FontSize = floorNameText.FontSize,
+                FontWeight = floorNameText.FontWeight
+            };
+
+            Canvas.SetTop(floorNameTextShadow, 9);
+            Canvas.SetLeft(floorNameTextShadow, 1);
+            canvas.Children.Add(floorNameTextShadow);
+
+            Canvas.SetTop(floorNameText, 8);
+            canvas.Children.Add(floorNameText);
+
+            FloorPlanImage = Helper.ExportToPng(path, canvas);
+            FloorPlanImageFileName = Name + ".png";
+
+            return FloorPlanImage;
+        }
+
+        private RoomAssignment AggregateRoomAssignment(RoomAssignment x, RoomAssignment y, bool checkWidth, double tileScaling = 25)
+        {
+            if (checkWidth)
+            {
+                return x.X + (x.RoomPlan.TilesX * tileScaling) > y.X + (y.RoomPlan.TilesX * tileScaling) ? x : y;
+            }
+            else
+            {
+                return x.Y + (x.RoomPlan.TilesY * tileScaling) > y.Y + (y.RoomPlan.TilesY * tileScaling) ? x : y;
             }
         }
 

@@ -57,7 +57,7 @@ namespace DungeonMapEditor.UI
 
         private void AddFloor_Click(object sender, RoutedEventArgs e)
         {
-            DialogCreateFloor dialog = new DialogCreateFloor();
+            DialogCreateFloor dialog = new DialogCreateFloor((DataContext as ProjectOverviewViewModel).ProjectFile);
             dialog.DialogCompleted += FloorPlanDialog_DialogCompleted;
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
@@ -229,6 +229,11 @@ namespace DungeonMapEditor.UI
         private void SaveProject_Click(object sender, RoutedEventArgs e)
         {
             (DataContext as ProjectOverviewViewModel).ProjectFile.Save();
+        }
+
+        private void ExportAs_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

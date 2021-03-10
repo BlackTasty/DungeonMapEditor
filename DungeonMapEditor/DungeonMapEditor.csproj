@@ -70,6 +70,9 @@
     <Compile Include="Controls\DialogCreateRoom.xaml.cs">
       <DependentUpon>DialogCreateRoom.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogExportProject.xaml.cs">
+      <DependentUpon>DialogExportProject.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PlaceableControl.xaml.cs">
       <DependentUpon>PlaceableControl.xaml</DependentUpon>
     </Compile>
@@ -78,6 +81,8 @@
     </Compile>
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
+    <Compile Include="Core\Dungeon\ProjectExport.cs" />
+    <Compile Include="Core\Enum\ExportType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
     <Compile Include="UI\FloorPlanGrid.xaml.cs">
@@ -125,6 +130,7 @@
     <Compile Include="ViewModel\CreateProjectViewModel.cs" />
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\TileManagerDesignViewModel.cs" />
+    <Compile Include="ViewModel\DialogExportProjectViewModel.cs" />
     <Compile Include="ViewModel\FloorPlanViewModel.cs" />
     <Compile Include="ViewModel\HomeScreenViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -156,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DialogCreateRoom.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogExportProject.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -264,6 +274,8 @@
     <Content Include="Resources\Demo\Dungeon_Wall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\icon_img.png" />
+    <Resource Include="Resources\icon_pdf.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

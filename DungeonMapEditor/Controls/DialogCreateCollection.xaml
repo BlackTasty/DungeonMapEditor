@@ -10,11 +10,18 @@
     <Border.DataContext>
         <vm:CreateCollectionViewModel/>
     </Border.DataContext>
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
     <DockPanel LastChildFill="False">
         <TextBlock Text="Create a new collection" FontSize="20" Margin="4,0" DockPanel.Dock="Top"/>
         <StackPanel Margin="8" DockPanel.Dock="Top">
-            <TextBlock Text="Collection name"/>
-            <TextBox Text="{Binding CollectionName}"/>
+            <DockPanel>
+                <TextBlock Text="Exists already!" Foreground="Red" FontWeight="Bold" DockPanel.Dock="Right"
+                               Visibility="{Binding CollectionNameExists, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Text="Collection name"/>
+            </DockPanel>
+            <TextBox Text="{Binding CollectionName,UpdateSourceTrigger=PropertyChanged}" TextChanged="CollectionName_TextChanged"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateProject_Click" IsEnabled="{Binding IsValid}"/>

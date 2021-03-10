@@ -9,6 +9,7 @@ namespace DungeonMapEditor.ViewModel
     class CreateFloorViewModel : ViewModelBase
     {
         private string mFloorName = "EG";
+        private bool mFloorNameExists;
 
         public string FloorName
         {
@@ -21,6 +22,17 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(mFloorName);
+        public bool FloorNameExists
+        {
+            get => mFloorNameExists;
+            set
+            {
+                mFloorNameExists = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
+            }
+        }
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(mFloorName) && !FloorNameExists;
     }
 }

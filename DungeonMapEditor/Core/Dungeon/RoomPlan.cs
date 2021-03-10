@@ -293,12 +293,12 @@ namespace DungeonMapEditor.Core.Dungeon
 
             TextBlock roomNumberTextShadow = new TextBlock()
             {
-                Text = mRoomNumber.ToString(),
-                TextAlignment = TextAlignment.Center,
-                Width = canvas.Width,
+                Text = roomNumberText.Text,
+                TextAlignment = roomNumberText.TextAlignment,
+                Width = roomNumberText.Width,
                 Foreground = Brushes.Black,
-                FontSize = 42,
-                FontWeight = FontWeights.Bold
+                FontSize = roomNumberText.FontSize,
+                FontWeight = roomNumberText.FontWeight
             };
             double topPos = (canvas.Height - 24) / 2;
 

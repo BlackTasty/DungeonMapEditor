@@ -61,8 +61,8 @@ namespace DungeonMapEditor.UI
 
                 roomControl.MouseLeftButtonDown += RoomControl_MouseLeftButtonDown;
 
-                Canvas.SetLeft(roomControl, roomControl.RoomAssignment.X - 2);
-                Canvas.SetTop(roomControl, roomControl.RoomAssignment.Y - 2);
+                Canvas.SetLeft(roomControl, roomAssignment.X - 2);
+                Canvas.SetTop(roomControl, roomAssignment.Y - 2);
 
                 grid.Children.Add(roomControl);
             }

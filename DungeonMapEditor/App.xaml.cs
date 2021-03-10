@@ -21,7 +21,7 @@ namespace DungeonMapEditor
     {
         private static VeryObservableStackCollection<ProjectFile> mProjectHistory = new VeryObservableStackCollection<ProjectFile>("ProjectHistory", 7);
 
-        private static readonly string collectionPath = Path.Combine(BasePath, "Collections");
+        public static string CollectionPath => Path.Combine(BasePath, "Collections");
 
         public static bool IsDesignMode => DesignerProperties.GetIsInDesignMode(new DependencyObject());
 
@@ -57,12 +57,12 @@ namespace DungeonMapEditor
         public static void LoadCollections()
         {
             LoadedCollections.Clear();
-            if (!Directory.Exists(collectionPath))
+            if (!Directory.Exists(CollectionPath))
             {
-                Directory.CreateDirectory(collectionPath);
+                Directory.CreateDirectory(CollectionPath);
             }
 
-            foreach (DirectoryInfo di in new DirectoryInfo(collectionPath).EnumerateDirectories())
+            foreach (DirectoryInfo di in new DirectoryInfo(CollectionPath).EnumerateDirectories())
             {
                 var validDirs = di.EnumerateDirectories().Where(x => x.Name.StartsWith("placeables", StringComparison.CurrentCultureIgnoreCase) ||
                                                                   x.Name.StartsWith("tiles", StringComparison.CurrentCultureIgnoreCase)).ToList();

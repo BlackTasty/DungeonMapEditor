@@ -12,18 +12,22 @@
     </DockPanel.DataContext>
     <DockPanel DockPanel.Dock="Bottom" LastChildFill="False" Background="LightGray" Margin="-2">
         <Button Content="Save" Margin="4" Padding="8,4" DockPanel.Dock="Right" Click="SaveProject_Click"/>
+        <Button Content="Export" Margin="4" Padding="8,4" DockPanel.Dock="Right" Click="ExportAs_Click"/>
     </DockPanel>
     <TabControl x:Name="tabControl" BorderThickness="0,0,0,1" Margin="-2,0,-2,2">
         <TabItem Header="Project overview">
             <DockPanel>
-                <UniformGrid Columns="3" DockPanel.Dock="Top">
-                    <StackPanel Margin="8">
-                        <TextBlock Text="Dungeon name"/>
-                        <TextBox Text="{Binding ProjectFile.Name, UpdateSourceTrigger=PropertyChanged}"/>
-                    </StackPanel>
-                </UniformGrid>
+                <DockPanel DockPanel.Dock="Top">
+                    <Button Content="Configure layout" Margin="8" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center"/>
+                    <UniformGrid Columns="3">
+                        <StackPanel Margin="8">
+                            <TextBlock Text="Dungeon name"/>
+                            <TextBox Text="{Binding ProjectFile.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </DockPanel>
                 <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-                <DockPanel DockPanel.Dock="Right" Margin="8" Width="240">
+                <DockPanel DockPanel.Dock="Right" Margin="8" Width="300">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left">
                             <TextBlock Text="Rooms" FontSize="16"/>

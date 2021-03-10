@@ -10,11 +10,18 @@
     <Border.DataContext>
         <vm:CreateFloorViewModel/>
     </Border.DataContext>
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
     <DockPanel LastChildFill="False">
         <TextBlock Text="Create a new floor" FontSize="20" Margin="4,0" DockPanel.Dock="Top"/>
         <StackPanel Margin="8" DockPanel.Dock="Top">
-            <TextBlock Text="Floor name"/>
-            <TextBox Text="{Binding FloorName}"/>
+            <DockPanel>
+                <TextBlock Text="Exists already!" Foreground="Red" FontWeight="Bold" DockPanel.Dock="Right"
+                               Visibility="{Binding FloorNameExists, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Text="Floor name"/>
+            </DockPanel>
+            <TextBox Text="{Binding FloorName, UpdateSourceTrigger=PropertyChanged}" TextChanged="FloorName_TextChanged"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateFloor_Click" IsEnabled="{Binding IsValid}"/>

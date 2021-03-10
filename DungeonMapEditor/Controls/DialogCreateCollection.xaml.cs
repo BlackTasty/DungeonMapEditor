@@ -5,6 +5,7 @@ using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,9 +28,13 @@ namespace DungeonMapEditor.Controls
     {
         public event EventHandler<CreateDialogCompletedEventArgs<CollectionSet>> DialogCompleted;
 
+        private List<DirectoryInfo> existingCollections;
+
         public DialogCreateCollection()
         {
             InitializeComponent();
+            existingCollections = new DirectoryInfo(App.CollectionPath).EnumerateDirectories().ToList();
+            CheckCollectionNameExists();
         }
 
         private void CreateProject_Click(object sender, RoutedEventArgs e)
@@ -46,6 +51,21 @@ namespace DungeonMapEditor.Controls
         protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<CollectionSet> e)
         {
             DialogCompleted?.Invoke(this, e);
+        }
+
+        private void CollectionName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CheckCollectionNameExists();
+        }
+
+        private void CheckCollectionNameExists()
+        {
+            if (existingCollections != null)
+            {
+                CreateCollectionViewModel vm = DataContext as CreateCollectionViewModel;
+                bool projectNameExists = existingCollections.Any(x => x.Name == vm.CollectionName);
+                vm.CollectionNameExists = projectNameExists;
+            }
         }
     }
 }
