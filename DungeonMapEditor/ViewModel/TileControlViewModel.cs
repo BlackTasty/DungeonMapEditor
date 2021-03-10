@@ -28,14 +28,6 @@ namespace DungeonMapEditor.ViewModel
 
         public TileControlViewModel()
         {
-            Mediator.Instance.Register(o =>
-            {
-                if (o is Tile tile)
-                {
-                    mTile = tile;
-                    InvokePropertyChanged("Tile");
-                }
-            }, ViewModelMessage.TileChanged);
         }
 
         protected virtual void OnTileChanged(EventArgs e)

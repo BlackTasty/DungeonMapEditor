@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DungeonMapEditor.ViewModel.Communication;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -103,6 +104,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                     PlaceableFile.Save(parentPath);
                 }
             }
+            Mediator.Instance.NotifyColleagues(ViewModelMessage.LoadedCollectionsChanged, this);
         }
 
         public void Load()

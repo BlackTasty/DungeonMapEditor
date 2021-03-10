@@ -34,10 +34,11 @@ namespace DungeonMapEditor.Controls
         {
         }
 
-        public PlaceableControl(PlaceableAssignment placeableAssignment)
+        public PlaceableControl(PlaceableAssignment placeableAssignment, Size canvasBounds)
         {
             InitializeComponent();
             PlaceableAssignment = placeableAssignment;
+            this.canvasBounds = canvasBounds;
         }
 
         public PlaceableControl(Placeable placeable, Size canvasBounds, Point insertPoint)
@@ -82,10 +83,8 @@ namespace DungeonMapEditor.Controls
 
 
                 PlaceableControlViewModel vm = DataContext as PlaceableControlViewModel;
-                vm.PlaceableAssignment.PositionX = Helper.GetUpdatedAxisLocation(currentPosition.X, clickPosition.X);
-                vm.PlaceableAssignment.PositionY = Helper.GetUpdatedAxisLocation(currentPosition.Y, clickPosition.Y);
-                //vm.PlaceableAssignment.PositionX = Helper.GetUpdatedAxisLocation(currentPosition.X, clickPosition.X, canvasBounds.Width, Width);
-                //vm.PlaceableAssignment.PositionY = Helper.GetUpdatedAxisLocation(currentPosition.Y, clickPosition.Y, canvasBounds.Height, Height);
+                vm.PlaceableAssignment.PositionX = Helper.GetUpdatedAxisLocation(currentPosition.X, clickPosition.X, canvasBounds.Width, vm.PlaceableAssignment.Width);
+                vm.PlaceableAssignment.PositionY = Helper.GetUpdatedAxisLocation(currentPosition.Y, clickPosition.Y, canvasBounds.Height, vm.PlaceableAssignment.Height);
 
                 Canvas.SetLeft(this, vm.PlaceableAssignment.PositionX);
                 Canvas.SetTop(this, vm.PlaceableAssignment.PositionY);

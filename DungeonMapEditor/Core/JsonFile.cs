@@ -29,12 +29,6 @@ namespace DungeonMapEditor.Core
         [JsonIgnore]
         public bool FromFile => fromFile;
 
-        [JsonIgnore]
-        public DateTime LastModifyDate => lastModifyDate;
-
-        [JsonIgnore]
-        public string LastModifyDateString => lastModifyDate.ToString("dd.MM.yyyy HH:mm");
-
         public JsonFile() { }
 
         public JsonFile(FileInfo fi)

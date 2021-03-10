@@ -8,7 +8,7 @@
         xmlns:ui="clr-namespace:DungeonMapEditor.UI"
         xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="Black">
+        Title="Dungeon Map Editor" Height="450" Width="800" Background="Black">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>

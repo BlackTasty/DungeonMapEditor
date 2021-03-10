@@ -1,9 +1,11 @@
 ﻿using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
+using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,9 +17,12 @@ namespace DungeonMapEditor.Core.Dungeon
     {
         public event EventHandler<NameChangedEventArgs> ProjectNameChanged;
 
+        private DateTime mLastModifyDate;
         private string mName;
         private VeryObservableCollection<FloorAssignment> mFloorPlans = new VeryObservableCollection<FloorAssignment>("FloorPlans");
         private VeryObservableCollection<RoomAssignment> mRoomPlans = new VeryObservableCollection<RoomAssignment>("RoomPlans");
+
+        public DateTime LastModifyDate => mLastModifyDate;
 
         public string Name
         {
@@ -54,10 +59,11 @@ namespace DungeonMapEditor.Core.Dungeon
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public ProjectFile(string name, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans) : this(name)
+        public ProjectFile(string name, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans, DateTime lastModifyDate) : this(name)
         {
             mFloorPlans.Add(floorPlans);
             mRoomPlans.Add(roomPlans);
+            mLastModifyDate = lastModifyDate;
             //InitializeRoomPlans();
         }
 
@@ -67,6 +73,7 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="name">The name of this project</param>
         public ProjectFile(string name)
         {
+            mLastModifyDate = DateTime.Now;
             mName = name;
             fileName = name + ".json";
         }
@@ -83,6 +90,8 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public void Save(string parentPath = null)
         {
+            mLastModifyDate = DateTime.Now;
+            InvokePropertyChanged("LastModifyDate");
             parentPath = parentPath != null ? Path.Combine(parentPath, mName) : filePath; ;
             Directory.CreateDirectory(parentPath);
 
@@ -109,6 +118,10 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 SaveFile(JsonConvert.SerializeObject(this));
             }
+
+            Mediator.Instance.NotifyColleagues(ViewModelMessage.RoomsChanged, RoomPlans);
+            Mediator.Instance.NotifyColleagues(ViewModelMessage.FloorsChanged, FloorPlans);
+            App.LoadHistory();
         }
 
         public void Load()
@@ -116,8 +129,11 @@ namespace DungeonMapEditor.Core.Dungeon
             ProjectFile projectFile = LoadFile();
 
             Name = projectFile.Name;
+            FloorPlans.Clear();
             FloorPlans.Add(projectFile.FloorPlans);
+            RoomPlans.Clear();
             RoomPlans.Add(projectFile.RoomPlans);
+            mLastModifyDate = projectFile.LastModifyDate;
             //InitializeRoomPlans();
         }
 

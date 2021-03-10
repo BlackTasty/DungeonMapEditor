@@ -111,14 +111,37 @@ namespace DungeonMapEditor.Core
             renderBitmap.Render(surface);
 
             // Create a file stream for saving image
-            using (FileStream outStream = new FileStream(path, FileMode.Create))
+            try
             {
-                // Use png encoder for our data
-                PngBitmapEncoder encoder = new PngBitmapEncoder();
-                // push the rendered bitmap to it
-                encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-                // save the data to the stream
-                encoder.Save(outStream);
+                using (FileStream outStream = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    // Use png encoder for our data
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    // push the rendered bitmap to it
+                    encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+                    // save the data to the stream
+                    encoder.Save(outStream);
+                }
+            }
+            catch
+            {
+                try
+                {
+                    System.Threading.Thread.Sleep(200);
+                    using (FileStream outStream = new FileStream(path, FileMode.OpenOrCreate))
+                    {
+                        // Use png encoder for our data
+                        PngBitmapEncoder encoder = new PngBitmapEncoder();
+                        // push the rendered bitmap to it
+                        encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+                        // save the data to the stream
+                        encoder.Save(outStream);
+                    }
+                }
+                catch
+                {
+
+                }
             }
 
             // Restore previously saved layout
@@ -127,23 +150,34 @@ namespace DungeonMapEditor.Core
             return FileToBitmapImage(path);
         }
 
-        public static double GetUpdatedAxisLocation(double currentAxisPosition, double clickAxisPosition)
+        public static double GetUpdatedAxisLocation(double currentAxisPosition, double clickAxisPosition, 
+            double maxAxisPosition, double controlAxisSize)
         {
-            return currentAxisPosition - clickAxisPosition;
-        }
-
-        /*public static double GetUpdatedAxisLocation(double currentAxisPosition, double clickAxisPosition, double maxAxisPosition, double controlAxisSize)
-        {
-            return GetAxisLocation(currentAxisPosition - clickAxisPosition, maxAxisPosition, controlAxisSize);
-        }
-
-        public static double GetAxisLocation(double targetAxisPosition, double maxAxisPosition, double controlAxisSize)
-        {
-            double axisLocation = (Math.Round(targetAxisPosition / App.SnapValue)) * App.SnapValue;
+            double axisLocation = currentAxisPosition - clickAxisPosition;
             axisLocation = Math.Max(axisLocation, 0);
-            axisLocation = Math.Min(axisLocation, maxAxisPosition - controlAxisSize);
+            if (maxAxisPosition > -1)
+            {
+                axisLocation = Math.Min(axisLocation, maxAxisPosition - controlAxisSize);
+            }
             return axisLocation;
-        }*/
+        }
+
+        public static double GetUpdatedAxisLocation_Snap(double currentAxisPosition, double clickAxisPosition, 
+            double maxAxisPosition, double controlAxisSize, double snapPosition)
+        {
+            return GetSnappedAxisLocation(currentAxisPosition - clickAxisPosition, maxAxisPosition, controlAxisSize, snapPosition);
+        }
+
+        public static double GetSnappedAxisLocation(double targetAxisPosition, double maxAxisPosition, double controlAxisSize, double snapPosition)
+        {
+            double axisLocation = (Math.Round(targetAxisPosition / snapPosition)) * snapPosition;
+            axisLocation = Math.Max(axisLocation, 0);
+            if (maxAxisPosition > -1)
+            {
+                axisLocation = Math.Min(axisLocation, maxAxisPosition - controlAxisSize);
+            }
+            return axisLocation;
+        }
 
         public static System.Windows.Size ChangeSize_KeepAspectRatio(System.Windows.Size currentSize, System.Windows.Size desiredSize)
         {

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DungeonMapEditor.Controls;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,11 +12,15 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
     public class RoomAssignment
     {
         private RoomPlan roomPlan;
+        private RoomControl control;
 
         public string AssignedProjectPath { get; set; }
 
         [JsonIgnore]
         public RoomPlan RoomPlan => roomPlan;
+
+        [JsonIgnore]
+        public RoomControl Control => control;
 
         public string RoomPlanFile => !string.IsNullOrWhiteSpace(roomPlan.Name) ? roomPlan.Name + ".json" : null;
 
@@ -55,6 +60,17 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         {
             this.roomPlan = roomPlan;
             AssignedProjectPath = assignedProject.FilePath;
+        }
+
+        public bool SetControl(RoomControl control)
+        {
+            if (this.control != null)
+            {
+                return false;
+            }
+
+            this.control = control;
+            return true;
         }
     }
 }

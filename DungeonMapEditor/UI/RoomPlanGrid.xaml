@@ -17,7 +17,7 @@
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
-        <TabControl>
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header=" Object catalog">
                 <DockPanel>
                     <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
@@ -48,7 +48,7 @@
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Tile settings">
+            <TabItem Header="Tile settings" IsEnabled="{Binding IsTileAssignmentSelected}">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Bottom">
                         <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
@@ -84,7 +84,7 @@
                     </StackPanel>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Object settings">
+            <TabItem Header="Object settings" IsEnabled="{Binding IsPlaceableAssignmentSelected}">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <TextBlock Text="Object settings" FontSize="20" Margin="4"/>
@@ -129,6 +129,10 @@
         <StackPanel Width="140" Margin="8">
             <TextBlock Text="No. tiles vertical"/>
             <TextBox Text="{Binding RoomPlan.TilesY, UpdateSourceTrigger=LostFocus}"/>
+        </StackPanel>
+        <StackPanel Width="60" Margin="8">
+            <TextBlock Text="Room no."/>
+            <TextBox Text="{Binding RoomPlan.RoomNumber, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>

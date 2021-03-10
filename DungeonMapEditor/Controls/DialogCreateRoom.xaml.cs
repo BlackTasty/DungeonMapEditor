@@ -32,13 +32,15 @@ namespace DungeonMapEditor.Controls
         {
             InitializeComponent();
             this.assignedProject = assignedProject;
+            (DataContext as CreateRoomViewModel).RoomNumber = assignedProject.RoomPlans.Count + 1;
+            CheckRoomNameExists();
         }
 
-        private void CreateProject_Click(object sender, RoutedEventArgs e)
+        private void Create_Click(object sender, RoutedEventArgs e)
         {
             CreateRoomViewModel vm = DataContext as CreateRoomViewModel;
             OnDialogCompleted(new CreateDialogCompletedEventArgs<RoomPlan>(DialogResult.OK, 
-                new RoomPlan(vm.RoomName, vm.TilesX, vm.TilesY, assignedProject)));
+                new RoomPlan(vm.RoomName, vm.RoomNumber, vm.TilesX, vm.TilesY, assignedProject)));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
@@ -49,6 +51,20 @@ namespace DungeonMapEditor.Controls
         protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<RoomPlan> e)
         {
             DialogCompleted?.Invoke(this, e);
+        }
+
+        private void RoomName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CheckRoomNameExists();
+        }
+
+        private void CheckRoomNameExists()
+        {
+            if (assignedProject != null)
+            {
+                CreateRoomViewModel vm = DataContext as CreateRoomViewModel;
+                vm.RoomNameExists = assignedProject.RoomPlans.Any(x => x.RoomPlan.Name == vm.RoomName);
+            }
         }
     }
 }

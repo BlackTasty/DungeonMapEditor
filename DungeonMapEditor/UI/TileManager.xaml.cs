@@ -43,6 +43,8 @@ namespace DungeonMapEditor.UI
                 {
                     vm.SelectedCollection.TileFile.Data.Add(e.Tile);
                 }
+
+                App.LoadCollections();
             }
 
             vm.IsTileConfiguratorOpen = false;

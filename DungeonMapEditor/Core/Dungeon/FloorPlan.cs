@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
+using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace DungeonMapEditor.Core.Dungeon
     {
         public event EventHandler<NameChangedEventArgs> FloorNameChanged;
 
-        private VeryObservableCollection<RoomAssignment> mRoomAssignments = new VeryObservableCollection<RoomAssignment>("RoomAssignments");
+        private VeryObservableCollection<RoomAssignment> mRoomAssignments = new VeryObservableCollection<RoomAssignment>("RoomAssignments",
+                                                                                ViewModelMessage.RoomsChanged);
         private string mFloorName;
 
         public VeryObservableCollection<RoomAssignment> RoomAssignments
@@ -45,7 +47,8 @@ namespace DungeonMapEditor.Core.Dungeon
         public FloorPlan(string name, string description, double rotation, string guid, List<RoomAssignment> roomAssignments, string floorName) : 
             base(name, description, rotation, guid)
         {
-            mRoomAssignments.Add(roomAssignments);
+            RoomAssignments.Clear();
+            RoomAssignments.Add(roomAssignments);
             mFloorName = floorName;
         }
 
@@ -69,11 +72,15 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public void Load()
         {
-            filePath = Path.Combine(filePath, "floors");
+            if (!filePath.EndsWith("floors"))
+            {
+                filePath = Path.Combine(filePath, "floors");
+            }
             FloorPlan floorPlan = LoadFile();
 
             Name = floorPlan.Name;
             FloorName = floorPlan.Name;
+            RoomAssignments.Clear();
             RoomAssignments.Add(floorPlan.RoomAssignments);
         }
 

@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.ViewModel;
+using DungeonMapEditor.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,7 @@ namespace DungeonMapEditor
         public static double SnapValue = 50;
 
         public static VeryObservableCollection<CollectionSet> LoadedCollections { get; set; } = 
-            new VeryObservableCollection<CollectionSet>("LoadedCollections");
+            new VeryObservableCollection<CollectionSet>("LoadedCollections", ViewModelMessage.LoadedCollectionsChanged);
 
         public static string BasePath => AppDomain.CurrentDomain.BaseDirectory;
 

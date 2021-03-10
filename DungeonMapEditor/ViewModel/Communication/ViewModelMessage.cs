@@ -9,7 +9,8 @@ namespace DungeonMapEditor.ViewModel.Communication
     public enum ViewModelMessage
     {
         None,
-        TileChanged,
-        ViewModel_TileChanged
+        RoomsChanged,
+        FloorsChanged,
+        LoadedCollectionsChanged
     }
 }

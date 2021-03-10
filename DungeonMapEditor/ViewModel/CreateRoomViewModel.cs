@@ -11,6 +11,8 @@ namespace DungeonMapEditor.ViewModel
         private string mRoomName = "Entrance";
         private int mTilesX = 10;
         private int mTilesY = 5;
+        private int mRoomNumber = 1;
+        private bool mRoomNameExists;
 
         public string RoomName
         {
@@ -45,6 +47,28 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(mRoomName) && mTilesX > 0 && mTilesY > 0;
+        public int RoomNumber
+        {
+            get => mRoomNumber;
+            set
+            {
+                mRoomNumber = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
+            }
+        }
+
+        public bool RoomNameExists
+        {
+            get => mRoomNameExists;
+            set
+            {
+                mRoomNameExists = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
+            }
+        }
+
+        public bool IsValid => !string.IsNullOrWhiteSpace(mRoomName) && mTilesX > 0 && mTilesY > 0 && mRoomNumber > 0 && !RoomNameExists;
     }
 }

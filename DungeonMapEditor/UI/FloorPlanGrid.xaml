@@ -10,7 +10,89 @@
     <DockPanel.DataContext>
         <vm:FloorPlanViewModel/>
     </DockPanel.DataContext>
-    <Grid>
-            
-    </Grid>
+    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="Rooms">
+                <DockPanel>
+                    <TextBlock Text="Rooms" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
+                    <DataGrid ItemsSource="{Binding AvailableRooms}" Background="{x:Null}" AutoGenerateColumns="False" 
+                              CanUserReorderColumns="False"
+                              SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
+                              GridLinesVisibility="None" HeadersVisibility="None">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                <EventSetter Event="PreviewMouseDoubleClick" Handler="RoomPlan_PreviewMouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Margin="4">
+                                            <Image Height="50" Width="50" Source="{Binding RoomPlanImage}" ToolTipService.ShowDuration="60000">
+                                                <Image.ToolTip>
+                                                    <Image Height="{Binding RoomPlanImage.Height}" Width="{Binding RoomPlanImage.Width}" 
+                                                           Source="{Binding RoomPlanImage}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                            <TextBlock Text="{Binding Name}" FontSize="20" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Room settings" IsEnabled="{Binding IsRoomAssignmentSelected}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="Room settings" FontSize="20" Margin="4"/>
+
+                        <TextBlock Text="Name" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedRoomAssignment.RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsReadOnly="True"/>
+                        <TextBlock Text="Preview" Margin="12,24,12,2"/>
+                        <Image Source="{Binding SelectedRoomAssignment.RoomPlan.RoomPlanImage, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4"/>
+                    </StackPanel>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </Border>
+    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+        <StackPanel Width="140" Margin="8">
+            <TextBlock Text="Name"/>
+            <TextBox Text="{Binding FloorPlan.Name, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Width="90" Margin="8">
+            <TextBlock Text="Name (short)"/>
+            <TextBox Text="{Binding FloorPlan.FloorName, UpdateSourceTrigger=LostFocus}"/>
+        </StackPanel>
+    </StackPanel>
+    <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
+    <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
+        <Canvas.Background>
+            <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,25,25" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
+                                     ViewportUnits="Absolute">
+                <DrawingBrush.Drawing>
+                    <GeometryDrawing>
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="0,0,50,50"/>
+                        </GeometryDrawing.Geometry>
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="Gray" Thickness="2">
+                                <Pen.DashStyle>
+                                    <DashStyle Dashes="2 4"/>
+                                </Pen.DashStyle>
+                            </Pen>
+                        </GeometryDrawing.Pen>
+                    </GeometryDrawing>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+        </Canvas.Background>
+    </Canvas>
 </DockPanel>

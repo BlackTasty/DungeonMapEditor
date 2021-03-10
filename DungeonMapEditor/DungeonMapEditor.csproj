@@ -73,6 +73,9 @@
     <Compile Include="Controls\PlaceableControl.xaml.cs">
       <DependentUpon>PlaceableControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RoomControl.xaml.cs">
+      <DependentUpon>RoomControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
@@ -128,6 +131,7 @@
     <Compile Include="ViewModel\PlaceableConfiguratorViewModel.cs" />
     <Compile Include="ViewModel\PlaceableControlViewModel.cs" />
     <Compile Include="ViewModel\ProjectOverviewViewModel.cs" />
+    <Compile Include="ViewModel\RoomControlViewModel.cs" />
     <Compile Include="ViewModel\RoomPlanViewModel.cs" />
     <Compile Include="ViewModel\TileConfiguratorViewModel.cs" />
     <Compile Include="ViewModel\TileControlViewModel.cs" />
@@ -156,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PlaceableControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RoomControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

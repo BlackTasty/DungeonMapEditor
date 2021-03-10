@@ -40,6 +40,7 @@ namespace DungeonMapEditor.UI
         {
             InitializeComponent();
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            roomPlan.Load();
             vm.RoomPlan = roomPlan;
             vm.RoomNameChanged += Vm_RoomNameChanged;
             vm.GridSizeChanged += Vm_GridSizeChanged;
@@ -111,7 +112,7 @@ namespace DungeonMapEditor.UI
 
             foreach (PlaceableAssignment placeableAssignment in vm.RoomPlan.PlaceableAssignments.Where(x => x.Control == null))
             {
-                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment)
+                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment, canvasBounds)
                 {
                     Width = placeableAssignment.Width,
                     Height = placeableAssignment.Height,
@@ -131,27 +132,32 @@ namespace DungeonMapEditor.UI
 
         private void TileControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             if (selectedPlaceableControl != null)
             {
                 selectedPlaceableControl.Background = Brushes.Transparent;
                 selectedPlaceableControl = null;
-                (DataContext as RoomPlanViewModel).SelectedPlaceableAssignment = null;
+                vm.SelectedPlaceableAssignment = null;
             }
             if (selectedTileControl != null)
             {
                 selectedTileControl.Background = Brushes.Transparent;
             }
-            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             TileControl tileControl = sender as TileControl;
 
             TileAssignment tileAssignment = vm.RoomPlan.TileAssignments.FirstOrDefault(x => x.Control.Tag == tileControl.Tag);
-            (DataContext as RoomPlanViewModel).SelectedTileAssignment = tileAssignment;
+            vm.SelectedTileAssignment = tileAssignment;
 
             tileControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
             selectedTileControl = tileControl;
             updateTile = false;
             vm.SelectedAvailableTile = null;
             updateTile = true;
+            vm.SelectedTabIndex = 1;
+            if (tileAssignment.TileGuid != null)
+            {
+                vm.SelectedAvailableTile = tileAssignment.Tile;
+            }
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -207,29 +213,30 @@ namespace DungeonMapEditor.UI
 
         private void PlaceableControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             if (selectedTileControl != null)
             {
                 updateTile = false;
                 selectedTileControl.Background = Brushes.Transparent;
                 selectedTileControl = null;
-                (DataContext as RoomPlanViewModel).SelectedTileAssignment = null;
+                vm.SelectedTileAssignment = null;
                 updateTile = true;
             }
             if (selectedPlaceableControl != null)
             {
                 selectedPlaceableControl.Background = Brushes.Transparent;
             }
-            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             PlaceableControl placeableControl = sender as PlaceableControl;
 
             PlaceableAssignment placeableAssignment = vm.RoomPlan.PlaceableAssignments.FirstOrDefault(x => x.Control.Tag == placeableControl.Tag);
-            (DataContext as RoomPlanViewModel).SelectedPlaceableAssignment = placeableAssignment;
+            vm.SelectedPlaceableAssignment = placeableAssignment;
 
             placeableControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
             selectedPlaceableControl = placeableControl;
             updateTile = false;
             vm.SelectedAvailableTile = null;
             updateTile = true;
+            vm.SelectedTabIndex = 2;
         }
     }
 }

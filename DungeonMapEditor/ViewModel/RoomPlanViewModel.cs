@@ -2,6 +2,7 @@
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,23 @@ namespace DungeonMapEditor.ViewModel
         private VeryObservableCollection<Placeable> mAvailablePlaceables = new VeryObservableCollection<Placeable>("Placeables");
         private Tile mSelectedAvailableTile;
         private bool mKeepAspectRatio;
+        private int mSelectedTabIndex;
 
         public RoomPlanViewModel()
         {
+            LoadAvailableTilesAndObjects();
+
+            Mediator.Instance.Register(o =>
+            {
+                LoadAvailableTilesAndObjects();
+            }, ViewModelMessage.LoadedCollectionsChanged);
+        }
+
+        private void LoadAvailableTilesAndObjects()
+        {
+            mAvailableTiles.Clear();
+            mAvailablePlaceables.Clear();
+
             mAvailableTiles.Add(new Tile(false));
             mAvailableTiles.Add(App.GetLoadedTiles());
             mAvailablePlaceables.Add(App.GetLoadedPlaceables());
@@ -62,6 +77,16 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
+        public int SelectedTabIndex
+        {
+            get => mSelectedTabIndex;
+            set
+            {
+                mSelectedTabIndex = value;
+                InvokePropertyChanged();
+            }
+        }
+
         private void RoomPlan_GridSizeChanged(object sender, EventArgs e)
         {
             OnGridSizeChanged(e);
@@ -74,6 +99,7 @@ namespace DungeonMapEditor.ViewModel
             {
                 mSelectedTileAssignment = value;
                 InvokePropertyChanged();
+                InvokePropertyChanged("IsTileAssignmentSelected");
             }
         }
 
@@ -93,6 +119,8 @@ namespace DungeonMapEditor.ViewModel
         }
 
         public bool IsPlaceableAssignmentSelected => mSelectedPlaceableAssignment != null;
+
+        public bool IsTileAssignmentSelected => mSelectedTileAssignment != null;
 
         public VeryObservableCollection<Tile> AvailableTiles
         {

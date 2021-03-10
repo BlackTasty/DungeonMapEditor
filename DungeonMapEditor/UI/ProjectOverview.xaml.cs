@@ -40,6 +40,7 @@ namespace DungeonMapEditor.UI
         {
             InitializeComponent();
             ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+            projectFile.Load();
             vm.ProjectFile = projectFile;
             vm.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
         }
@@ -112,7 +113,9 @@ namespace DungeonMapEditor.UI
 
         public void OpenFloorPlan(FloorPlan floorPlan)
         {
-            FloorPlanGrid floorPlanGrid = new FloorPlanGrid(floorPlan);
+            ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+
+            FloorPlanGrid floorPlanGrid = new FloorPlanGrid(floorPlan, vm.ProjectFile);
             floorPlanGrid.FloorNameChanged += PlanGrid_NameChanged;
 
             tabControl.SelectedIndex = AddTab(floorPlanGrid, floorPlan.Name, floorTabColor, Guid.NewGuid().ToString());

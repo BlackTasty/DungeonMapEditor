@@ -8,7 +8,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 
 namespace DungeonMapEditor.Core.Dungeon
@@ -18,9 +21,10 @@ namespace DungeonMapEditor.Core.Dungeon
         public event EventHandler<EventArgs> GridSizeChanged;
 
         private string assignedProjectName;
+        private int mRoomNumber = 1;
         private int mTilesX = 1;
         private int mTilesY = 1;
-        private string mRoomPlanImagePath;
+        private string mRoomPlanImageFileName;
         private BitmapImage mRoomPlanImage;
 
         public List<TileAssignment> TileAssignments { get; set; }
@@ -28,6 +32,16 @@ namespace DungeonMapEditor.Core.Dungeon
         public List<PlaceableAssignment> PlaceableAssignments { get; set; }
 
         //public List<FloorChangeTile> FloorChangeTiles { get; set; }
+
+        public int RoomNumber
+        {
+            get => mRoomNumber;
+            set
+            {
+                mRoomNumber = value;
+                InvokePropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Amount of tiles in X coordinate
@@ -61,12 +75,12 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public string AssignedProjectName => assignedProjectName;
 
-        public string RoomPlanImagePath
+        public string RoomPlanImageFileName
         {
-            get => mRoomPlanImagePath;
+            get => mRoomPlanImageFileName;
             private set
             {
-                mRoomPlanImagePath = value;
+                mRoomPlanImageFileName = value;
                 InvokePropertyChanged();
             }
         }
@@ -88,7 +102,7 @@ namespace DungeonMapEditor.Core.Dungeon
         [JsonConstructor]
         public RoomPlan(string name, string description, double rotation, List<TileAssignment> tileAssignments,
             List<PlaceableAssignment> placeableAssignments/*, List<FloorChangeTile> floorChangeTiles*/, int tilesX, int tilesY,
-            string assignedProjectName, string roomPlanImagePath) :
+            string assignedProjectName, string roomPlanImageFileName, int roomNumber) :
             base(name, description, rotation)
         {
             TileAssignments = new List<TileAssignment>();
@@ -107,11 +121,8 @@ namespace DungeonMapEditor.Core.Dungeon
             mTilesX = tilesX;
             mTilesY = tilesY;
             this.assignedProjectName = assignedProjectName;
-            mRoomPlanImagePath = roomPlanImagePath;
-            if (roomPlanImagePath != null)
-            {
-                mRoomPlanImage = Helper.FileToBitmapImage(roomPlanImagePath);
-            }
+            mRoomPlanImageFileName = roomPlanImageFileName;
+            mRoomNumber = roomNumber;
         }
 
         /// <summary>
@@ -121,12 +132,13 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="tilesX">The width of this room in tiles (1 tile = 5 ft.)</param>
         /// <param name="tilesY">The height of this room in tiles (1 tile = 5 ft.)</param>
         /// <param name="assignedProject">The project this <see cref="RoomPlan"/> belongs to</param>
-        public RoomPlan(string name, int tilesX, int tilesY, ProjectFile assignedProject)
+        public RoomPlan(string name, int roomNumber, int tilesX, int tilesY, ProjectFile assignedProject)
         {
             Name = name;
             mTilesX = tilesX;
             mTilesY = tilesY;
             assignedProjectName = assignedProject.Name;
+            mRoomNumber = roomNumber;
 
             TileAssignments = new List<TileAssignment>();
             PlaceableAssignments = new List<PlaceableAssignment>();
@@ -141,10 +153,17 @@ namespace DungeonMapEditor.Core.Dungeon
         public RoomPlan(FileInfo fi) : base(fi)
         {
             Load();
+
+            string roomImageFilePath = Path.Combine(fi.Directory.FullName, "rooms", Name + ".png");
+            if (File.Exists(roomImageFilePath))
+            {
+                mRoomPlanImage = Helper.FileToBitmapImage(roomImageFilePath);
+            }
         }
 
         public void Save(string parentPath = null)
         {
+            SaveRoomPlanImage(Path.Combine(parentPath, Name + ".png"));
             if (!fromFile)
             {
                 if (string.IsNullOrWhiteSpace(parentPath))
@@ -160,12 +179,18 @@ namespace DungeonMapEditor.Core.Dungeon
                 SaveFile(JsonConvert.SerializeObject(this));
             }
 
-            SaveRoomPlanImage(Path.Combine(parentPath, Name + ".png"));
         }
 
         public void Load()
         {
-            filePath = Path.Combine(filePath, "rooms");
+            if (filePath == null)
+            {
+                return;
+            }
+            if (!filePath.EndsWith("rooms"))
+            {
+                filePath = Path.Combine(filePath, "rooms");
+            }
             RoomPlan roomPlan = LoadFile();
 
             TileAssignments = roomPlan.TileAssignments;
@@ -175,6 +200,7 @@ namespace DungeonMapEditor.Core.Dungeon
             mTilesY = roomPlan.TilesY;
             Name = roomPlan.Name;
             assignedProjectName = roomPlan.AssignedProjectName;
+            RoomNumber = roomPlan.RoomNumber;
         }
 
         public void GenerateTileGrid(int oldX, int newX, int oldY, int newY)
@@ -217,7 +243,7 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
-        private void SaveRoomPlanImage(string path)
+        public BitmapImage SaveRoomPlanImage(string path)
         {
             Canvas canvas = new Canvas()
             {
@@ -232,7 +258,7 @@ namespace DungeonMapEditor.Core.Dungeon
                     Width = 50,
                     Height = 50,
                     Tile = tileAssignment.Tile,
-                    BorderThickness = new System.Windows.Thickness(0)
+                    BorderThickness = new Thickness(0)
                 };
 
                 Canvas.SetLeft(tileControl, tileAssignment.CanvasX);
@@ -243,11 +269,11 @@ namespace DungeonMapEditor.Core.Dungeon
             
             foreach (PlaceableAssignment placeableAssignment in PlaceableAssignments)
             {
-                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment)
+                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment, new Size())
                 {
                     Width = placeableAssignment.Width,
                     Height = placeableAssignment.Height,
-                    BorderThickness = new System.Windows.Thickness(0)
+                    BorderThickness = new Thickness(0)
                 };
 
                 Canvas.SetLeft(placeableControl, placeableAssignment.PositionX);
@@ -255,8 +281,38 @@ namespace DungeonMapEditor.Core.Dungeon
                 canvas.Children.Add(placeableControl);
             }
 
+            TextBlock roomNumberText = new TextBlock()
+            {
+                Text = mRoomNumber.ToString(),
+                TextAlignment = TextAlignment.Center,
+                Width = canvas.Width,
+                Foreground = Brushes.White,
+                FontSize = 42,
+                FontWeight = FontWeights.Bold
+            };
+
+            TextBlock roomNumberTextShadow = new TextBlock()
+            {
+                Text = mRoomNumber.ToString(),
+                TextAlignment = TextAlignment.Center,
+                Width = canvas.Width,
+                Foreground = Brushes.Black,
+                FontSize = 42,
+                FontWeight = FontWeights.Bold
+            };
+            double topPos = (canvas.Height - 24) / 2;
+
+            Canvas.SetTop(roomNumberTextShadow, topPos + 1);
+            Canvas.SetLeft(roomNumberTextShadow, 1);
+            canvas.Children.Add(roomNumberTextShadow);
+
+            Canvas.SetTop(roomNumberText, topPos);
+            canvas.Children.Add(roomNumberText);
+
             RoomPlanImage = Helper.ExportToPng(path, canvas);
-            RoomPlanImagePath = RoomPlanImage != null ? path : null;
+            RoomPlanImageFileName = Name + ".png";
+
+            return RoomPlanImage;
         }
 
         protected virtual void OnGridSizeChanged(EventArgs e)
