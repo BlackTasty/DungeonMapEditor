@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DungeonMapEditor.Core.Enum;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -197,6 +198,43 @@ namespace DungeonMapEditor.Core
             else
             {
                 return new System.Windows.Size(desiredSize.Width * scaling, desiredSize.Height);
+            }
+        }
+
+        public static System.Windows.Size GetDocumentSize(DocumentSizeType documentSize)
+        {
+            return GetDocumentSize(documentSize, new System.Windows.Size());
+        }
+
+        public static System.Windows.Size GetDocumentSize(System.Windows.Size customSize)
+        {
+            return GetDocumentSize(DocumentSizeType.Custom, customSize);
+        }
+
+        private static System.Windows.Size GetDocumentSize(DocumentSizeType documentSize, System.Windows.Size customSize)
+        {
+            switch (documentSize)
+            {
+                case DocumentSizeType.Document_A3:
+                    return new System.Windows.Size(4961, 3508);
+                case DocumentSizeType.Document_A4:
+                    return new System.Windows.Size(3508, 2480);
+                case DocumentSizeType.Document_A5:
+                    return new System.Windows.Size(2480, 1748);
+
+                case DocumentSizeType.Image_HD:
+                    return new System.Windows.Size(1280, 720);
+                case DocumentSizeType.Image_FullHD:
+                    return new System.Windows.Size(1920, 1080);
+                case DocumentSizeType.Image_2K:
+                    return new System.Windows.Size(2560, 1440);
+                case DocumentSizeType.Image_4K:
+                    return new System.Windows.Size(3840, 2160);
+
+                case DocumentSizeType.Custom:
+                    return customSize;
+                default:
+                    return new System.Windows.Size();
             }
         }
     }

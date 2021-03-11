@@ -18,7 +18,8 @@
         <TabItem Header="Project overview">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Button Content="Configure layout" Margin="8" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center"/>
+                    <Button Content="Configure layout" Margin="8" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center"
+                            Click="ConfigureLayout_Click"/>
                     <UniformGrid Columns="3">
                         <StackPanel Margin="8">
                             <TextBlock Text="Dungeon name"/>

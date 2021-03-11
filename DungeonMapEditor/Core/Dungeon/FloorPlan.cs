@@ -92,6 +92,11 @@ namespace DungeonMapEditor.Core.Dungeon
         public FloorPlan(FileInfo fi) : base(fi)
         {
             Load();
+            string floorImageFilePath = Path.Combine(fi.Directory.FullName, "floors", Name + ".png");
+            if (File.Exists(floorImageFilePath))
+            {
+                mFloorPlanImage = Helper.FileToBitmapImage(floorImageFilePath);
+            }
         }
 
         /// <summary>
@@ -105,6 +110,11 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public void Load()
         {
+            if (filePath == null)
+            {
+                return;
+            }
+
             if (!filePath.EndsWith("floors"))
             {
                 filePath = Path.Combine(filePath, "floors");

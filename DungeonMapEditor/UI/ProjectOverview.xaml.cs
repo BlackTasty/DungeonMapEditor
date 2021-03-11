@@ -26,8 +26,9 @@ namespace DungeonMapEditor.UI
     /// </summary>
     public partial class ProjectOverview : DockPanel
     {
-        private SolidColorBrush roomTabColor = new SolidColorBrush(Color.FromArgb(128, 255, 128, 0));
-        private SolidColorBrush floorTabColor = new SolidColorBrush(Color.FromArgb(128, 0, 128, 255));
+        private SolidColorBrush roomTabColor = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
+        private SolidColorBrush floorTabColor = new SolidColorBrush(Color.FromArgb(64, 0, 128, 255));
+        private SolidColorBrush documentLayoutTabColor = new SolidColorBrush(Color.FromArgb(64, 32, 255, 0));
 
         public event EventHandler<NameChangedEventArgs> ProjectNameChanged;
         public event EventHandler<OpenDialogEventArgs> OpenDialog;
@@ -171,6 +172,13 @@ namespace DungeonMapEditor.UI
                         return tabControl.Items.IndexOf(tab);
                     }
                 }
+                else if (element is ProjectPlanGrid elementProjectPlan && tab.Content is ProjectPlanGrid tabProjectPlan)
+                {
+                    if (elementProjectPlan.GetProjectPlanGuid() == tabProjectPlan.GetProjectPlanGuid())
+                    {
+                        return tabControl.Items.IndexOf(tab);
+                    }
+                }
             }
 
             StackPanel header = new StackPanel()
@@ -234,6 +242,15 @@ namespace DungeonMapEditor.UI
         private void ExportAs_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void ConfigureLayout_Click(object sender, RoutedEventArgs e)
+        {
+            ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+
+            ProjectPlanGrid projectPlanGrid = new ProjectPlanGrid(vm.ProjectFile);
+
+            tabControl.SelectedIndex = AddTab(projectPlanGrid, "Document layout", documentLayoutTabColor, Guid.NewGuid().ToString());
         }
     }
 }

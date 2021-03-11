@@ -73,6 +73,9 @@
     <Compile Include="Controls\DialogExportProject.xaml.cs">
       <DependentUpon>DialogExportProject.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FloorControl.xaml.cs">
+      <DependentUpon>FloorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PlaceableControl.xaml.cs">
       <DependentUpon>PlaceableControl.xaml</DependentUpon>
     </Compile>
@@ -80,8 +83,11 @@
       <DependentUpon>RoomControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\DoubleToStringConverter.cs" />
+    <Compile Include="Converter\EnumDescriptionTypeConverter.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dungeon\ProjectExport.cs" />
+    <Compile Include="Core\Enum\DocumentSizeType.cs" />
+    <Compile Include="Core\Enum\EnumBindingSourceExtension .cs" />
     <Compile Include="Core\Enum\ExportType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
@@ -90,6 +96,9 @@
     </Compile>
     <Compile Include="UI\PlaceableConfigurator.xaml.cs">
       <DependentUpon>PlaceableConfigurator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ProjectPlanGrid.xaml.cs">
+      <DependentUpon>ProjectPlanGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\RoomPlanGrid.xaml.cs">
       <DependentUpon>RoomPlanGrid.xaml</DependentUpon>
@@ -131,12 +140,14 @@
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\TileManagerDesignViewModel.cs" />
     <Compile Include="ViewModel\DialogExportProjectViewModel.cs" />
+    <Compile Include="ViewModel\FloorControlViewModel.cs" />
     <Compile Include="ViewModel\FloorPlanViewModel.cs" />
     <Compile Include="ViewModel\HomeScreenViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PlaceableConfiguratorViewModel.cs" />
     <Compile Include="ViewModel\PlaceableControlViewModel.cs" />
     <Compile Include="ViewModel\ProjectOverviewViewModel.cs" />
+    <Compile Include="ViewModel\ProjectPlanViewModel.cs" />
     <Compile Include="ViewModel\RoomControlViewModel.cs" />
     <Compile Include="ViewModel\RoomPlanViewModel.cs" />
     <Compile Include="ViewModel\TileConfiguratorViewModel.cs" />
@@ -169,6 +180,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\FloorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PlaceableControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +197,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\PlaceableConfigurator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ProjectPlanGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

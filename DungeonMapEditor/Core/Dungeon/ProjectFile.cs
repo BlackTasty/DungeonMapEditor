@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
@@ -21,6 +23,8 @@ namespace DungeonMapEditor.Core.Dungeon
         private string mName;
         private VeryObservableCollection<FloorAssignment> mFloorPlans = new VeryObservableCollection<FloorAssignment>("FloorPlans");
         private VeryObservableCollection<RoomAssignment> mRoomPlans = new VeryObservableCollection<RoomAssignment>("RoomPlans");
+        private DocumentSizeType mDocumentSizeType = DocumentSizeType.Image_FullHD;
+        private Orientation mDocumentOrientation = Orientation.Vertical;
 
         public DateTime LastModifyDate => mLastModifyDate;
 
@@ -55,15 +59,38 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
+        public DocumentSizeType DocumentSizeType
+        {
+            get => mDocumentSizeType;
+            set
+            {
+                mDocumentSizeType = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        public Orientation DocumentOrientation
+        {
+            get => mDocumentOrientation;
+            set
+            {
+                mDocumentOrientation = value;
+                InvokePropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public ProjectFile(string name, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans, DateTime lastModifyDate) : this(name)
+        public ProjectFile(string name, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans, DateTime lastModifyDate,
+            DocumentSizeType documentSizeType, Orientation documentOrientation) : this(name)
         {
             mFloorPlans.Add(floorPlans);
             mRoomPlans.Add(roomPlans);
             mLastModifyDate = lastModifyDate;
+            mDocumentSizeType = documentSizeType;
+            mDocumentOrientation = documentOrientation;
             //InitializeRoomPlans();
         }
 
