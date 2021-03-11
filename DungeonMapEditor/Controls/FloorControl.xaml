@@ -12,10 +12,18 @@
     <Border.DataContext>
         <vm:FloorControlViewModel/>
     </Border.DataContext>
-    <Image Source="{Binding FloorAssignment.FloorPlan.FloorPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
+    <Grid>
+        <Image Source="{Binding FloorAssignment.FloorPlan.FloorPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="None" 
            RenderTransformOrigin=".5,.5">
-        <Image.RenderTransform>
-            <RotateTransform Angle="{Binding FloorAssignment.FloorPlan.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Image.RenderTransform>
-    </Image>
+            <Image.RenderTransform>
+                <RotateTransform Angle="{Binding FloorAssignment.FloorPlan.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Image.RenderTransform>
+        </Image>
+        <Image x:Name="noteIcon" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="4" Width="16" Height="16"
+               Source="/DungeonMapEditor;component/Resources/icon_note.png"
+               Visibility="{Binding FloorAssignment.HasNotes, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+    </Grid>
 </Border>

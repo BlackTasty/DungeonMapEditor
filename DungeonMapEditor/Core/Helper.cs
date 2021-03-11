@@ -82,11 +82,23 @@ namespace DungeonMapEditor.Core
             else
                 return null;
         }
-        public static BitmapImage ExportToPng(string path, Canvas surface)
+        public static BitmapImage ExportToPng(string path, Canvas surface, SolidColorBrush background = null)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
                 return null;
+            }
+
+            if (background != null)
+            {
+                Canvas backgroundSurface = new Canvas()
+                {
+                    Width = surface.Width,
+                    Height = surface.Height,
+                    Background = background
+                };
+                backgroundSurface.Children.Add(surface);
+                surface = backgroundSurface;
             }
 
             // Save current canvas transform
@@ -102,13 +114,7 @@ namespace DungeonMapEditor.Core
             surface.Arrange(new System.Windows.Rect(size));
 
             // Create a render bitmap and push the surface to it
-            RenderTargetBitmap renderBitmap =
-              new RenderTargetBitmap(
-                (int)size.Width,
-                (int)size.Height,
-                96d,
-                96d,
-                PixelFormats.Pbgra32);
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96d, 96d, PixelFormats.Pbgra32);
             renderBitmap.Render(surface);
 
             // Create a file stream for saving image

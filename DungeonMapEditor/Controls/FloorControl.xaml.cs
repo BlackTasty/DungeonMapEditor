@@ -30,21 +30,27 @@ namespace DungeonMapEditor.Controls
         private Point clickPosition;
         private ProjectFile assignedProject;
 
-        public FloorControl(FloorPlan floorPlan, ProjectFile assignedProject) : this(floorPlan, assignedProject, new Point())
+        public FloorControl(FloorPlan floorPlan, ProjectFile assignedProject, double planOffset) : 
+            this(floorPlan, assignedProject, new Point(), planOffset)
         {
         }
 
-        public FloorControl(FloorAssignment floorAssignment, ProjectFile assignedProject)
+        public FloorControl(FloorAssignment floorAssignment, ProjectFile assignedProject, double planOffset, bool showNoteIcon = true)
         {
             InitializeComponent();
             FloorAssignment = floorAssignment;
             this.assignedProject = assignedProject;
-            Width = floorAssignment.FloorPlan.FloorPlanImage.Width;
-            Height = floorAssignment.FloorPlan.FloorPlanImage.Height;
+            Width = floorAssignment.FloorPlan.FloorPlanImage.Width + planOffset;
+            Height = floorAssignment.FloorPlan.FloorPlanImage.Height + planOffset;
+
+            if (!showNoteIcon)
+            {
+                noteIcon.Source = null;
+            }
         }
 
-        public FloorControl(FloorPlan floorPlan, ProjectFile assignedProject, Point insertPoint) : 
-            this(new FloorAssignment(floorPlan, assignedProject, (int)insertPoint.X, (int)insertPoint.Y), assignedProject)
+        public FloorControl(FloorPlan floorPlan, ProjectFile assignedProject, Point insertPoint, double planOffset) : 
+            this(new FloorAssignment(floorPlan, assignedProject, (int)insertPoint.X, (int)insertPoint.Y), assignedProject, planOffset)
         {
         }
 
@@ -81,14 +87,16 @@ namespace DungeonMapEditor.Controls
             {
                 Point currentPosition = e.GetPosition(this.Parent as UIElement);
 
+                double planOffsetX = 0;
+                double planOffsetY = 0;
 
                 FloorControlViewModel vm = DataContext as FloorControlViewModel;
                 Size documentSize = assignedProject.DocumentSize;
 
-                vm.FloorAssignment.X = (int)Helper.GetUpdatedAxisLocation(currentPosition.X, clickPosition.X, documentSize.Width,
-                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width);
-                vm.FloorAssignment.Y = (int)Helper.GetUpdatedAxisLocation(currentPosition.Y, clickPosition.Y, documentSize.Height,
-                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height);
+                vm.FloorAssignment.X = (int)Helper.GetUpdatedAxisLocation_Snap(currentPosition.X, clickPosition.X, documentSize.Width,
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width, 25) + planOffsetX;
+                vm.FloorAssignment.Y = (int)Helper.GetUpdatedAxisLocation_Snap(currentPosition.Y, clickPosition.Y, documentSize.Height,
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height, 25) + planOffsetY;
 
                 Canvas.SetLeft(this, vm.FloorAssignment.X);
                 Canvas.SetTop(this, vm.FloorAssignment.Y);

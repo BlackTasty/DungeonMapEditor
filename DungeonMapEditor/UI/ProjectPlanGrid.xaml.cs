@@ -27,6 +27,7 @@ namespace DungeonMapEditor.UI
     {
         private FloorControl selectedFloorControl;
         private int tagIndex;
+        private double planOffset = 8;
 
         public ProjectPlanGrid(ProjectFile projectFile)
         {
@@ -49,7 +50,7 @@ namespace DungeonMapEditor.UI
 
             foreach (FloorAssignment floorAssignment in vm.ProjectFile.FloorPlans)
             {
-                FloorControl floorControl = new FloorControl(floorAssignment, vm.ProjectFile);
+                FloorControl floorControl = new FloorControl(floorAssignment, vm.ProjectFile, planOffset);
                 GenerateFloorControl(floorControl);
             }
         }
@@ -60,7 +61,7 @@ namespace DungeonMapEditor.UI
             {
                 ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
 
-                FloorControl floorControl = new FloorControl(floorPlan, vm.ProjectFile);
+                FloorControl floorControl = new FloorControl(floorPlan, vm.ProjectFile, planOffset);
                 GenerateFloorControl(floorControl);
 
                 vm.ProjectFile.FloorPlans.Add(floorControl.FloorAssignment);

@@ -318,7 +318,7 @@ namespace DungeonMapEditor.Core.Dungeon
             return RoomPlanImage;
         }
 
-        public string GetNotes()
+        public string GetNotes(string assignmentNotes)
         {
             bool tilesHaveNotes = TileAssignments.Any(x => x.HasNotes);
             bool placeablesHaveNotes = PlaceableAssignments.Any(x => x.HasNotes);
@@ -329,6 +329,11 @@ namespace DungeonMapEditor.Core.Dungeon
             }
 
             string notes = "- " + Name + ":";
+
+            if (assignmentNotes != null)
+            {
+                notes += " (" + assignmentNotes + ")";
+            }
 
             if (tilesHaveNotes)
             {

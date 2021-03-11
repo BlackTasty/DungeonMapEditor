@@ -201,7 +201,7 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public string GetNotes()
         {
-            bool haveFloorsNotes = FloorPlans.Any(x => x.HasNotes || x.FloorPlan.GetNotes() != null);
+            bool haveFloorsNotes = FloorPlans.Any(x => x.HasNotes || x.FloorPlan.GetNotes(null) != null);
 
             if (!haveFloorsNotes)
             {
@@ -211,7 +211,7 @@ namespace DungeonMapEditor.Core.Dungeon
             string notes = "Floors:";
             foreach (FloorAssignment floorAssignment in FloorPlans)
             {
-                string floorNotes = floorAssignment.FloorPlan.GetNotes();
+                string floorNotes = floorAssignment.FloorPlan.GetNotes(floorAssignment.HasNotes ? floorAssignment.Notes : null);
                 if (floorNotes != null)
                 {
                     notes += "\r\n" + floorNotes;
@@ -219,20 +219,6 @@ namespace DungeonMapEditor.Core.Dungeon
             }
 
             return notes;
-        }
-
-        private void InitializeRoomPlans()
-        {
-            List<RoomAssignment> rooms = new List<RoomAssignment>();
-            foreach (FloorAssignment floorAssignment in mFloorPlans)
-            {
-                if (floorAssignment.FloorPlan != null)
-                {
-                    rooms.AddRange(floorAssignment.FloorPlan.RoomAssignments);
-                }
-            }
-
-            mRoomPlans.Add(rooms);
         }
     }
 }

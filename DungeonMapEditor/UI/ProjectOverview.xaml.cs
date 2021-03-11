@@ -250,8 +250,11 @@ namespace DungeonMapEditor.UI
 
         private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
         {
-            string exportDir = e.ResultObject.ExportProject();
-            Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
+            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            {
+                string exportDir = e.ResultObject.ExportProject();
+                Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
+            }
         }
 
         private void ConfigureLayout_Click(object sender, RoutedEventArgs e)

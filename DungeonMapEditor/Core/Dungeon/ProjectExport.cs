@@ -71,24 +71,62 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 Width = projectFile.DocumentSize.Width,
                 Height = projectFile.DocumentSize.Height,
-                Background = Brushes.White
+                Background = new DrawingBrush()
+                {
+                    TileMode = TileMode.Tile,
+                    Viewport = new Rect(-0.5, -0.5, 25, 25),
+                    Viewbox = new Rect(0, 0, 49, 49),
+                    ViewboxUnits = BrushMappingMode.Absolute,
+                    ViewportUnits = BrushMappingMode.Absolute,
+                    Drawing = new GeometryDrawing()
+                    {
+                        Geometry = new RectangleGeometry(new Rect(0, 0, 50, 50)),
+                        Pen = new Pen(Brushes.Black, 2)
+                        {
+                            DashStyle = new DashStyle(new List<double>() { 2, 4 }, 0)
+                        }
+                    }
+                }
             };
 
             foreach (FloorAssignment floorAssignment in ProjectFile.FloorPlans)
             {
-                FloorControl floorControl = new FloorControl(floorAssignment, projectFile)
+                FloorControl floorControl = new FloorControl(floorAssignment, projectFile, 0, false)
                 {
                     BorderThickness = new Thickness(0)
                 };
 
 
-                Canvas.SetLeft(floorControl, floorControl.FloorAssignment.X);
-                Canvas.SetTop(floorControl, floorControl.FloorAssignment.Y);
+                Canvas.SetLeft(floorControl, floorControl.FloorAssignment.X + 2);
+                Canvas.SetTop(floorControl, floorControl.FloorAssignment.Y + 2);
 
                 canvas.Children.Add(floorControl);
             }
 
-            Helper.ExportToPng(imagePath, canvas);
+            TextBlock dungeonTitle = new TextBlock()
+            {
+                Text = projectFile.Name,
+                FontSize = 64,
+                Padding = new Thickness(8),
+                Width = canvas.Width,
+                TextAlignment = TextAlignment.Center,
+                FontFamily = new FontFamily(new Uri("pack://application:,,,/DungeonMapEditor;component/Resources/Fonts/"), "./#Ace Records")
+            };
+
+            canvas.Children.Add(dungeonTitle);
+
+            TextBlock footNote = new TextBlock()
+            {
+                Text = "1 tile = 5 ft.",
+                FontSize = 32,
+                Background = Brushes.White,
+                Padding = new Thickness(8, 4, 8, 4)
+            };
+
+            Canvas.SetBottom(footNote, 0);
+            canvas.Children.Add(footNote);
+
+            Helper.ExportToPng(imagePath, canvas, Brushes.White);
         }
     }
 }

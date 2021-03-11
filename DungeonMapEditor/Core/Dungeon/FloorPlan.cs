@@ -150,11 +150,12 @@ namespace DungeonMapEditor.Core.Dungeon
         {
             RoomAssignment mostRightRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, true));
             RoomAssignment mostBottomRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, false));
+            double scaling = 25;
 
-            double width = mostRightRoomAssignment.X + (mostRightRoomAssignment.RoomPlan.TilesX * 25);
-            double height = mostBottomRoomAssignment.Y + (mostBottomRoomAssignment.RoomPlan.TilesY * 25);
+            double width = mostRightRoomAssignment.X + (mostRightRoomAssignment.RoomPlan.TilesX * scaling);
+            double height = mostBottomRoomAssignment.Y + (mostBottomRoomAssignment.RoomPlan.TilesY * scaling);
 
-            double roomPlansTopOffset = 68;
+            double roomPlansTopOffset = 50;
 
             Canvas canvas = new Canvas()
             {
@@ -166,8 +167,8 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 RoomControl roomControl = new RoomControl(roomAssignment, false)
                 {
-                    Width = roomAssignment.RoomPlan.TilesX * 25,
-                    Height = roomAssignment.RoomPlan.TilesY * 25,
+                    Width = roomAssignment.RoomPlan.TilesX * scaling,
+                    Height = roomAssignment.RoomPlan.TilesY * scaling,
                     BorderThickness = new Thickness(0)
                 };
 
@@ -197,11 +198,11 @@ namespace DungeonMapEditor.Core.Dungeon
                 FontWeight = floorNameText.FontWeight
             };
 
-            Canvas.SetTop(floorNameTextShadow, 9);
+            Canvas.SetTop(floorNameTextShadow, 1);
             Canvas.SetLeft(floorNameTextShadow, 1);
             canvas.Children.Add(floorNameTextShadow);
 
-            Canvas.SetTop(floorNameText, 8);
+            Canvas.SetTop(floorNameText, 0);
             canvas.Children.Add(floorNameText);
 
             FloorPlanImage = Helper.ExportToPng(path, canvas);
@@ -222,9 +223,9 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
-        public string GetNotes()
+        public string GetNotes(string assignmentNotes)
         {
-            bool roomsHaveNotes = RoomAssignments.Any(x => x.HasNotes || x.RoomPlan.GetNotes() != null);
+            bool roomsHaveNotes = RoomAssignments.Any(x => x.HasNotes || x.RoomPlan.GetNotes(null) != null);
 
             if (!roomsHaveNotes)
             {
@@ -233,12 +234,17 @@ namespace DungeonMapEditor.Core.Dungeon
 
             string notes = "- " + Name + ":";
 
+            if (assignmentNotes != null)
+            {
+                notes += " (" + assignmentNotes + ")";
+            }
+
             if (roomsHaveNotes)
             {
                 notes += "\r\n  - Rooms:";
                 foreach (RoomAssignment roomAssignment in RoomAssignments.Where(x => x.HasNotes))
                 {
-                    string roomNotes = roomAssignment.RoomPlan.GetNotes();
+                    string roomNotes = roomAssignment.RoomPlan.GetNotes(roomAssignment.HasNotes ? roomAssignment.Notes : null);
                     if (roomNotes != null)
                     {
                         notes += "\r\n    " + roomNotes;
