@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,12 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon.Assignment
 {
-    public class FloorAssignment
+    public class FloorAssignment : Assignment
     {
         private FloorPlan floorPlan;
         private FloorControl control;
+
+        private double mRotationOverride;
 
         public string AssignedProjectPath { get; set; }
 
@@ -28,16 +31,32 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         public double Y { get; set; }
 
+        public double RotationOverride
+        {
+            get => mRotationOverride;
+            set
+            {
+                mRotationOverride = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("RealRotation");
+            }
+        }
+
+        [JsonIgnore]
+        public double RealRotation => FloorPlan.Rotation + RotationOverride;
+
         /// <summary>
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public FloorAssignment(string assignedProjectPath, string floorPlanFile, double x, double y)
+        public FloorAssignment(string assignedProjectPath, string floorPlanFile, double x, double y, double rotationOverride, 
+            string notes) : base(notes)
         {
             floorPlan = new FloorPlan(new FileInfo(Path.Combine(assignedProjectPath, floorPlanFile)));
             AssignedProjectPath = assignedProjectPath;
             X = x;
             Y = y;
+            RotationOverride = rotationOverride;
         }
 
         /// <summary>

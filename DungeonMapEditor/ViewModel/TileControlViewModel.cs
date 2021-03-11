@@ -1,5 +1,6 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,14 @@ namespace DungeonMapEditor.ViewModel
     {
         public event EventHandler<EventArgs> TileChanged;
 
-        private Tile mTile;
+        private TileAssignment mTileAssignment;
 
-        public Tile Tile
+        public TileAssignment TileAssignment
         {
-            get => mTile;
+            get => mTileAssignment;
             set
             {
-                mTile = value;
+                mTileAssignment = value;
                 InvokePropertyChanged();
                 OnTileChanged(EventArgs.Empty);
             }

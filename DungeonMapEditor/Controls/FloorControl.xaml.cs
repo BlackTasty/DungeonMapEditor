@@ -28,21 +28,23 @@ namespace DungeonMapEditor.Controls
 
         protected bool isDragging;
         private Point clickPosition;
+        private ProjectFile assignedProject;
 
         public FloorControl(FloorPlan floorPlan, ProjectFile assignedProject) : this(floorPlan, assignedProject, new Point())
         {
         }
 
-        public FloorControl(FloorAssignment floorAssignment)
+        public FloorControl(FloorAssignment floorAssignment, ProjectFile assignedProject)
         {
             InitializeComponent();
             FloorAssignment = floorAssignment;
+            this.assignedProject = assignedProject;
             Width = floorAssignment.FloorPlan.FloorPlanImage.Width;
             Height = floorAssignment.FloorPlan.FloorPlanImage.Height;
         }
 
         public FloorControl(FloorPlan floorPlan, ProjectFile assignedProject, Point insertPoint) : 
-            this(new FloorAssignment(floorPlan, assignedProject, (int)insertPoint.X, (int)insertPoint.Y))
+            this(new FloorAssignment(floorPlan, assignedProject, (int)insertPoint.X, (int)insertPoint.Y), assignedProject)
         {
         }
 
@@ -81,10 +83,12 @@ namespace DungeonMapEditor.Controls
 
 
                 FloorControlViewModel vm = DataContext as FloorControlViewModel;
-                vm.FloorAssignment.X = (int)Helper.GetUpdatedAxisLocation(currentPosition.X, clickPosition.X,
-                                                            -1, vm.FloorAssignment.FloorPlan.FloorPlanImage.Width);
-                vm.FloorAssignment.Y = (int)Helper.GetUpdatedAxisLocation(currentPosition.Y, clickPosition.Y,
-                                                            -1, vm.FloorAssignment.FloorPlan.FloorPlanImage.Height);
+                Size documentSize = assignedProject.DocumentSize;
+
+                vm.FloorAssignment.X = (int)Helper.GetUpdatedAxisLocation(currentPosition.X, clickPosition.X, documentSize.Width,
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width);
+                vm.FloorAssignment.Y = (int)Helper.GetUpdatedAxisLocation(currentPosition.Y, clickPosition.Y, documentSize.Height,
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height);
 
                 Canvas.SetLeft(this, vm.FloorAssignment.X);
                 Canvas.SetTop(this, vm.FloorAssignment.Y);

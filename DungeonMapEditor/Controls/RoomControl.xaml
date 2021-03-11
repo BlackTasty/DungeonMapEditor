@@ -12,10 +12,18 @@
     <Border.DataContext>
         <vm:RoomControlViewModel/>
     </Border.DataContext>
-    <Image Source="{Binding RoomAssignment.RoomPlan.RoomPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
+    <Grid>
+        <Image Source="{Binding RoomAssignment.RoomPlan.RoomPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
            RenderTransformOrigin=".5,.5">
-        <Image.RenderTransform>
-            <RotateTransform Angle="{Binding RoomAssignment.RoomPlan.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Image.RenderTransform>
-    </Image>
+            <Image.RenderTransform>
+                <RotateTransform Angle="{Binding RoomAssignment.RealRotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Image.RenderTransform>
+        </Image>
+        <Image x:Name="noteIcon" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="4" Width="16" Height="16"
+               Source="/DungeonMapEditor;component/Resources/icon_note.png"
+               Visibility="{Binding RoomAssignment.HasNotes, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+    </Grid>
 </Border>

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon.Assignment
 {
-    public class TileAssignment : ViewModelBase
+    public class TileAssignment : Assignment
     {
         private Tile mTile;
         private TileControl control;
@@ -49,7 +49,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public TileAssignment(string tileGuid, int x, int y)
+        public TileAssignment(string tileGuid, int x, int y, string notes) : base(notes)
         {
             if (!string.IsNullOrWhiteSpace(tileGuid))
             {
@@ -87,7 +87,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// <param name="tile">The tile to assign</param>
         public TileAssignment(Tile tile)
         {
-            mTile = tile;
+            Tile = tile;
         }
 
         public bool SetControl(TileControl control)

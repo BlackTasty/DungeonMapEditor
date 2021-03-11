@@ -1,5 +1,6 @@
 ﻿using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using System;
@@ -24,7 +25,7 @@ namespace DungeonMapEditor.Controls
     /// </summary>
     public partial class DialogExportProject : Border
     {
-        public event EventHandler<CreateDialogCompletedEventArgs<string>> DialogCompleted;
+        public event EventHandler<CreateDialogCompletedEventArgs<ProjectExport>> DialogCompleted;
 
         private ProjectFile projectFile;
 
@@ -37,15 +38,16 @@ namespace DungeonMapEditor.Controls
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
             DialogExportProjectViewModel vm = DataContext as DialogExportProjectViewModel;
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<string>(DialogResult.OK, ""));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs<ProjectExport>(DialogResult.OK, 
+                                        new ProjectExport(projectFile, vm.ExportType, vm.ExportNotes)));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<string>(DialogResult.Abort));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs<ProjectExport>(DialogResult.Abort));
         }
 
-        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<string> e)
+        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<ProjectExport> e)
         {
             DialogCompleted?.Invoke(this, e);
         }

@@ -72,8 +72,8 @@ namespace DungeonMapEditor.Core.Dungeon
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public FloorPlan(string name, string description, double rotation, string guid, List<RoomAssignment> roomAssignments, string floorName,
-            string floorPlanImageFileName) : 
+        public FloorPlan(string name, string description, double rotation, string guid, List<RoomAssignment> roomAssignments, 
+            string floorName, string floorPlanImageFileName) : 
             base(name, description, rotation, guid)
         {
             RoomAssignments.Clear();
@@ -164,7 +164,7 @@ namespace DungeonMapEditor.Core.Dungeon
 
             foreach (RoomAssignment roomAssignment in mRoomAssignments)
             {
-                RoomControl roomControl = new RoomControl(roomAssignment)
+                RoomControl roomControl = new RoomControl(roomAssignment, false)
                 {
                     Width = roomAssignment.RoomPlan.TilesX * 25,
                     Height = roomAssignment.RoomPlan.TilesY * 25,
@@ -220,6 +220,29 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 return x.Y + (x.RoomPlan.TilesY * tileScaling) > y.Y + (y.RoomPlan.TilesY * tileScaling) ? x : y;
             }
+        }
+
+        public string GetNotes()
+        {
+            bool roomsHaveNotes = RoomAssignments.Any(x => x.HasNotes || x.RoomPlan.GetNotes() != null);
+
+            if (!roomsHaveNotes)
+            {
+                return null;
+            }
+
+            string notes = "- " + Name + ":";
+
+            if (roomsHaveNotes)
+            {
+                notes += "\r\nRooms:";
+                foreach (RoomAssignment roomAssignment in RoomAssignments.Where(x => x.HasNotes))
+                {
+                    notes += "\r\n  - " + roomAssignment.Notes;
+                }
+            }
+
+            return notes;
         }
 
         protected virtual void OnFloorNameChanged(NameChangedEventArgs e)

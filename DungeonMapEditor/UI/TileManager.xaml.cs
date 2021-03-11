@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Controls;
 using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
@@ -73,11 +74,11 @@ namespace DungeonMapEditor.UI
             vm.IsEditTile = isEdit;
             if (isEdit)
             {
-                tileConfigurator.SetTile(vm.GetSelectedTile());
+                tileConfigurator.SetTileAssignment(new TileAssignment(vm.GetSelectedTile()));
             }
             else
             {
-                tileConfigurator.SetTile(new Tile(true));
+                tileConfigurator.SetTileAssignment(new TileAssignment(new Tile(true)));
             }
         }
 

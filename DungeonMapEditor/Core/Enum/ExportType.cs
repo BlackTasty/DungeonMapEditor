@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Enum
 {
-    enum ExportType
+    public enum ExportType
     {
         Pdf,
         Image

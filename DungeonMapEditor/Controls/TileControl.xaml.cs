@@ -1,5 +1,6 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
 using System;
@@ -24,17 +25,27 @@ namespace DungeonMapEditor.Controls
     /// </summary>
     public partial class TileControl : Border
     {
-        public TileControl()
+        public TileControl() : this(new TileAssignment(new Tile(false)))
         {
-            InitializeComponent();
+
         }
 
-        public Tile Tile
+        public TileControl(TileAssignment tileAssignment, bool showNoteIcon  = true)
         {
-            get => (DataContext as TileControlViewModel).Tile;
+            InitializeComponent();
+            TileAssignment = tileAssignment;
+            if (!showNoteIcon)
+            {
+                noteIcon.Source = null;
+            }
+        }
+
+        public TileAssignment TileAssignment
+        {
+            get => (DataContext as TileControlViewModel).TileAssignment;
             set
             {
-                (DataContext as TileControlViewModel).Tile = value;
+                (DataContext as TileControlViewModel).TileAssignment = value;
             }
         }
     }

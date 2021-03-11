@@ -92,7 +92,7 @@ namespace DungeonMapEditor.UI
 
             foreach (TileAssignment tileAssignment in vm.RoomPlan.TileAssignments.Where(x => x.Control == null))
             {
-                TileControl tileControl = new TileControl()
+                TileControl tileControl = new TileControl(tileAssignment)
                 {
                     Width = 54,
                     Height = 54,
@@ -104,9 +104,8 @@ namespace DungeonMapEditor.UI
                 Canvas.SetLeft(tileControl, tileAssignment.CanvasX - 4);
                 Canvas.SetTop(tileControl, tileAssignment.CanvasY - 4);
 
-                grid.Children.Add(tileControl);
-                tileControl.Tile = tileAssignment.Tile;
                 tileAssignment.SetControl(tileControl);
+                grid.Children.Add(tileControl);
                 Console.WriteLine("TileControl generated for position: X={0}; Y={1}", tileAssignment.X, tileAssignment.Y);
             }
 
@@ -166,11 +165,11 @@ namespace DungeonMapEditor.UI
             if (updateTile)
             {
                 vm.SelectedTileAssignment.Tile = vm.SelectedAvailableTile;
-                vm.SelectedTileAssignment.Control.Tile = vm.SelectedAvailableTile;
+                //vm.SelectedTileAssignment.Control.TileAssignment.Tile = vm.SelectedAvailableTile;
 
-                selectedTileControl.Tile = vm.SelectedAvailableTile;
+                selectedTileControl.TileAssignment.Tile = vm.SelectedAvailableTile;
             }
-            tilePreview.Tile = vm.SelectedAvailableTile;
+            tilePreview.TileAssignment.Tile = vm.SelectedAvailableTile;
         }
 
         protected virtual void OnRoomNameChanged(NameChangedEventArgs e)

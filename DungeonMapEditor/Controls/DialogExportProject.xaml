@@ -19,7 +19,7 @@
         <CheckBox Content="Also export notes" DockPanel.Dock="Bottom" Margin="8,4,8,0" IsChecked="{Binding ExportNotes}"/>
         <UniformGrid Columns="2" DockPanel.Dock="Top" Margin="8,8,8,0">
             <ToggleButton Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,4,0"
-                          IsChecked="{Binding ExportAsPdfSelected}">
+                          IsChecked="{Binding ExportAsPdfSelected}" IsEnabled="False">
                 <ToggleButton.Content>
                     <DockPanel Margin="8">
                         <TextBlock Text="Export as PDF" DockPanel.Dock="Bottom" Margin="0,8,0,0" TextAlignment="Center"/>

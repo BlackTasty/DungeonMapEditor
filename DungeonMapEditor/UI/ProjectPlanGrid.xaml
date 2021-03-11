@@ -66,15 +66,20 @@
             </TabItem>
             <TabItem Header="Floor settings" IsEnabled="{Binding IsFloorAssignmentSelected}">
                 <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <TextBlock Text="Preview" Margin="12,24,12,2"/>
+                        <Image Source="{Binding SelectedFloorAssignment.FloorPlan.FloorPlanImage, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" Height="120"/>
+                    </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Room settings" FontSize="20" Margin="4"/>
+                        <TextBlock Text="Floor settings" FontSize="20" Margin="4"/>
 
                         <TextBlock Text="Name" Margin="12,4,12,2"/>
                         <TextBox Text="{Binding SelectedFloorAssignment.FloorPlan.Name, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" IsReadOnly="True"/>
-                        <TextBlock Text="Preview" Margin="12,24,12,2"/>
-                        <Image Source="{Binding SelectedFloorAssignment.FloorPlan.FloorPlanImage, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4"/>
+                                 Margin="12,0,12,4" IsReadOnly="True" IsEnabled="False"/>
+                        <TextBlock Text="Notes" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedRoomAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
                     </StackPanel>
                 </DockPanel>
             </TabItem>
@@ -115,7 +120,7 @@
                 </DrawingBrush.Drawing>
             </DrawingBrush>
         </Canvas.Background>
-        <Border x:Name="documentBorder" Width="{Binding BorderSize.Width}" Height="{Binding BorderSize.Height}" 
+        <Border x:Name="documentBorder" Width="{Binding ProjectFile.DocumentSize.Width}" Height="{Binding ProjectFile.DocumentSize.Height}" 
                 BorderBrush="#77FFFF00" BorderThickness="2"/>
     </Canvas>
 </DockPanel>

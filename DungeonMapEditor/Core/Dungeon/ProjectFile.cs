@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DungeonMapEditor.Core.Dungeon
@@ -24,6 +25,7 @@ namespace DungeonMapEditor.Core.Dungeon
         private VeryObservableCollection<FloorAssignment> mFloorPlans = new VeryObservableCollection<FloorAssignment>("FloorPlans");
         private VeryObservableCollection<RoomAssignment> mRoomPlans = new VeryObservableCollection<RoomAssignment>("RoomPlans");
         private DocumentSizeType mDocumentSizeType = DocumentSizeType.Image_FullHD;
+        private Size mDocumentSize = new Size();
         private Orientation mDocumentOrientation = Orientation.Vertical;
 
         public DateTime LastModifyDate => mLastModifyDate;
@@ -66,6 +68,7 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 mDocumentSizeType = value;
                 InvokePropertyChanged();
+                UpdateDocumentSize();
             }
         }
 
@@ -75,6 +78,18 @@ namespace DungeonMapEditor.Core.Dungeon
             set
             {
                 mDocumentOrientation = value;
+                InvokePropertyChanged();
+                UpdateDocumentSize();
+            }
+        }
+
+        [JsonIgnore]
+        public Size DocumentSize
+        {
+            get => mDocumentSize;
+            set
+            {
+                mDocumentSize = value;
                 InvokePropertyChanged();
             }
         }
@@ -161,12 +176,27 @@ namespace DungeonMapEditor.Core.Dungeon
             RoomPlans.Clear();
             RoomPlans.Add(projectFile.RoomPlans);
             mLastModifyDate = projectFile.LastModifyDate;
+            mDocumentOrientation = projectFile.DocumentOrientation;
+            mDocumentSizeType = projectFile.mDocumentSizeType;
+            UpdateDocumentSize();
             //InitializeRoomPlans();
         }
 
         protected virtual void OnProjectNameChanged(NameChangedEventArgs e)
         {
             ProjectNameChanged?.Invoke(this, e);
+        }
+
+        private void UpdateDocumentSize()
+        {
+            Size size = Helper.GetDocumentSize(DocumentSizeType);
+
+            if (DocumentOrientation == Orientation.Vertical)
+            {
+                size = new Size(size.Height, size.Width);
+            }
+
+            DocumentSize = size;
         }
 
         private void InitializeRoomPlans()

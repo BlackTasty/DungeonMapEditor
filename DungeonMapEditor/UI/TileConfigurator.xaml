@@ -24,47 +24,47 @@
         <StackPanel Margin="8">
             <StackPanel Margin="0,4">
                 <TextBlock Text="Tile name"/>
-                <TextBox Text="{Binding Tile.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding TileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Margin="0,4">
                 <TextBlock Text="Image path"/>
                 <DockPanel>
                     <Button Content="..." DockPanel.Dock="Right" Padding="12,0" Margin="4,0,0,0" Click="OpenFile_Click"/>
-                    <TextBox Text="{Binding Tile.ImagePath, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding TileAssignment.Tile.ImagePath, UpdateSourceTrigger=PropertyChanged}"/>
                 </DockPanel>
             </StackPanel>
             <StackPanel Margin="0,4">
                 <TextBlock Text="Rotation"/>
-                <TextBox Text="{Binding Tile.Rotation, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding TileAssignment.Tile.Rotation, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <UniformGrid Columns="2" Margin="0,4">
                 <StackPanel Margin="0,0,4,0">
                     <TextBlock Text="Layered tile text"/>
-                    <TextBox Text="{Binding Tile.TileText, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding TileAssignment.Tile.TileText, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
                 <StackPanel Margin="4,0,0,0">
                     <TextBlock Text="Font size"/>
-                    <TextBox Text="{Binding Tile.TextFontSize, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding TileAssignment.Tile.TextFontSize, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </UniformGrid>
             <StackPanel Margin="0,4">
                 <TextBlock Text="Description"/>
-                <TextBox Text="{Binding Tile.Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
+                <TextBox Text="{Binding TileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
                          Height="60"/>
             </StackPanel>
         </StackPanel>
     </DockPanel>
     <Border Background="#dd000000" ClipToBounds="True">
         <Grid>
-            <Image Source="{Binding Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="32" 
+            <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="32" 
                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"
                                RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
                 <Image.RenderTransform>
-                    <RotateTransform Angle="{Binding Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <RotateTransform Angle="{Binding TileAssignment.Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Image.RenderTransform>
             </Image>
-            <TextBlock Text="{Binding Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
-               FontSize="{Binding Tile.TextFontSize, FallbackValue=16}" Foreground="White">
+            <TextBlock Text="{Binding TileAssignment.Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
+               FontSize="{Binding TileAssignment.Tile.TextFontSize, FallbackValue=16}" Foreground="White">
                 <TextBlock.Effect>
                     <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
                 </TextBlock.Effect>

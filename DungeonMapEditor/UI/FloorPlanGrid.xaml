@@ -4,12 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DungeonMapEditor.UI"
+             xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
              xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel.DataContext>
         <vm:FloorPlanViewModel/>
     </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+    </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
         <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="Rooms">
@@ -49,15 +53,28 @@
             </TabItem>
             <TabItem Header="Room settings" IsEnabled="{Binding IsRoomAssignmentSelected}">
                 <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="12,8">
+                        <TextBlock Text="Preview"/>
+                        <Image Source="{Binding SelectedRoomAssignment.RoomPlan.RoomPlanImage, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" Height="90"/>
+                    </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <TextBlock Text="Room settings" FontSize="20" Margin="4"/>
 
                         <TextBlock Text="Name" Margin="12,4,12,2"/>
                         <TextBox Text="{Binding SelectedRoomAssignment.RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" IsReadOnly="True"/>
-                        <TextBlock Text="Preview" Margin="12,24,12,2"/>
-                        <Image Source="{Binding SelectedRoomAssignment.RoomPlan.RoomPlanImage, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4"/>
+                                 Margin="12,0,12,4" IsReadOnly="True" IsEnabled="False"/>
+                        <TextBlock Text="Notes" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedRoomAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        
+                        <TextBlock Text="Overrides" Margin="12,12,12,2" FontSize="16"/>
+                        <TextBlock Text="Rotation" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedRoomAssignment.RotationOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
+                        <TextBlock Text="Room number" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedRoomAssignment.RoomNumberOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
                     </StackPanel>
                 </DockPanel>
             </TabItem>

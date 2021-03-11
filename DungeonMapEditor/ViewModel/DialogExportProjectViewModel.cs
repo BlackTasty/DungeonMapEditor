@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DungeonMapEditor.Core.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace DungeonMapEditor.ViewModel
         private bool mExportAsPdfSelected;
         private bool mExportAsImageSelected;
         private bool mExportNotes;
+        private ExportType exportType;
 
         public bool ExportAsPdfSelected
         {
@@ -20,6 +22,10 @@ namespace DungeonMapEditor.ViewModel
                 mExportAsPdfSelected = value;
                 ExportAsImageSelected = false;
                 InvokePropertyChanged();
+                if (value)
+                {
+                    exportType = ExportType.Pdf;
+                }
             }
         }
 
@@ -31,6 +37,10 @@ namespace DungeonMapEditor.ViewModel
                 mExportAsImageSelected = value;
                 ExportAsPdfSelected = false;
                 InvokePropertyChanged();
+                if (value)
+                {
+                    exportType = ExportType.Image;
+                }
             }
         }
 
@@ -45,5 +55,7 @@ namespace DungeonMapEditor.ViewModel
         }
 
         public bool IsValid => mExportAsImageSelected || mExportAsPdfSelected;
+
+        public ExportType ExportType => exportType;
     }
 }

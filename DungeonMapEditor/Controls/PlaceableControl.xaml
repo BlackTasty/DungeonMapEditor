@@ -12,10 +12,18 @@
     <Border.DataContext>
         <vm:PlaceableControlViewModel/>
     </Border.DataContext>
-    <Image Source="{Binding PlaceableAssignment.Placeable.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
+    <Grid>
+        <Image Source="{Binding PlaceableAssignment.Placeable.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
            RenderTransformOrigin=".5,.5">
-        <Image.RenderTransform>
-            <RotateTransform Angle="{Binding PlaceableAssignment.RealRotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-        </Image.RenderTransform>
-    </Image>
+            <Image.RenderTransform>
+                <RotateTransform Angle="{Binding PlaceableAssignment.RealRotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Image.RenderTransform>
+        </Image>
+        <Image x:Name="noteIcon" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8" Width="16" Height="16"
+               Source="/DungeonMapEditor;component/Resources/icon_note_white.png"
+               Visibility="{Binding PlaceableAssignment.HasNotes, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+    </Grid>
 </Border>

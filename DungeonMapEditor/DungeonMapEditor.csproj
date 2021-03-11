@@ -85,6 +85,7 @@
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Converter\EnumDescriptionTypeConverter.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
+    <Compile Include="Core\Dungeon\Assignment\Assignment.cs" />
     <Compile Include="Core\Dungeon\ProjectExport.cs" />
     <Compile Include="Core\Enum\DocumentSizeType.cs" />
     <Compile Include="Core\Enum\EnumBindingSourceExtension .cs" />
@@ -293,6 +294,8 @@
     <Content Include="Resources\Demo\Dungeon_Wall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\icon_note_white.png" />
+    <Resource Include="Resources\icon_note.png" />
     <Resource Include="Resources\icon_img.png" />
     <Resource Include="Resources\icon_pdf.png" />
   </ItemGroup>

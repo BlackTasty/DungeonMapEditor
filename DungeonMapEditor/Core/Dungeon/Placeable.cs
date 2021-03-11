@@ -71,7 +71,8 @@ namespace DungeonMapEditor.Core.Dungeon
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public Placeable(string name, string description, double rotation, string guid, string imagePath, double tileRatioX, double tileRatioY) :
+        public Placeable(string name, string description, double rotation, string guid, string imagePath, 
+            double tileRatioX, double tileRatioY) :
             base(name, description, rotation, guid)
         {
             ImagePath = imagePath;

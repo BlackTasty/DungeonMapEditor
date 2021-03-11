@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,13 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon.Assignment
 {
-    public class RoomAssignment
+    public class RoomAssignment : Assignment
     {
         private RoomPlan roomPlan;
         private RoomControl control;
+
+        private double mRotationOverride;
+        private int mRoomNumberOverride;
 
         public string AssignedProjectPath { get; set; }
 
@@ -28,16 +32,48 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         public int Y { get; set; }
 
+        public double RotationOverride
+        {
+            get => mRotationOverride;
+            set
+            {
+                mRotationOverride = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("RealRotation");
+            }
+        }
+
+        [JsonIgnore]
+        public double RealRotation => RoomPlan.Rotation + RotationOverride;
+
+        public int RoomNumberOverride
+        {
+            get => mRoomNumberOverride;
+            set
+            {
+                mRoomNumberOverride = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("RealRoomNumber");
+            }
+        }
+
+        [JsonIgnore]
+        public int RealRoomNumber => RoomNumberOverride > 0 ? RoomNumberOverride : RoomPlan.RoomNumber;
+
         /// <summary>
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public RoomAssignment(string assignedProjectPath, string roomPlanFile, int x, int y)
+        public RoomAssignment(string assignedProjectPath, string roomPlanFile, int x, int y, double rotationOverride,
+            int roomNumberOverride, string notes) : base(notes)
         {
             roomPlan = new RoomPlan(new FileInfo(Path.Combine(assignedProjectPath, roomPlanFile)));
             AssignedProjectPath = assignedProjectPath;
             X = x;
             Y = y;
+            RotationOverride = rotationOverride;
+            RoomNumberOverride = roomNumberOverride;
+            roomPlan.RoomNumberOverride = roomNumberOverride;
         }
 
         /// <summary>

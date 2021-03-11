@@ -1,5 +1,6 @@
 ﻿using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.ViewModel;
 using Microsoft.Win32;
 using System;
@@ -31,9 +32,9 @@ namespace DungeonMapEditor.UI
             InitializeComponent();
         }
 
-        public void SetTile(Tile tile)
+        public void SetTileAssignment(TileAssignment tileAssignment)
         {
-            (DataContext as TileConfiguratorViewModel).Tile = tile;
+            (DataContext as TileConfiguratorViewModel).TileAssignment = tileAssignment;
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
@@ -46,7 +47,7 @@ namespace DungeonMapEditor.UI
 
             if (dialog.ShowDialog() == true)
             {
-                (DataContext as TileConfiguratorViewModel).Tile.ImagePath = dialog.FileName;
+                (DataContext as TileConfiguratorViewModel).TileAssignment.Tile.ImagePath = dialog.FileName;
             }
         }
 
@@ -57,12 +58,12 @@ namespace DungeonMapEditor.UI
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogButtonClicked(new TileDialogButtonClickedEventArgs((DataContext as TileConfiguratorViewModel).Tile, DialogResult.OK));
+            OnDialogButtonClicked(new TileDialogButtonClickedEventArgs((DataContext as TileConfiguratorViewModel).TileAssignment.Tile, DialogResult.OK));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogButtonClicked(new TileDialogButtonClickedEventArgs((DataContext as TileConfiguratorViewModel).Tile, DialogResult.Abort));
+            OnDialogButtonClicked(new TileDialogButtonClickedEventArgs((DataContext as TileConfiguratorViewModel).TileAssignment.Tile, DialogResult.Abort));
         }
     }
 }

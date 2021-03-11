@@ -96,6 +96,9 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
+        [JsonIgnore]
+        public int RoomNumberOverride { get; set; }
+
         /// <summary>
         /// Only required by JSON parser!
         /// </summary>
@@ -253,13 +256,13 @@ namespace DungeonMapEditor.Core.Dungeon
 
             foreach (TileAssignment tileAssignment in TileAssignments)
             {
-                TileControl tileControl = new TileControl()
+                TileControl tileControl = new TileControl(tileAssignment, false)
                 {
                     Width = 50,
                     Height = 50,
-                    Tile = tileAssignment.Tile,
                     BorderThickness = new Thickness(0)
                 };
+
 
                 Canvas.SetLeft(tileControl, tileAssignment.CanvasX);
                 Canvas.SetTop(tileControl, tileAssignment.CanvasY);
@@ -269,7 +272,7 @@ namespace DungeonMapEditor.Core.Dungeon
             
             foreach (PlaceableAssignment placeableAssignment in PlaceableAssignments)
             {
-                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment, new Size())
+                PlaceableControl placeableControl = new PlaceableControl(placeableAssignment, new Size(), false)
                 {
                     Width = placeableAssignment.Width,
                     Height = placeableAssignment.Height,
@@ -283,7 +286,7 @@ namespace DungeonMapEditor.Core.Dungeon
 
             TextBlock roomNumberText = new TextBlock()
             {
-                Text = mRoomNumber.ToString(),
+                Text = RoomNumberOverride > 0 ? RoomNumberOverride.ToString() : mRoomNumber.ToString(),
                 TextAlignment = TextAlignment.Center,
                 Width = canvas.Width,
                 Foreground = Brushes.White,
@@ -313,6 +316,39 @@ namespace DungeonMapEditor.Core.Dungeon
             RoomPlanImageFileName = Name + ".png";
 
             return RoomPlanImage;
+        }
+
+        public string GetNotes()
+        {
+            bool tilesHaveNotes = TileAssignments.Any(x => x.HasNotes);
+            bool placeablesHaveNotes = PlaceableAssignments.Any(x => x.HasNotes);
+
+            if (!tilesHaveNotes && !placeablesHaveNotes)
+            {
+                return null;
+            }
+
+            string notes = "- " + Name + ":";
+
+            if (tilesHaveNotes)
+            {
+                notes += "\r\nTiles:";
+                foreach (TileAssignment tileAssignment in TileAssignments.Where(x => x.HasNotes))
+                {
+                    notes += "\r\n  - " + tileAssignment.Notes;
+                }
+            }
+
+            if (placeablesHaveNotes)
+            {
+                notes += "\r\nObjects:";
+                foreach (PlaceableAssignment placeableAssignment in PlaceableAssignments.Where(x => x.HasNotes))
+                {
+                    notes += "\r\n  - " + placeableAssignment.Notes;
+                }
+            }
+
+            return notes + "\r\n";
         }
 
         protected virtual void OnGridSizeChanged(EventArgs e)

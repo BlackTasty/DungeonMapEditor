@@ -7,7 +7,7 @@
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
       xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="700">
+      d:DesignHeight="500" d:DesignWidth="800">
     <DockPanel.DataContext>
         <vm:RoomPlanViewModel/>
     </DockPanel.DataContext>
@@ -74,27 +74,20 @@
                         <TextBlock Text="Tile settings" FontSize="20" Margin="4"/>
 
                         <TextBlock Text="Name" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
-                        <TextBlock Text="Path" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Tile.ImagePath, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
-                        <TextBlock Text="Rotation" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Rotation, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" IsReadOnly="True"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsReadOnly="True" IsEnabled="False"/>
                         <TextBlock Text="Description" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" Margin="12,0,12,4" TextWrapping="Wrap" Height="90" IsReadOnly="True"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" TextWrapping="Wrap" Height="60" IsReadOnly="True" IsEnabled="False"/>
+                        <TextBlock Text="Notes" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedTileAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" TextWrapping="Wrap" AcceptsReturn="True" Height="60"/>
                     </StackPanel>
                 </DockPanel>
             </TabItem>
             <TabItem Header="Object settings" IsEnabled="{Binding IsPlaceableAssignmentSelected}">
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Object settings" FontSize="20" Margin="4"/>
-
-                        <TextBlock Text="Name" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedPlaceableAssignment.Placeable.Name, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" IsReadOnly="True"/>
-                        <TextBlock Text="Description" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedPlaceableAssignment.Placeable.Description, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" TextWrapping="Wrap" Height="90" IsReadOnly="True"/>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="0,0,0,8">
                         <TextBlock Text="Overrides" Margin="12,20,12,2" FontSize="16"/>
                         <TextBlock Text="Rotation" Margin="12,4,12,2"/>
                         <TextBox Text="{Binding SelectedPlaceableAssignment.RotationOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
@@ -113,6 +106,19 @@
                         </UniformGrid>
                         <CheckBox Content="Keep aspect ratio" Margin="12,4" IsChecked="{Binding KeepAspectRatio}"/>
                     </StackPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="Object settings" FontSize="20" Margin="4"/>
+
+                        <TextBlock Text="Name" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedPlaceableAssignment.Placeable.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" IsReadOnly="True" IsEnabled="False"/>
+                        <TextBlock Text="Description" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedPlaceableAssignment.Placeable.Description, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" TextWrapping="Wrap" Height="60" IsReadOnly="True" IsEnabled="False"/>
+                        <TextBlock Text="Notes" Margin="12,4,12,2"/>
+                        <TextBox Text="{Binding SelectedPlaceableAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="12,0,12,4" TextWrapping="Wrap" Height="60" AcceptsReturn="True"/>
+                    </StackPanel>
                 </DockPanel>
             </TabItem>
         </TabControl>
@@ -122,7 +128,7 @@
             <TextBlock Text="Name"/>
             <TextBox Text="{Binding RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
-        <StackPanel Width="140" Margin="32,8,8,8">
+        <StackPanel Width="140" Margin="24,8,8,8">
             <TextBlock Text="No. tiles horizontal"/>
             <TextBox Text="{Binding RoomPlan.TilesX, UpdateSourceTrigger=LostFocus}"/>
         </StackPanel>

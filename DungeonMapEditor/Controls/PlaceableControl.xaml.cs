@@ -34,11 +34,15 @@ namespace DungeonMapEditor.Controls
         {
         }
 
-        public PlaceableControl(PlaceableAssignment placeableAssignment, Size canvasBounds)
+        public PlaceableControl(PlaceableAssignment placeableAssignment, Size canvasBounds, bool showNoteIcon = true)
         {
             InitializeComponent();
             PlaceableAssignment = placeableAssignment;
             this.canvasBounds = canvasBounds;
+            if (!showNoteIcon)
+            {
+                noteIcon.Source = null;
+            }
         }
 
         public PlaceableControl(Placeable placeable, Size canvasBounds, Point insertPoint)

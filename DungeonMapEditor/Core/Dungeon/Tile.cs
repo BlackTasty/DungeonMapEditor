@@ -79,7 +79,8 @@ namespace DungeonMapEditor.Core.Dungeon
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public Tile(string name, string description, double rotation, string guid, string imagePath, string tileText, double textFontSize) : 
+        public Tile(string name, string description, double rotation, string guid, string imagePath, string tileText, 
+            double textFontSize) : 
             base(name, description, rotation, guid)
         {
             ImagePath = imagePath;

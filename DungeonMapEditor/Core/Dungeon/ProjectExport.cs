@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Dungeon
 {
-    class ProjectExport
+    public class ProjectExport
     {
         private ProjectFile projectFile;
         private ExportType exportType;

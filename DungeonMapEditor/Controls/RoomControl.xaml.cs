@@ -33,10 +33,14 @@ namespace DungeonMapEditor.Controls
         {
         }
 
-        public RoomControl(RoomAssignment roomAssignment)
+        public RoomControl(RoomAssignment roomAssignment, bool showNoteIcon = true)
         {
             InitializeComponent();
             RoomAssignment = roomAssignment;
+            if (!showNoteIcon)
+            {
+                noteIcon.Source = null;
+            }
         }
 
         public RoomControl(RoomPlan roomPlan, ProjectFile assignedProject, Point insertPoint)

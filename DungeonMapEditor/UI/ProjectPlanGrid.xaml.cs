@@ -49,7 +49,7 @@ namespace DungeonMapEditor.UI
 
             foreach (FloorAssignment floorAssignment in vm.ProjectFile.FloorPlans)
             {
-                FloorControl floorControl = new FloorControl(floorAssignment);
+                FloorControl floorControl = new FloorControl(floorAssignment, vm.ProjectFile);
                 GenerateFloorControl(floorControl);
             }
         }
@@ -98,15 +98,13 @@ namespace DungeonMapEditor.UI
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
+            /*ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
             Size size = Helper.GetDocumentSize(vm.ProjectFile.DocumentSizeType);
 
             if (vm.ProjectFile.DocumentOrientation == Orientation.Vertical)
             {
                 size = new Size(size.Height, size.Width);
-            }
-
-            vm.BorderSize = size;
+            }*/
         }
     }
 }

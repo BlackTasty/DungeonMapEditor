@@ -17,7 +17,6 @@ namespace DungeonMapEditor.ViewModel
 
         private ProjectFile mProjectFile;
         private FloorAssignment mSelectedFloorAssignment;
-        private Size mBorderSize;
         private int mSelectedTabIndex;
 
         public ProjectPlanViewModel()
@@ -62,16 +61,6 @@ namespace DungeonMapEditor.ViewModel
                 mProjectFile = value;
                 InvokePropertyChanged();
                 LoadAvailableFloors();
-            }
-        }
-
-        public Size BorderSize
-        {
-            get => mBorderSize;
-            set
-            {
-                mBorderSize = value;
-                InvokePropertyChanged();
             }
         }
 

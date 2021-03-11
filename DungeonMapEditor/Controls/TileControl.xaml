@@ -10,17 +10,23 @@
     <Border.DataContext>
         <vm:TileControlViewModel/>
     </Border.DataContext>
+    <Border.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Border.Resources>
     <Grid>
-        <Image Source="{Binding Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" RenderTransformOrigin=".5,.5">
+        <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" RenderTransformOrigin=".5,.5">
             <Image.RenderTransform>
-                <RotateTransform Angle="{Binding Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <RotateTransform Angle="{Binding TileAssignment.Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Image.RenderTransform>
         </Image>
-        <TextBlock Text="{Binding Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
-               FontSize="{Binding Tile.TextFontSize, FallbackValue=16}" Foreground="White">
+        <TextBlock Text="{Binding TileAssignment.Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
+               FontSize="{Binding TileAssignment.Tile.TextFontSize, FallbackValue=16}" Foreground="White">
             <TextBlock.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
             </TextBlock.Effect>
         </TextBlock>
+        <Image x:Name="noteIcon" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="4" Width="16" Height="16"
+               Source="/DungeonMapEditor;component/Resources/icon_note.png"
+               Visibility="{Binding TileAssignment.HasNotes, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </Border>

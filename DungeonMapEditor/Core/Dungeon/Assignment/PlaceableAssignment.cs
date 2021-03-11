@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace DungeonMapEditor.Core.Dungeon.Assignment
 {
-    public class PlaceableAssignment : ViewModelBase
+    public class PlaceableAssignment : Assignment
     {
         private Placeable placeable;
         private PlaceableControl control;
@@ -115,7 +115,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// </summary>
         [JsonConstructor]
         public PlaceableAssignment(string placeableGuid, double posX, double posY, 
-            double rotationOverride, double tileRatioXOverride, double tileRatioYOverride)
+            double rotationOverride, double tileRatioXOverride, double tileRatioYOverride, string notes) : base(notes)
         {
             if (!string.IsNullOrWhiteSpace(placeableGuid))
             {
