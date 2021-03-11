@@ -133,7 +133,16 @@ namespace DungeonMapEditor
             {
                 createCollection.DialogCompleted += CreateCollection_DialogCompleted;
             }
+            else if (e.Dialog is DialogExportProject exportProject)
+            {
+                exportProject.DialogCompleted += ExportProject_DialogCompleted;
+            }
             (DataContext as MainViewModel).Dialog = e.Dialog;
+        }
+
+        private void ExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
+        {
+            (DataContext as MainViewModel).ShowDialog = false;
         }
 
         private void CreateCollection_DialogCompleted(object sender, CreateDialogCompletedEventArgs<Core.Dungeon.Collection.CollectionSet> e)

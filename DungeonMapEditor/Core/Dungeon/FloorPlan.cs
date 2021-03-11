@@ -235,14 +235,18 @@ namespace DungeonMapEditor.Core.Dungeon
 
             if (roomsHaveNotes)
             {
-                notes += "\r\nRooms:";
+                notes += "\r\n  - Rooms:";
                 foreach (RoomAssignment roomAssignment in RoomAssignments.Where(x => x.HasNotes))
                 {
-                    notes += "\r\n  - " + roomAssignment.Notes;
+                    string roomNotes = roomAssignment.RoomPlan.GetNotes();
+                    if (roomNotes != null)
+                    {
+                        notes += "\r\n    " + roomNotes;
+                    }
                 }
             }
 
-            return notes;
+            return notes + "\r\n";
         }
 
         protected virtual void OnFloorNameChanged(NameChangedEventArgs e)

@@ -332,19 +332,19 @@ namespace DungeonMapEditor.Core.Dungeon
 
             if (tilesHaveNotes)
             {
-                notes += "\r\nTiles:";
+                notes += "\r\n      - Tiles:";
                 foreach (TileAssignment tileAssignment in TileAssignments.Where(x => x.HasNotes))
                 {
-                    notes += "\r\n  - " + tileAssignment.Notes;
+                    notes += "\r\n        - " + tileAssignment.Notes;
                 }
             }
 
             if (placeablesHaveNotes)
             {
-                notes += "\r\nObjects:";
+                notes += "\r\n      - Objects:";
                 foreach (PlaceableAssignment placeableAssignment in PlaceableAssignments.Where(x => x.HasNotes))
                 {
-                    notes += "\r\n  - " + placeableAssignment.Notes;
+                    notes += "\r\n        - " + placeableAssignment.Notes;
                 }
             }
 

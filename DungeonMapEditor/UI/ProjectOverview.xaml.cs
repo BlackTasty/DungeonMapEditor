@@ -5,9 +5,11 @@ using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -241,7 +243,15 @@ namespace DungeonMapEditor.UI
 
         private void ExportAs_Click(object sender, RoutedEventArgs e)
         {
+            DialogExportProject dialog = new DialogExportProject((DataContext as ProjectOverviewViewModel).ProjectFile);
+            dialog.DialogCompleted += Dialog_DialogCompleted;
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
 
+        private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
+        {
+            string exportDir = e.ResultObject.ExportProject();
+            Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
         }
 
         private void ConfigureLayout_Click(object sender, RoutedEventArgs e)

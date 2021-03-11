@@ -199,6 +199,28 @@ namespace DungeonMapEditor.Core.Dungeon
             DocumentSize = size;
         }
 
+        public string GetNotes()
+        {
+            bool haveFloorsNotes = FloorPlans.Any(x => x.HasNotes || x.FloorPlan.GetNotes() != null);
+
+            if (!haveFloorsNotes)
+            {
+                return null;
+            }
+
+            string notes = "Floors:";
+            foreach (FloorAssignment floorAssignment in FloorPlans)
+            {
+                string floorNotes = floorAssignment.FloorPlan.GetNotes();
+                if (floorNotes != null)
+                {
+                    notes += "\r\n" + floorNotes;
+                }
+            }
+
+            return notes;
+        }
+
         private void InitializeRoomPlans()
         {
             List<RoomAssignment> rooms = new List<RoomAssignment>();

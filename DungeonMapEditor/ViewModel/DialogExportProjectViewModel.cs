@@ -19,13 +19,14 @@ namespace DungeonMapEditor.ViewModel
             get => mExportAsPdfSelected;
             set
             {
-                mExportAsPdfSelected = value;
-                ExportAsImageSelected = false;
-                InvokePropertyChanged();
                 if (value)
                 {
+                    ExportAsImageSelected = false;
                     exportType = ExportType.Pdf;
                 }
+                mExportAsPdfSelected = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
             }
         }
 
@@ -34,13 +35,14 @@ namespace DungeonMapEditor.ViewModel
             get => mExportAsImageSelected;
             set
             {
-                mExportAsImageSelected = value;
-                ExportAsPdfSelected = false;
-                InvokePropertyChanged();
                 if (value)
                 {
+                    ExportAsPdfSelected = false;
                     exportType = ExportType.Image;
                 }
+                mExportAsImageSelected = value;
+                InvokePropertyChanged();
+                InvokePropertyChanged("IsValid");
             }
         }
 
