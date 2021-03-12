@@ -91,9 +91,9 @@ namespace DungeonMapEditor.Controls
                 Size documentSize = assignedProject.DocumentSize;
 
                 vm.FloorAssignment.X = (int)Helper.GetUpdatedAxisLocation_Snap(currentPosition.X, clickPosition.X, documentSize.Width,
-                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width, 25);
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width, 50);
                 vm.FloorAssignment.Y = (int)Helper.GetUpdatedAxisLocation_Snap(currentPosition.Y, clickPosition.Y, documentSize.Height,
-                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height, 25);
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height, 50);
 
                 Canvas.SetLeft(this, vm.FloorAssignment.X);
                 Canvas.SetTop(this, vm.FloorAssignment.Y);

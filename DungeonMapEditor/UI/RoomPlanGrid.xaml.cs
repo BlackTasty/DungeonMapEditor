@@ -71,6 +71,8 @@ namespace DungeonMapEditor.UI
         {
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             canvasBounds = new Size(vm.RoomPlan.TilesX * 50, vm.RoomPlan.TilesY * 50);
+            grid.Width = canvasBounds.Width;
+            grid.Height = canvasBounds.Height;
 
             if (addRoomBorder)
             {
@@ -83,8 +85,7 @@ namespace DungeonMapEditor.UI
                     Width = canvasBounds.Width,
                     Height = canvasBounds.Height,
                     BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 255, 0)),
-                    BorderThickness = new Thickness(2),
-                    Background = new SolidColorBrush(Color.FromArgb(128, 255, 255, 255))
+                    BorderThickness = new Thickness(2)
                 };
 
                 grid.Children.Add(roomBorder);
@@ -144,7 +145,7 @@ namespace DungeonMapEditor.UI
             }
             TileControl tileControl = sender as TileControl;
 
-            TileAssignment tileAssignment = vm.RoomPlan.TileAssignments.FirstOrDefault(x => x.Control.Tag == tileControl.Tag);
+            TileAssignment tileAssignment = tileControl.TileAssignment;
             vm.SelectedTileAssignment = tileAssignment;
 
             tileControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));

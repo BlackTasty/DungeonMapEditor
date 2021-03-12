@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 
 namespace DungeonMapEditor.Core.Dungeon
@@ -146,37 +147,45 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
-        public BitmapImage SaveFloorPlanImage(string path)
+        public BitmapImage SaveFloorPlanImage(string path, double inputScaling = 25)
         {
             RoomAssignment mostRightRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, true));
             RoomAssignment mostBottomRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, false));
-            double scaling = 25;
+            double outpuScaling = 50;
+            double scaleDiff = outpuScaling / inputScaling;
 
-            double width = mostRightRoomAssignment.X + (mostRightRoomAssignment.RoomPlan.TilesX * scaling);
-            double height = mostBottomRoomAssignment.Y + (mostBottomRoomAssignment.RoomPlan.TilesY * scaling);
+            double width = (mostRightRoomAssignment.X * scaleDiff) + (mostRightRoomAssignment.RoomPlan.TilesX * outpuScaling);
+            double height = (mostBottomRoomAssignment.Y * scaleDiff) + (mostBottomRoomAssignment.RoomPlan.TilesY * outpuScaling);
 
             double roomPlansTopOffset = 50;
 
             Canvas canvas = new Canvas()
             {
                 Width = width,
-                Height = height + roomPlansTopOffset
+                Height = (height) + roomPlansTopOffset
             };
 
             foreach (RoomAssignment roomAssignment in mRoomAssignments)
             {
                 RoomControl roomControl = new RoomControl(roomAssignment, false)
                 {
-                    Width = roomAssignment.RoomPlan.TilesX * scaling,
-                    Height = roomAssignment.RoomPlan.TilesY * scaling,
+                    Width = roomAssignment.RoomPlan.TilesX * outpuScaling,
+                    Height = roomAssignment.RoomPlan.TilesY * outpuScaling,
                     BorderThickness = new Thickness(0)
                 };
+                roomControl.roomImage.Stretch = Stretch.None;
 
-                Canvas.SetLeft(roomControl, roomAssignment.X);
-                Canvas.SetTop(roomControl, roomAssignment.Y + roomPlansTopOffset);
+                Canvas.SetLeft(roomControl, (roomAssignment.X + 2) * scaleDiff);
+                Canvas.SetTop(roomControl, (roomAssignment.Y + 2) * scaleDiff + roomPlansTopOffset);
 
                 canvas.Children.Add(roomControl);
             }
+
+            DropShadowEffect dropShadowEffect = new DropShadowEffect()
+            {
+                ShadowDepth = 0,
+                BlurRadius = 6
+            };
 
             TextBlock floorNameText = new TextBlock()
             {
@@ -185,7 +194,8 @@ namespace DungeonMapEditor.Core.Dungeon
                 Width = canvas.Width,
                 Foreground = Brushes.White,
                 FontSize = 46,
-                FontWeight = FontWeights.Bold
+                FontWeight = FontWeights.Bold,
+                Effect = dropShadowEffect
             };
 
             TextBlock floorNameTextShadow = new TextBlock()
@@ -193,19 +203,16 @@ namespace DungeonMapEditor.Core.Dungeon
                 Text = floorNameText.Text,
                 TextAlignment = floorNameText.TextAlignment,
                 Width = floorNameText.Width,
-                Foreground = Brushes.Black,
+                Foreground = floorNameText.Foreground,
                 FontSize = floorNameText.FontSize,
-                FontWeight = floorNameText.FontWeight
+                FontWeight = floorNameText.FontWeight,
+                Effect = floorNameText.Effect
             };
 
-            Canvas.SetTop(floorNameTextShadow, 1);
-            Canvas.SetLeft(floorNameTextShadow, 1);
             canvas.Children.Add(floorNameTextShadow);
-
-            Canvas.SetTop(floorNameText, 0);
             canvas.Children.Add(floorNameText);
 
-            FloorPlanImage = Helper.ExportToPng(path, canvas);
+            FloorPlanImage = Helper.ExportToPng_Old(path, canvas);
             FloorPlanImageFileName = Name + ".png";
 
             return FloorPlanImage;

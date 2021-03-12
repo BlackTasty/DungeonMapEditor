@@ -28,13 +28,15 @@ namespace DungeonMapEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        private TabItem selectedTabItem;
+
         public MainWindow()
         {
             InitializeComponent();
-            AddTab(new HomeScreen(), "Home");
+            AddTab(new HomeScreen(), "Home", true);
         }
 
-        private int AddTab(FrameworkElement element, string headerString, object tabItemTag = null)
+        private int AddTab(FrameworkElement element, string headerString, bool isSelected = false, object tabItemTag = null)
         {
             StackPanel header = new StackPanel()
             {
@@ -42,10 +44,11 @@ namespace DungeonMapEditor
             };
             Button tabCloseButton = new Button()
             {
-                Content = "x",
+                Content = "X",
                 Margin = new Thickness(8, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Thickness(4, 0, 4, 0)
+                Padding = new Thickness(4, 0, 4, 0),
+                Style = Application.Current.Resources.MergedDictionaries[1]["CloseButton"] as Style
             };
             tabCloseButton.Click += TabCloseButton_Click;
 
@@ -56,7 +59,8 @@ namespace DungeonMapEditor
             {
                 Header = header,
                 Content = element,
-                Tag = tabItemTag
+                Tag = tabItemTag,
+                Background = Brushes.Transparent
             };
             tabCloseButton.Tag = tabItem;
 
@@ -65,6 +69,11 @@ namespace DungeonMapEditor
             if (tabItem.Content is HomeScreen homeScreen)
             {
                 homeScreen.SelectionMade += HomeScreen_SelectionMade;
+            }
+
+            if (isSelected)
+            {
+                SetCurrentTabItemBold(tabItem);
             }
 
             return tabControl.Items.Count - 1;
@@ -115,7 +124,7 @@ namespace DungeonMapEditor
             projectOverview.Tag = Guid.NewGuid().ToString();
             projectOverview.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
             projectOverview.OpenDialog += Dialog_OpenDialog;
-            tabControl.SelectedIndex = AddTab(projectOverview, projectOverview.GetProjectName(), projectOverview.Tag);
+            tabControl.SelectedIndex = AddTab(projectOverview, projectOverview.GetProjectName(), true, projectOverview.Tag);
             App.LoadHistory();
         }
 
@@ -191,6 +200,35 @@ namespace DungeonMapEditor
                 }
                 tabControl.Items.Remove(targetTab);
             }
+        }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabItem selected = e.AddedItems.OfType<TabItem>().FirstOrDefault();
+            if (selected != null)
+            {
+                SetCurrentTabItemBold(selected);
+            }
+        }
+
+        private void SetCurrentTabItemBold(TabItem tabItem)
+        {
+            if (selectedTabItem != null)
+            {
+                //selectedTabItem.FontWeight = FontWeights.Normal;
+            }
+
+            if (tabItem != null)
+            {
+                selectedTabItem = tabItem;
+                //selectedTabItem.FontWeight = FontWeights.Bold;
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //selectedTabItem = tabControl.Items[0] as TabItem;
+            //selectedTabItem.FontWeight = FontWeights.Bold;
         }
     }
 }

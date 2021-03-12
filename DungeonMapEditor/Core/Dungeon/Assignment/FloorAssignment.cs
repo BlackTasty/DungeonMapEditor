@@ -33,7 +33,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         public double RotationOverride
         {
-            get => mRotationOverride;
+            get => Math.Round(mRotationOverride, 0);
             set
             {
                 mRotationOverride = value;

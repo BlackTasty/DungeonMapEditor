@@ -43,7 +43,7 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public double Rotation
         {
-            get => mRotation;
+            get => Math.Round(mRotation, 2);
             set
             {
                 mRotation = value;

@@ -6,18 +6,29 @@
            xmlns:local="clr-namespace:DungeonMapEditor.UI"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
            mc:Ignorable="d" 
-           d:DesignHeight="450" d:DesignWidth="800" Background="White">
+           d:DesignHeight="500" d:DesignWidth="800">
     <DockPanel.DataContext>
         <vm:HomeScreenViewModel/>
     </DockPanel.DataContext>
     <DockPanel.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </DockPanel.Resources>
-    <StackPanel Width="260" VerticalAlignment="Center">
-        <Button Content="Create new map" Height="60" FontSize="18" Margin="16,8" Click="CreateMap_Click"/>
-        <Button Content="Load from file" Height="60" FontSize="18" Margin="16,8" Click="LoadMapFromFile_Click"/>
-        <Button Content="Manage collections" Height="60" FontSize="18" Margin="16,64,16,8" Click="ManageTiles_Click"/>
-    </StackPanel>
+    <DockPanel Width="260">
+        <TextBlock Foreground="White" TextAlignment="Center" FontWeight="Bold" FontSize="32" TextWrapping="Wrap"
+                   DockPanel.Dock="Top" Margin="0,48,0,-48">
+            <TextBlock.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="6"/>
+            </TextBlock.Effect>
+            <Run Text="D" Foreground="#FFAC0505"/><Run Text="ungeon"/>
+            <Run Text="M" Foreground="#FFAC0505"/><Run Text="ap"/>
+            <Run Text="E" Foreground="#FFAC0505"/><Run Text="ditor"/>
+        </TextBlock>
+        <StackPanel VerticalAlignment="Center">
+            <Button Content="Create new map" Height="60" FontSize="18" Margin="16,8" Click="CreateMap_Click" Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Load from file" Height="60" FontSize="18" Margin="16,8" Click="LoadMapFromFile_Click" Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Manage collections" Height="60" FontSize="18" Margin="16,64,16,8" Click="ManageTiles_Click" Style="{StaticResource PrimaryButton}"/>
+        </StackPanel>
+    </DockPanel>
     <StackPanel>
         <TextBlock Text="Last projects" FontSize="22" Margin="4"/>
         <Grid Margin="16,4,8,4">

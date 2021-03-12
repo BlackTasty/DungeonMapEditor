@@ -8,7 +8,8 @@
         xmlns:ui="clr-namespace:DungeonMapEditor.UI"
         xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
         mc:Ignorable="d"
-        Title="Dungeon Map Editor" MinHeight="570" MinWidth="900" Height="450" Width="800" Background="Black">
+        Title="Dungeon Map Editor" MinHeight="570" MinWidth="900" Height="450" Width="800" Background="{StaticResource Background}"
+        Loaded="Window_Loaded">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
@@ -16,7 +17,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
-        <TabControl x:Name="tabControl">
+        <TabControl x:Name="tabControl" Background="Transparent" BorderThickness="0" Margin="0,2,0,0" SelectionChanged="tabControl_SelectionChanged">
         </TabControl>
         <Grid Background="#dd000000" Visibility="{Binding ShowDialog, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ContentPresenter Content="{Binding Dialog}" VerticalAlignment="Center" HorizontalAlignment="Center"/>

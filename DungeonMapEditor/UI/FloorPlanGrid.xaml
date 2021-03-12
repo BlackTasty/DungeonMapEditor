@@ -1,21 +1,22 @@
 ﻿<DockPanel x:Class="DungeonMapEditor.UI.FloorPlanGrid"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DungeonMapEditor.UI"
-             xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
-             xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+           xmlns:local="clr-namespace:DungeonMapEditor.UI"
+           xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
+           xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+           xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+           mc:Ignorable="d" 
+           d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel.DataContext>
         <vm:FloorPlanViewModel/>
     </DockPanel.DataContext>
     <DockPanel.Resources>
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent">
             <TabItem Header="Rooms">
                 <DockPanel>
                     <TextBlock Text="Rooms" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
@@ -24,11 +25,18 @@
                               SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
                               GridLinesVisibility="None" HeadersVisibility="None">
                         <DataGrid.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
                         </DataGrid.Resources>
                         <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
+                                <Setter Property="Background" Value="Transparent"/>
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="RoomPlan_PreviewMouseDoubleClick"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#70000000"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
@@ -56,7 +64,7 @@
                     <StackPanel DockPanel.Dock="Bottom" Margin="12,8">
                         <TextBlock Text="Preview"/>
                         <Image Source="{Binding SelectedRoomAssignment.RoomPlan.RoomPlanImage, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" Height="90"/>
+                                 Margin="12,0,12,4" Height="80"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <TextBlock Text="Room settings" FontSize="20" Margin="4"/>
@@ -70,10 +78,15 @@
                         
                         <TextBlock Text="Overrides" Margin="12,12,12,2" FontSize="16"/>
                         <TextBlock Text="Rotation" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedRoomAssignment.RotationOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
+                        <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsRoomAssignmentSelected}">
+                            <TextBlock Text=" °" DockPanel.Dock="Right"/>
+                            <xctk:DoubleUpDown Value="{Binding SelectedRoomAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
+                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="45"/>
+                            <Slider Maximum="360" Value="{Binding SelectedRoomAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
+                                Template="{StaticResource HorizontalSlider}"/>
+                        </DockPanel>
                         <TextBlock Text="Room number" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedRoomAssignment.RoomNumberOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                        <xctk:IntegerUpDown Value="{Binding SelectedRoomAssignment.RoomNumberOverride, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
                     </StackPanel>
                 </DockPanel>
@@ -91,25 +104,28 @@
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-    <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
-        <Canvas.Background>
-            <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,25,25" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
+    <ScrollViewer Background="White">
+        <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True"
+                MouseLeftButtonDown="grid_MouseLeftButtonDown">
+            <Canvas.Background>
+                <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,25,25" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
                                      ViewportUnits="Absolute">
-                <DrawingBrush.Drawing>
-                    <GeometryDrawing>
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="0,0,50,50"/>
-                        </GeometryDrawing.Geometry>
-                        <GeometryDrawing.Pen>
-                            <Pen Brush="Gray" Thickness="2">
-                                <Pen.DashStyle>
-                                    <DashStyle Dashes="2 4"/>
-                                </Pen.DashStyle>
-                            </Pen>
-                        </GeometryDrawing.Pen>
-                    </GeometryDrawing>
-                </DrawingBrush.Drawing>
-            </DrawingBrush>
-        </Canvas.Background>
-    </Canvas>
+                    <DrawingBrush.Drawing>
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry Rect="0,0,50,50"/>
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="Black" Thickness="2">
+                                    <Pen.DashStyle>
+                                        <DashStyle Dashes="2 4"/>
+                                    </Pen.DashStyle>
+                                </Pen>
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Canvas.Background>
+        </Canvas>
+    </ScrollViewer>
 </DockPanel>

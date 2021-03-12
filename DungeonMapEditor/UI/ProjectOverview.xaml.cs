@@ -28,9 +28,10 @@ namespace DungeonMapEditor.UI
     /// </summary>
     public partial class ProjectOverview : DockPanel
     {
-        private SolidColorBrush roomTabColor = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
-        private SolidColorBrush floorTabColor = new SolidColorBrush(Color.FromArgb(64, 0, 128, 255));
-        private SolidColorBrush documentLayoutTabColor = new SolidColorBrush(Color.FromArgb(64, 32, 255, 0));
+        private Style roomTabStyle;
+        private Style floorTabStyle;
+        private Style documentLayoutTabStyle;
+        private TabItem selectedTabItem;
 
         public event EventHandler<NameChangedEventArgs> ProjectNameChanged;
         public event EventHandler<OpenDialogEventArgs> OpenDialog;
@@ -46,6 +47,9 @@ namespace DungeonMapEditor.UI
             projectFile.Load();
             vm.ProjectFile = projectFile;
             vm.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
+            roomTabStyle = Application.Current.Resources.MergedDictionaries[1]["RoomTabItem"] as Style;
+            floorTabStyle = Application.Current.Resources.MergedDictionaries[1]["FloorTabItem"] as Style;
+            documentLayoutTabStyle = Application.Current.Resources.MergedDictionaries[1]["LayoutTabItem"] as Style;
         }
 
         public string GetProjectName()
@@ -121,7 +125,8 @@ namespace DungeonMapEditor.UI
             FloorPlanGrid floorPlanGrid = new FloorPlanGrid(floorPlan, vm.ProjectFile);
             floorPlanGrid.FloorNameChanged += PlanGrid_NameChanged;
 
-            tabControl.SelectedIndex = AddTab(floorPlanGrid, floorPlan.Name, floorTabColor, Guid.NewGuid().ToString());
+            tabControl.SelectedIndex = AddTab(floorPlanGrid, floorPlan.Name, floorTabStyle, Guid.NewGuid().ToString());
+            SetCurrentTabItemBold(tabControl.Items[tabControl.SelectedIndex] as TabItem);
         }
 
         public void OpenRoomPlan(RoomPlan roomPlan)
@@ -129,7 +134,8 @@ namespace DungeonMapEditor.UI
             RoomPlanGrid roomPlanGrid = new RoomPlanGrid(roomPlan);
             roomPlanGrid.RoomNameChanged += PlanGrid_NameChanged;
 
-            tabControl.SelectedIndex = AddTab(roomPlanGrid, roomPlan.Name, roomTabColor, Guid.NewGuid().ToString());
+            tabControl.SelectedIndex = AddTab(roomPlanGrid, roomPlan.Name, roomTabStyle, Guid.NewGuid().ToString());
+            SetCurrentTabItemBold(tabControl.Items[tabControl.SelectedIndex] as TabItem);
         }
 
         private void PlanGrid_NameChanged(object sender, NameChangedEventArgs e)
@@ -149,12 +155,7 @@ namespace DungeonMapEditor.UI
             }
         }
 
-        private int AddTab(FrameworkElement element, string headerString, object tabItemTag = null)
-        {
-            return AddTab(element, headerString, Brushes.White, tabItemTag);
-        }
-
-        private int AddTab(FrameworkElement element, string headerString, SolidColorBrush background, object tabItemTag = null)
+        private int AddTab(FrameworkElement element, string headerString, Style tabStyle, object tabItemTag = null)
         {
             var existingTabs = tabControl.Items.OfType<TabItem>();
 
@@ -189,10 +190,11 @@ namespace DungeonMapEditor.UI
             };
             Button tabCloseButton = new Button()
             {
-                Content = "x",
+                Content = "X",
                 Margin = new Thickness(8, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Thickness(4, 0, 4, 0)
+                Padding = new Thickness(4, 0, 4, 0),
+                Style = Application.Current.Resources.MergedDictionaries[1]["CloseButton"] as Style
             };
             tabCloseButton.Click += TabCloseButton_Click;
 
@@ -204,7 +206,7 @@ namespace DungeonMapEditor.UI
                 Header = header,
                 Content = element,
                 Tag = tabItemTag,
-                Background = background
+                Style = tabStyle
             };
             tabCloseButton.Tag = tabItem;
 
@@ -263,7 +265,37 @@ namespace DungeonMapEditor.UI
 
             ProjectPlanGrid projectPlanGrid = new ProjectPlanGrid(vm.ProjectFile);
 
-            tabControl.SelectedIndex = AddTab(projectPlanGrid, "Document layout", documentLayoutTabColor, Guid.NewGuid().ToString());
+            tabControl.SelectedIndex = AddTab(projectPlanGrid, "Document layout", documentLayoutTabStyle, Guid.NewGuid().ToString());
+            SetCurrentTabItemBold(tabControl.Items[tabControl.SelectedIndex] as TabItem);
+        }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabItem selected = e.AddedItems.OfType<TabItem>().FirstOrDefault();
+            if (selected != null)
+            {
+                SetCurrentTabItemBold(selected);
+            }
+        }
+
+        private void SetCurrentTabItemBold(TabItem tabItem)
+        {
+            if (selectedTabItem != null)
+            {
+                //selectedTabItem.FontWeight = FontWeights.Normal;
+            }
+
+            if (tabItem != null)
+            {
+                selectedTabItem = tabItem;
+                //selectedTabItem.FontWeight = FontWeights.Bold;
+            }
+        }
+
+        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            //selectedTabItem = tabControl.Items[0] as TabItem;
+            //selectedTabItem.FontWeight = FontWeights.Bold;
         }
     }
 }

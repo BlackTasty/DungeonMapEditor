@@ -74,7 +74,7 @@ namespace DungeonMapEditor.Core.Dungeon
                 Background = new DrawingBrush()
                 {
                     TileMode = TileMode.Tile,
-                    Viewport = new Rect(-0.5, -0.5, 25, 25),
+                    Viewport = new Rect(1.5, 1.5, 50, 50),
                     Viewbox = new Rect(0, 0, 49, 49),
                     ViewboxUnits = BrushMappingMode.Absolute,
                     ViewportUnits = BrushMappingMode.Absolute,

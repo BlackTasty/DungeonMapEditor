@@ -16,8 +16,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Border.Resources>
     <Grid>
-        <Image Source="{Binding RoomAssignment.RoomPlan.RoomPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
-           RenderTransformOrigin=".5,.5">
+        <Image x:Name="roomImage" Source="{Binding RoomAssignment.RoomPlan.RoomPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+               Stretch="Fill" RenderTransformOrigin=".5,.5" RenderOptions.BitmapScalingMode="HighQuality">
             <Image.RenderTransform>
                 <RotateTransform Angle="{Binding RoomAssignment.RealRotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Image.RenderTransform>

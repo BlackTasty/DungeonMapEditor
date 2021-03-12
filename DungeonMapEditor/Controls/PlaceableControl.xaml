@@ -17,7 +17,7 @@
     </Border.Resources>
     <Grid>
         <Image Source="{Binding PlaceableAssignment.Placeable.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
-           RenderTransformOrigin=".5,.5">
+           RenderTransformOrigin=".5,.5" RenderOptions.BitmapScalingMode="HighQuality">
             <Image.RenderTransform>
                 <RotateTransform Angle="{Binding PlaceableAssignment.RealRotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Image.RenderTransform>

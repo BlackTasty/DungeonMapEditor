@@ -30,6 +30,7 @@ namespace DungeonMapEditor.UI
         private int tagIndex;
         private ProjectFile projectFile;
         private RoomControl selectedRoomControl;
+        private bool roomControlClicked;
 
         public FloorPlanGrid(FloorPlan floorPlan, ProjectFile projectFile)
         {
@@ -108,6 +109,7 @@ namespace DungeonMapEditor.UI
 
         private void RoomControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            roomControlClicked = true;
             FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
             if (selectedRoomControl != null)
             {
@@ -121,6 +123,23 @@ namespace DungeonMapEditor.UI
             roomControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
             selectedRoomControl = roomControl;
             vm.SelectedTabIndex = 1;
+        }
+
+        private void grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (roomControlClicked)
+            {
+                roomControlClicked = false;
+                return;
+            }
+            if (selectedRoomControl != null)
+            {
+                selectedRoomControl.Background = Brushes.Transparent;
+            }
+            FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
+            vm.SelectedRoomAssignment = null;
+            selectedRoomControl = null;
+            vm.SelectedTabIndex = 0;
         }
     }
 }

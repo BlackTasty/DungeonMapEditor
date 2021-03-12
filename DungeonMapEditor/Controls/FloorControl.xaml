@@ -17,7 +17,7 @@
     </Border.Resources>
     <Grid>
         <Image Source="{Binding FloorAssignment.FloorPlan.FloorPlanImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="None" 
-           RenderTransformOrigin=".5,.5">
+           RenderTransformOrigin=".5,.5" RenderOptions.BitmapScalingMode="HighQuality">
             <Image.RenderTransform>
                 <RotateTransform Angle="{Binding FloorAssignment.FloorPlan.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Image.RenderTransform>

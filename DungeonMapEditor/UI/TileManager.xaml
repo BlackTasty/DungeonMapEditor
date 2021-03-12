@@ -23,8 +23,11 @@
     <Border Grid.ColumnSpan="2" BorderBrush="DarkGray" BorderThickness="0,0,0,1" Margin="0,0,0,4">
         <DockPanel VerticalAlignment="Top" Margin="4,4">
             <TextBlock DockPanel.Dock="Top" Text="Selected collection"/>
-            <Button Content="+" DockPanel.Dock="Right" Margin="4,0,0,0" Padding="6,2" Click="CreateCollection_Click"/>
-            <ComboBox ItemsSource="{Binding LoadedCollections, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding SelectedCollection, UpdateSourceTrigger=PropertyChanged}">
+            <Button Content="+" DockPanel.Dock="Right" Margin="4,0,0,0" Click="CreateCollection_Click"
+                    Style="{StaticResource SettingsButton}"/>
+            <ComboBox ItemsSource="{Binding LoadedCollections, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                      SelectedItem="{Binding SelectedCollection, UpdateSourceTrigger=PropertyChanged}"
+                      Template="{StaticResource ComboBoxTemplate}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -39,7 +42,7 @@
             </ComboBox>
         </DockPanel>
     </Border>
-    <TabControl Grid.Row="1">
+    <TabControl Grid.Row="1" Background="Transparent">
         <TabItem Header="Tiles">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -50,7 +53,7 @@
                           CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
                           SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedTileIndex}" Grid.Row="1">
                     <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                             <Setter Property="Height" Value="60"/>
                             <Setter Property="Padding" Value="0"/>
                         </Style>
@@ -125,13 +128,17 @@
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
                     <DockPanel IsEnabled="{Binding IsCollectionSelected}">
                         <StackPanel DockPanel.Dock="Bottom">
-                            <Button Content="Save" Margin="8,4" Click="Save_Click"/>
-                            <Button Content="Close" Margin="8,4" Click="Close_Click"/>
+                            <Button Content="Save" Margin="8,4" Click="Save_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Close" Margin="8,4" Click="Close_Click" Visibility="Collapsed"
+                                    Style="{StaticResource PrimaryButton}"/>
                         </StackPanel>
                         <StackPanel>
-                            <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click"/>
-                            <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click"/>
-                            <Button Content="Delet tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click"/>
+                            <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Delet tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
                         </StackPanel>
                     </DockPanel>
                 </Border>
@@ -147,7 +154,7 @@
                           CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
                           SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedPlaceableIndex}" Grid.Row="1">
                     <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                             <Setter Property="Height" Value="60"/>
                             <Setter Property="Padding" Value="0"/>
                         </Style>
@@ -230,13 +237,18 @@
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
                     <DockPanel IsEnabled="{Binding IsCollectionSelected}">
                         <StackPanel DockPanel.Dock="Bottom">
-                            <Button Content="Save" Margin="8,4" Click="Save_Click"/>
-                            <Button Content="Close" Margin="8,4" Click="Close_Click"/>
+                            <Button Content="Save" Margin="8,4" Click="Save_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Close" Margin="8,4" Click="Close_Click" 
+                                    Style="{StaticResource PrimaryButton}" Visibility="Collapsed"/>
                         </StackPanel>
                         <StackPanel>
-                            <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click"/>
-                            <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="EditPlaceable_Click"/>
-                            <Button Content="Delet object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="RemovePlaceable_Click"/>
+                            <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="EditPlaceable_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Delet object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="RemovePlaceable_Click" 
+                                    Style="{StaticResource PrimaryButton}"/>
                         </StackPanel>
                     </DockPanel>
                 </Border>

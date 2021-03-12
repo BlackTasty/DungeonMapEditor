@@ -1,12 +1,13 @@
 ﻿<Border x:Class="DungeonMapEditor.Controls.DialogCreateFloor"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DungeonMapEditor.Controls"
-           xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
-             mc:Ignorable="d" 
-           Height="130" Width="240" Padding="4" Background="White" BorderBrush="Black" BorderThickness="1">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:DungeonMapEditor.Controls"
+        xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+        mc:Ignorable="d" 
+        Height="140" Width="240" Padding="4" Background="{StaticResource Background}" BorderBrush="{StaticResource BorderBrush}" 
+        BorderThickness="1">
     <Border.DataContext>
         <vm:CreateFloorViewModel/>
     </Border.DataContext>
@@ -24,8 +25,10 @@
             <TextBox Text="{Binding FloorName, UpdateSourceTrigger=PropertyChanged}" TextChanged="FloorName_TextChanged"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateFloor_Click" IsEnabled="{Binding IsValid}"/>
-            <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"/>
+            <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateFloor_Click" IsEnabled="{Binding IsValid}"
+                    Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
+                    Style="{StaticResource WarnButton}"/>
         </StackPanel>
     </DockPanel>
 </Border>

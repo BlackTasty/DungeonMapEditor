@@ -284,6 +284,12 @@ namespace DungeonMapEditor.Core.Dungeon
                 canvas.Children.Add(placeableControl);
             }
 
+            DropShadowEffect dropShadowEffect = new DropShadowEffect()
+            {
+                ShadowDepth = 0,
+                BlurRadius = 6
+            };
+
             TextBlock roomNumberText = new TextBlock()
             {
                 Text = RoomNumberOverride > 0 ? RoomNumberOverride.ToString() : mRoomNumber.ToString(),
@@ -291,7 +297,8 @@ namespace DungeonMapEditor.Core.Dungeon
                 Width = canvas.Width,
                 Foreground = Brushes.White,
                 FontSize = 42,
-                FontWeight = FontWeights.Bold
+                FontWeight = FontWeights.Bold,
+                Effect = dropShadowEffect
             };
 
             TextBlock roomNumberTextShadow = new TextBlock()
@@ -299,14 +306,14 @@ namespace DungeonMapEditor.Core.Dungeon
                 Text = roomNumberText.Text,
                 TextAlignment = roomNumberText.TextAlignment,
                 Width = roomNumberText.Width,
-                Foreground = Brushes.Black,
+                Foreground = roomNumberText.Foreground,
                 FontSize = roomNumberText.FontSize,
-                FontWeight = roomNumberText.FontWeight
+                FontWeight = roomNumberText.FontWeight,
+                Effect = roomNumberText.Effect
             };
-            double topPos = (canvas.Height - 24) / 2;
+            double topPos = canvas.Height / 2 - 30;
 
-            Canvas.SetTop(roomNumberTextShadow, topPos + 1);
-            Canvas.SetLeft(roomNumberTextShadow, 1);
+            Canvas.SetTop(roomNumberTextShadow, topPos);
             canvas.Children.Add(roomNumberTextShadow);
 
             Canvas.SetTop(roomNumberText, topPos);

@@ -6,20 +6,25 @@
              xmlns:local="clr-namespace:DungeonMapEditor.UI"
              xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="650" Background="White">
+             d:DesignHeight="400" d:DesignWidth="650" Loaded="DockPanel_Loaded">
     <DockPanel.DataContext>
         <vm:ProjectOverviewViewModel/>
     </DockPanel.DataContext>
-    <DockPanel DockPanel.Dock="Bottom" LastChildFill="False" Background="LightGray" Margin="-2">
-        <Button Content="Save" Margin="4" Padding="8,4" DockPanel.Dock="Right" Click="SaveProject_Click"/>
-        <Button Content="Export" Margin="4" Padding="8,4" DockPanel.Dock="Right" Click="ExportAs_Click"/>
-    </DockPanel>
-    <TabControl x:Name="tabControl" BorderThickness="0,0,0,1" Margin="-2,0,-2,2">
+    <Grid DockPanel.Dock="Bottom" Background="#11ffffff" Margin="-2">
+        <DockPanel LastChildFill="False" Margin="4,2">
+            <Button Content="Save" Margin="4" DockPanel.Dock="Right" Click="SaveProject_Click"
+                                Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Export" Margin="8,4" DockPanel.Dock="Right" Click="ExportAs_Click"
+                                Style="{StaticResource PrimaryButton}"/>
+        </DockPanel>
+    </Grid>
+    <TabControl x:Name="tabControl" BorderThickness="0,1" Margin="-2,0,-2,2" Background="Transparent" SelectionChanged="tabControl_SelectionChanged">
         <TabItem Header="Project overview">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <Button Content="Configure layout" Margin="8" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center"
-                            Click="ConfigureLayout_Click"/>
+                    <Button Content="Configure layout" Margin="8" DockPanel.Dock="Right" VerticalAlignment="Center"
+                            Click="ConfigureLayout_Click"
+                                Style="{StaticResource PrimaryButton}"/>
                     <UniformGrid Columns="3">
                         <StackPanel Margin="8">
                             <TextBlock Text="Dungeon name"/>
@@ -31,14 +36,16 @@
                 <DockPanel DockPanel.Dock="Right" Margin="8" Width="300">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left">
-                            <TextBlock Text="Rooms" FontSize="16"/>
+                            <TextBlock Text="Rooms" FontSize="16" Foreground="#FFD16900"/>
                             <TextBlock Text="Double-click a row to edit a room" FontSize="10" Foreground="Gray" Margin="4,0"/>
                         </StackPanel>
-                        <Button Content="Add room" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center" Click="AddRoom_Click"/>
+                        <Button Content="Add room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddRoom_Click"
+                                Style="{StaticResource PrimaryButton}"/>
                     </DockPanel>
-                    <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False">
+                    <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
+                              CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column">
                         <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="RoomDataGridRow_PreviewMouseDoubleClick"/>
                             </Style>
                         </DataGrid.RowStyle>
@@ -94,14 +101,16 @@
                 <DockPanel Margin="8">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left">
-                            <TextBlock Text="Floors" FontSize="16"/>
+                            <TextBlock Text="Floors" FontSize="16" Foreground="#FF0080FF"/>
                             <TextBlock Text="Double-click a row to edit a floor" FontSize="10" Foreground="Gray" Margin="4,0"/>
                         </StackPanel>
-                        <Button Content="Add floor" DockPanel.Dock="Right" Padding="4" VerticalAlignment="Center" Click="AddFloor_Click"/>
+                        <Button Content="Add floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddFloor_Click"
+                                Style="{StaticResource PrimaryButton}"/>
                     </DockPanel>
-                    <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False">
+                    <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
+                              CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column">
                         <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="FloorDataGridRow_PreviewMouseDoubleClick"/>
                             </Style>
                         </DataGrid.RowStyle>

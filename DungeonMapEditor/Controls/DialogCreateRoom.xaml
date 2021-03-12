@@ -7,7 +7,8 @@
         xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
         xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
         mc:Ignorable="d" 
-        Height="170" Width="270" Padding="4" Background="White" BorderBrush="Black" BorderThickness="1">
+        Height="190" Width="270" Padding="4" Background="{StaticResource Background}" BorderBrush="{StaticResource BorderBrush}" 
+        BorderThickness="1">
     <Border.DataContext>
         <vm:CreateRoomViewModel/>
     </Border.DataContext>
@@ -42,8 +43,10 @@
             </StackPanel>
         </UniformGrid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="Create!" Margin="8" Padding="8,2" Click="Create_Click" IsEnabled="{Binding IsValid}"/>
-            <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"/>
+            <Button Content="Create!" Margin="8" Padding="8,2" Click="Create_Click" IsEnabled="{Binding IsValid}"
+                    Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
+                    Style="{StaticResource WarnButton}"/>
         </StackPanel>
     </DockPanel>
 </Border>

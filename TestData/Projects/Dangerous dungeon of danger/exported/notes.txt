@@ -1,0 +1,9 @@
+Floors:
+- EG: (Eingang in Raum 3)
+  - Rooms:
+    - Entrance: (Eine super duper Notiz)
+      - Tiles:
+        - Ein geheimer Schalter ist an der Wand
+      - Objects:
+        - 5 Gold und ein Heal Potion liegen am Tisch
+

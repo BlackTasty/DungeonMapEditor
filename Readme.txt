@@ -7,3 +7,4 @@ Dungeon Map Editor TODO:
 - Load folders containing sprites as tiles/placeables (get name from filename)
 - Drag&Drop placeables from catalog into room plan
 - Drag&Drop rooms from catalog into floor plan
+- Allow user to define a custom map scaling

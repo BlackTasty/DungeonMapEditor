@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DungeonMapEditor.Controls"
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="800">
@@ -16,21 +17,29 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="240" Background="White">
+    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="240">
         <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header=" Object catalog">
                 <DockPanel>
                     <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
                     <DataGrid ItemsSource="{Binding AvailablePlaceables}" Background="{x:Null}" AutoGenerateColumns="False" 
-                              CanUserReorderColumns="False"
+                              Foreground="White"
+                              CanUserReorderColumns="False" CanUserDeleteRows="False"
                               SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
                               GridLinesVisibility="None" HeadersVisibility="None">
                         <DataGrid.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
                         </DataGrid.Resources>
                         <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
+                                <Setter Property="Background" Value="Transparent"/>
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="Placeables_PreviewMouseDoubleClick"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#70000000"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
@@ -55,7 +64,7 @@
 
                         <TextBlock Text="Tile" Margin="12,4,12,2"/>
                         <ComboBox ItemsSource="{Binding AvailableTiles}" Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
-                          SelectionChanged="ComboBox_SelectionChanged">
+                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -90,17 +99,22 @@
                     <StackPanel DockPanel.Dock="Bottom" Margin="0,0,0,8">
                         <TextBlock Text="Overrides" Margin="12,20,12,2" FontSize="16"/>
                         <TextBlock Text="Rotation" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedPlaceableAssignment.RotationOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                                 Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
+                        <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}">
+                            <TextBlock Text=" °" DockPanel.Dock="Right"/>
+                            <xctk:DoubleUpDown Value="{Binding SelectedPlaceableAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
+                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="45"/>
+                            <Slider Maximum="360" Value="{Binding SelectedPlaceableAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
+                                Template="{StaticResource HorizontalSlider}"/>
+                        </DockPanel>
                         <UniformGrid Columns="2" Margin="12,4,12,2">
                             <StackPanel>
                                 <TextBlock Text="Tile ratio X"/>
-                                <TextBox Text="{Binding SelectedPlaceableAssignment.TileRatioXOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:DoubleUpDown Value="{Binding SelectedPlaceableAssignment.TileRatioXOverride, UpdateSourceTrigger=PropertyChanged}"
                              Margin="0,0,4,0"/>
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Text="Tile ratio Y"/>
-                                <TextBox Text="{Binding SelectedPlaceableAssignment.TileRatioYOverride, Converter={StaticResource DoubleToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                <xctk:DoubleUpDown Value="{Binding SelectedPlaceableAssignment.TileRatioYOverride, UpdateSourceTrigger=PropertyChanged}"
                              Margin="0,0,4,0"/>
                             </StackPanel>
                         </UniformGrid>
@@ -142,25 +156,29 @@
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-    <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
-        <Canvas.Background>
-            <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,50,50" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
+                <Canvas.Background>
+                    <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,50,50" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
                                      ViewportUnits="Absolute">
-                <DrawingBrush.Drawing>
-                    <GeometryDrawing>
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="0,0,50,50"/>
-                        </GeometryDrawing.Geometry>
-                        <GeometryDrawing.Pen>
-                            <Pen Brush="Gray" Thickness="2">
-                                <Pen.DashStyle>
-                                    <DashStyle Dashes="2 4"/>
-                                </Pen.DashStyle>
-                            </Pen>
-                        </GeometryDrawing.Pen>
-                    </GeometryDrawing>
-                </DrawingBrush.Drawing>
-            </DrawingBrush>
-        </Canvas.Background>
-    </Canvas>
+                        <DrawingBrush.Drawing>
+                            <GeometryDrawing>
+                                <GeometryDrawing.Geometry>
+                                    <RectangleGeometry Rect="0,0,50,50"/>
+                                </GeometryDrawing.Geometry>
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="Gray" Thickness="2">
+                                        <Pen.DashStyle>
+                                            <DashStyle Dashes="2 4"/>
+                                        </Pen.DashStyle>
+                                    </Pen>
+                                </GeometryDrawing.Pen>
+                            </GeometryDrawing>
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </Canvas.Background>
+            </Canvas>
+        </Grid>
+    </ScrollViewer>
 </DockPanel>

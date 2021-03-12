@@ -4,6 +4,7 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
            xmlns:local="clr-namespace:DungeonMapEditor.UI"
+           xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
            xmlns:enum="clr-namespace:DungeonMapEditor.Core.Enum"
            xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -27,8 +28,8 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180" Background="White">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0,1,0,0">
             <TabItem Header="Floors">
                 <DockPanel>
                     <TextBlock Text="Floors" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
@@ -37,11 +38,18 @@
                               SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
                               GridLinesVisibility="None" HeadersVisibility="None">
                         <DataGrid.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#D87416"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
                         </DataGrid.Resources>
                         <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
+                                <Setter Property="Background" Value="Transparent"/>
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="FloorPlan_PreviewMouseDoubleClick"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#70000000"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
@@ -80,6 +88,15 @@
                         <TextBlock Text="Notes" Margin="12,4,12,2"/>
                         <TextBox Text="{Binding SelectedFloorAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        <TextBlock Text="Overrides" Margin="12,12,12,2" FontSize="16"/>
+                        <TextBlock Text="Rotation" Margin="12,4,12,2"/>
+                        <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsFloorAssignmentSelected}">
+                            <TextBlock Text=" °" DockPanel.Dock="Right"/>
+                            <xctk:DoubleUpDown Value="{Binding SelectedFloorAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
+                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="45"/>
+                            <Slider Maximum="360" Value="{Binding SelectedFloorAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
+                                Template="{StaticResource HorizontalSlider}"/>
+                        </DockPanel>
                     </StackPanel>
                 </DockPanel>
             </TabItem>
@@ -90,39 +107,52 @@
             <TextBlock Text="Document size"/>
             <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:DocumentSizeType}}}"
                       SelectedItem="{Binding ProjectFile.DocumentSizeType, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ComboBox_SelectionChanged"/>
+                      SelectionChanged="ComboBox_SelectionChanged"
+                      Template="{StaticResource ComboBoxTemplate}"/>
         </StackPanel>
         <StackPanel Width="140" Margin="8">
             <TextBlock Text="Document orientation"/>
             <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type Orientation}}}"
                       SelectedItem="{Binding ProjectFile.DocumentOrientation, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ComboBox_SelectionChanged"/>
+                      SelectionChanged="ComboBox_SelectionChanged"
+                      Template="{StaticResource ComboBoxTemplate}"/>
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-    <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
-        <Canvas.Background>
-            <DrawingBrush TileMode="Tile" Viewport="1.5,1.5,25,25" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True" 
+                Width="{Binding ProjectFile.DocumentSize.Width}" Height="{Binding ProjectFile.DocumentSize.Height}"
+                    MouseLeftButtonDown="grid_MouseLeftButtonDown">
+                <Canvas.Background>
+                    <DrawingBrush TileMode="Tile" Viewport="3.5,3.5,50,50" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
                                      ViewportUnits="Absolute">
-                <DrawingBrush.Drawing>
-                    <DrawingGroup>
-                        <GeometryDrawing>
-                            <GeometryDrawing.Geometry>
-                                <RectangleGeometry Rect="0,0,50,50"/>
-                            </GeometryDrawing.Geometry>
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="Gray" Thickness="2">
-                                    <Pen.DashStyle>
-                                        <DashStyle Dashes="2 4"/>
-                                    </Pen.DashStyle>
-                                </Pen>
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingBrush.Drawing>
-            </DrawingBrush>
-        </Canvas.Background>
-        <Border x:Name="documentBorder" Width="{Binding ProjectFile.DocumentSize.Width}" Height="{Binding ProjectFile.DocumentSize.Height}" 
+                        <DrawingBrush.Drawing>
+                            <DrawingGroup>
+                                <GeometryDrawing>
+                                    <GeometryDrawing.Geometry>
+                                        <RectangleGeometry Rect="0,0,50,50"/>
+                                    </GeometryDrawing.Geometry>
+                                    <GeometryDrawing.Pen>
+                                        <Pen Brush="Gray" Thickness="2">
+                                            <Pen.DashStyle>
+                                                <DashStyle Dashes="2 4"/>
+                                            </Pen.DashStyle>
+                                        </Pen>
+                                    </GeometryDrawing.Pen>
+                                </GeometryDrawing>
+                            </DrawingGroup>
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </Canvas.Background>
+                <Border x:Name="documentBorder" Width="{Binding ProjectFile.DocumentSize.Width}" Height="{Binding ProjectFile.DocumentSize.Height}" 
                 BorderBrush="#77FFFF00" BorderThickness="2"/>
-    </Canvas>
+            </Canvas>
+            <TextBlock Text="{Binding ProjectFile.Name}" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                       FontFamily="pack://application:,,,/DungeonMapEditor;component/Resources/Fonts/#Ace Records"
+                       FontSize="64" Padding="8" TextAlignment="Center" Foreground="Black" Background="{x:Null}"/>
+            <TextBlock Text="1 tile = 5 ft." VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                       FontSize="32" Padding="8,4" Background="White" Foreground="Black"/>
+        </Grid>
+    </ScrollViewer>
 </DockPanel>

@@ -11,7 +11,15 @@ namespace DungeonMapEditor.ViewModel
     class MainViewModel : ViewModelBase
     {
         private bool mShowDialog;
-        private FrameworkElement mDialog = new DialogCreateProject();
+        private FrameworkElement mDialog;
+
+        public MainViewModel()
+        {
+            if (!App.IsDesignMode)
+            {
+                mDialog = new DialogCreateProject();
+            }
+        }
 
         public bool ShowDialog
         {

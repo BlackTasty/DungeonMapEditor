@@ -28,6 +28,7 @@ namespace DungeonMapEditor.UI
         private FloorControl selectedFloorControl;
         private int tagIndex;
         private double planOffset = 8;
+        private bool floorControlClicked;
 
         public ProjectPlanGrid(ProjectFile projectFile)
         {
@@ -82,6 +83,7 @@ namespace DungeonMapEditor.UI
 
         private void FloorControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            floorControlClicked = true;
             ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
             if (selectedFloorControl != null)
             {
@@ -94,7 +96,7 @@ namespace DungeonMapEditor.UI
 
             floorControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
             selectedFloorControl = floorControl;
-            //vm.SelectedTabIndex = 1;
+            vm.SelectedTabIndex = 1;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -106,6 +108,23 @@ namespace DungeonMapEditor.UI
             {
                 size = new Size(size.Height, size.Width);
             }*/
+        }
+
+        private void grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (floorControlClicked)
+            {
+                floorControlClicked = false;
+                return;
+            }
+            if (selectedFloorControl != null)
+            {
+                selectedFloorControl.Background = Brushes.Transparent;
+            }
+            ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
+            vm.SelectedFloorAssignment = null;
+            selectedFloorControl = null;
+            vm.SelectedTabIndex = 0;
         }
     }
 }

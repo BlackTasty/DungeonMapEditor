@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 
 namespace DungeonMapEditor.Core
 {
@@ -82,7 +83,162 @@ namespace DungeonMapEditor.Core
             else
                 return null;
         }
+
+        public static BitmapImage BitmapSourceToBitmapImage(BitmapSource bitmapSource)
+        {
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            MemoryStream memoryStream = new MemoryStream();
+            BitmapImage bitmapImage = new BitmapImage();
+
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+            encoder.Save(memoryStream);
+
+            memoryStream.Position = 0;
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memoryStream;
+            bitmapImage.EndInit();
+
+            memoryStream.Close();
+
+            return bitmapImage;
+        }
+
+        public static BitmapSource CaptureCanvas(Canvas target, double dpiX, double dpiY, SolidColorBrush background = null)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+
+            // Save current canvas transform
+            Transform transform = target.LayoutTransform;
+            // reset current transform (in case it is scaled or rotated)
+            target.LayoutTransform = null;
+
+            if (background != null)
+            {
+                Canvas backgroundSurface = new Canvas()
+                {
+                    Width = target.Width,
+                    Height = target.Height,
+                    Background = background
+                };
+                backgroundSurface.Children.Add(target);
+                target = backgroundSurface;
+            }
+
+            System.Windows.Size size = new System.Windows.Size(target.Width, target.Height);
+
+            target.Measure(size);
+            target.Arrange(new System.Windows.Rect(size));
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(target.Width * dpiX / 96.0),
+                                                            (int)(target.Height * dpiY / 96.0),
+                                                            dpiX,
+                                                            dpiY,
+                                                            PixelFormats.Pbgra32);
+
+            DrawingVisual drawing = new DrawingVisual();
+            using (DrawingContext drawingContext = drawing.RenderOpen())
+            {
+                VisualBrush brush = new VisualBrush(target);
+                drawingContext.DrawRectangle(brush, null, new System.Windows.Rect(new System.Windows.Point(), 
+                                             size));
+            }
+
+            rtb.Render(drawing);
+
+            target.LayoutTransform = transform;
+            return rtb;
+        }
+
+        public static string SaveBitmapToFile(string path, BitmapSource bitmap)
+        {
+            int retries = 0;
+            do
+            {
+                if (SaveBitmapInternal(path, bitmap))
+                {
+                    return path;
+                }
+
+                retries++;
+            } while (retries < 3);
+
+            return null;
+        }
+
+        private static bool SaveBitmapInternal(string path, BitmapSource bitmap)
+        {
+            try
+            {
+                using (FileStream outStream = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    // Use png encoder for our data
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    // push the rendered bitmap to it
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    // save the data to the stream
+                    encoder.Save(outStream);
+                }
+                return true;
+            }
+            catch
+            {
+                System.Threading.Thread.Sleep(200);
+                return false;
+            }
+        }
+
         public static BitmapImage ExportToPng(string path, Canvas surface, SolidColorBrush background = null)
+        {
+            BitmapSource bitmap = CaptureCanvas(surface, 96, 96, background);
+            path = SaveBitmapToFile(path, bitmap);
+            return FileToBitmapImage(path);
+
+            /*if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+
+            if (background != null)
+            {
+                Canvas backgroundSurface = new Canvas()
+                {
+                    Width = surface.Width,
+                    Height = surface.Height,
+                    Background = background
+                };
+                backgroundSurface.Children.Add(surface);
+                surface = backgroundSurface;
+            }
+
+            // Save current canvas transform
+            Transform transform = surface.LayoutTransform;
+            // reset current transform (in case it is scaled or rotated)
+            surface.LayoutTransform = null;
+
+            // Get the size of canvas
+            System.Windows.Size size = new System.Windows.Size(surface.Width, surface.Height);
+            // Measure and arrange the surface
+            // VERY IMPORTANT
+            surface.Measure(size);
+            surface.Arrange(new System.Windows.Rect(size));
+
+            // Create a render bitmap and push the surface to it
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96d, 96d, PixelFormats.Pbgra32);
+            renderBitmap.Render(surface);
+
+            // Create a file stream for saving image
+            SaveBitmapToFile(path, renderBitmap);
+
+            // Restore previously saved layout
+            surface.LayoutTransform = transform;
+
+            return FileToBitmapImage(path);*/
+        }
+
+        public static BitmapImage ExportToPng_Old(string path, Canvas surface, SolidColorBrush background = null)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -118,38 +274,7 @@ namespace DungeonMapEditor.Core
             renderBitmap.Render(surface);
 
             // Create a file stream for saving image
-            try
-            {
-                using (FileStream outStream = new FileStream(path, FileMode.OpenOrCreate))
-                {
-                    // Use png encoder for our data
-                    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    // push the rendered bitmap to it
-                    encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-                    // save the data to the stream
-                    encoder.Save(outStream);
-                }
-            }
-            catch
-            {
-                try
-                {
-                    System.Threading.Thread.Sleep(200);
-                    using (FileStream outStream = new FileStream(path, FileMode.OpenOrCreate))
-                    {
-                        // Use png encoder for our data
-                        PngBitmapEncoder encoder = new PngBitmapEncoder();
-                        // push the rendered bitmap to it
-                        encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-                        // save the data to the stream
-                        encoder.Save(outStream);
-                    }
-                }
-                catch
-                {
-
-                }
-            }
+            SaveBitmapToFile(path, renderBitmap);
 
             // Restore previously saved layout
             surface.LayoutTransform = transform;

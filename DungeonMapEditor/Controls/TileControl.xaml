@@ -6,7 +6,7 @@
        xmlns:local="clr-namespace:DungeonMapEditor.Controls"
        xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
        mc:Ignorable="d" 
-       Height="52" Width="52" BorderBrush="#88FFFFFF" BorderThickness="1" Background="Transparent">
+       Height="52" Width="52" BorderBrush="#88FFFFFF" BorderThickness="0" Background="Transparent">
     <Border.DataContext>
         <vm:TileControlViewModel/>
     </Border.DataContext>
@@ -14,7 +14,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Border.Resources>
     <Grid>
-        <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" RenderTransformOrigin=".5,.5">
+        <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill" 
+               RenderTransformOrigin=".5,.5" RenderOptions.BitmapScalingMode="HighQuality">
             <Image.RenderTransform>
                 <RotateTransform Angle="{Binding TileAssignment.Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Image.RenderTransform>
