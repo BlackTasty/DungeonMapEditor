@@ -87,16 +87,13 @@ namespace DungeonMapEditor.Controls
             {
                 Point currentPosition = e.GetPosition(this.Parent as UIElement);
 
-                double planOffsetX = 0;
-                double planOffsetY = 0;
-
                 FloorControlViewModel vm = DataContext as FloorControlViewModel;
                 Size documentSize = assignedProject.DocumentSize;
 
                 vm.FloorAssignment.X = (int)Helper.GetUpdatedAxisLocation_Snap(currentPosition.X, clickPosition.X, documentSize.Width,
-                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width, 25) + planOffsetX;
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Width, 25);
                 vm.FloorAssignment.Y = (int)Helper.GetUpdatedAxisLocation_Snap(currentPosition.Y, clickPosition.Y, documentSize.Height,
-                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height, 25) + planOffsetY;
+                                                            vm.FloorAssignment.FloorPlan.FloorPlanImage.Height, 25);
 
                 Canvas.SetLeft(this, vm.FloorAssignment.X);
                 Canvas.SetTop(this, vm.FloorAssignment.Y);

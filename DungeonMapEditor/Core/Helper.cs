@@ -178,10 +178,22 @@ namespace DungeonMapEditor.Core
         public static double GetSnappedAxisLocation(double targetAxisPosition, double maxAxisPosition, double controlAxisSize, double snapPosition)
         {
             double axisLocation = (Math.Round(targetAxisPosition / snapPosition)) * snapPosition;
+
             axisLocation = Math.Max(axisLocation, 0);
             if (maxAxisPosition > -1)
             {
                 axisLocation = Math.Min(axisLocation, maxAxisPosition - controlAxisSize);
+            }
+
+            double leftoverAxis = axisLocation % snapPosition;
+            
+            if (leftoverAxis == 0)
+            {
+                return axisLocation;
+            }
+            else
+            {
+                return axisLocation - leftoverAxis;
             }
             return axisLocation;
         }
