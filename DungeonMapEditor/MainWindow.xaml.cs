@@ -245,7 +245,7 @@ namespace DungeonMapEditor
 
         private void OpenHomeScreen_Click(object sender, RoutedEventArgs e)
         {
-            AddTab(homeInstance, "Home", true);
+            tabControl.SelectedIndex = AddTab(homeInstance, "Home", true);
         }
 
         private void CreateProject_Click(object sender, RoutedEventArgs e)

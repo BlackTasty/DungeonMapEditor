@@ -64,18 +64,17 @@
                                 <DataTemplate>
                                     <Grid>
                                         <Image Source="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" 
-                               RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
+                                               RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.RenderTransform>
                                                 <RotateTransform Angle="{Binding Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             </Image.RenderTransform>
                                         </Image>
                                         <TextBlock Text="{Binding TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                       FontSize="{Binding TextFontSize, FallbackValue=16}" Foreground="White">
+                                                   FontSize="{Binding TextFontSize, FallbackValue=16}" Foreground="White">
                                             <TextBlock.Effect>
                                                 <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
                                             </TextBlock.Effect>
                                         </TextBlock>
-
                                     </Grid>
                                     <!--<controls:TileControl CurrentTile="{Binding RelativeSource={RelativeSource Self}, Mode=OneWay}" Margin="5"/>-->
                                 </DataTemplate>
