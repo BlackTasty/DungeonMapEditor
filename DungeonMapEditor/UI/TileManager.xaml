@@ -151,7 +151,7 @@
                             <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" Style="{StaticResource PrimaryButton}"/>
                             <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click" 
                                     Style="{StaticResource PrimaryButton}"/>
-                            <Button Content="Delet tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
+                            <Button Content="Delete tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
                                     Style="{StaticResource PrimaryButton}"/>
                         </StackPanel>
                     </DockPanel>
@@ -261,7 +261,7 @@
                                     Style="{StaticResource PrimaryButton}"/>
                             <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="EditPlaceable_Click" 
                                     Style="{StaticResource PrimaryButton}"/>
-                            <Button Content="Delet object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="RemovePlaceable_Click" 
+                            <Button Content="Delete object" Margin="8,4" IsEnabled="{Binding IsCollectionSelected}" Click="RemovePlaceable_Click" 
                                     Style="{StaticResource PrimaryButton}"/>
                         </StackPanel>
                     </DockPanel>

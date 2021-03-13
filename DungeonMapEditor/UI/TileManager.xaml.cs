@@ -61,7 +61,11 @@ namespace DungeonMapEditor.UI
 
         private void RemoveTile_Click(object sender, RoutedEventArgs e)
         {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
 
+            Tile selectedTile = vm.SelectedCollection.TileFile.Data[vm.SelectedTileIndex];
+            vm.SelectedCollection.TileFile.Data.Remove(selectedTile);
+            vm.SelectedTileIndex = -1;
         }
 
         private void ShowTileConfigurator(bool isEdit)
@@ -127,7 +131,11 @@ namespace DungeonMapEditor.UI
 
         private void RemovePlaceable_Click(object sender, RoutedEventArgs e)
         {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
 
+            Placeable selectedPlaceable = vm.SelectedCollection.PlaceableFile.Data[vm.SelectedPlaceableIndex];
+            vm.SelectedCollection.PlaceableFile.Data.Remove(selectedPlaceable);
+            vm.SelectedPlaceableIndex = -1;
         }
 
         private void PlaceableConfigurator_DialogButtonClicked(object sender, PlaceableDialogButtonClickedEventArgs e)
