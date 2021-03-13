@@ -26,6 +26,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mName;
             set
             {
+                changeManager.ObserveProperty(value);
                 mName = value;
                 InvokePropertyChanged();
             }
@@ -36,6 +37,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mDescription;
             set
             {
+                changeManager.ObserveProperty(value);
                 mDescription = value;
                 InvokePropertyChanged();
             }
@@ -46,6 +48,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => Math.Round(mRotation, 2);
             set
             {
+                changeManager.ObserveProperty(value);
                 mRotation = value;
                 InvokePropertyChanged();
             }

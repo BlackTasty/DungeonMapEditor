@@ -28,7 +28,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         [JsonConstructor]
         public CollectionFile(List<T> data)
         {
-            this.data = new VeryObservableCollection<T>("Data");
+            InitializeLists();
             T dataCheck = data.FirstOrDefault();
             if (dataCheck is Tile)
             {
@@ -50,8 +50,8 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         /// <param name="collectionType">What type is this collection?</param>
         public CollectionFile(CollectionType collectionType)
         {
+            InitializeLists();
             this.collectionType = collectionType;
-            data = new VeryObservableCollection<T>("Data");
             switch (collectionType)
             {
                 case CollectionType.Placeables:
@@ -69,7 +69,14 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the collection file</param>
         public CollectionFile(FileInfo fi) : base(fi)
         {
+            InitializeLists();
             Load();
+            changeManager.ResetObservers();
+        }
+
+        private void InitializeLists()
+        {
+            data = new VeryObservableCollection<T>("Data", changeManager);
         }
 
         public void Save(string parentPath = null)
@@ -118,7 +125,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                     return;
             }
 
-            data = fileData.Data;
+            data.Add(fileData.Data);
         }
     }
 }

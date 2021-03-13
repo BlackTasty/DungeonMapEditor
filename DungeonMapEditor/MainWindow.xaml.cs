@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Controls;
 using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.UI;
@@ -140,8 +141,27 @@ namespace DungeonMapEditor
             projectOverview.Tag = Guid.NewGuid().ToString();
             projectOverview.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
             projectOverview.OpenDialog += Dialog_OpenDialog;
+            projectOverview.ChangeObserved += ProjectOverview_ChangeObserved;
             tabControl.SelectedIndex = AddTab(projectOverview, projectOverview.GetProjectName(), true, projectOverview.Tag);
             App.LoadHistory();
+        }
+
+        private void ProjectOverview_ChangeObserved(object sender, Core.FileSystem.ChangeObservedEventArgs e)
+        {
+            if (sender is ProjectOverview projectOverview)
+            {
+                TabItem target = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Tag == projectOverview.Tag);
+                if (target != null && target.Header is StackPanel headerStack)
+                {
+                    TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
+
+                    if (headerText != null)
+                    {
+                        headerText.Text = !e.UnsavedChanges ? e.NewValue : e.NewValue + "*";
+                        headerText.FontStyle = !e.UnsavedChanges ? FontStyles.Normal : FontStyles.Italic;
+                    }
+                }
+            }
         }
 
         private void Dialog_OpenDialog(object sender, OpenDialogEventArgs e)
@@ -162,7 +182,16 @@ namespace DungeonMapEditor
             {
                 exportProject.DialogCompleted += ExportProject_DialogCompleted;
             }
+            else if (e.Dialog is DialogRemoveObject removeObject)
+            {
+                removeObject.DialogCompleted += RemoveObject_DialogCompleted;
+            }
             (DataContext as MainViewModel).Dialog = e.Dialog;
+        }
+
+        private void RemoveObject_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        {
+            (DataContext as MainViewModel).ShowDialog = false;
         }
 
         private void ExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
@@ -170,7 +199,7 @@ namespace DungeonMapEditor
             (DataContext as MainViewModel).ShowDialog = false;
         }
 
-        private void CreateCollection_DialogCompleted(object sender, CreateDialogCompletedEventArgs<Core.Dungeon.Collection.CollectionSet> e)
+        private void CreateCollection_DialogCompleted(object sender, CreateDialogCompletedEventArgs<CollectionSet> e)
         {
             (DataContext as MainViewModel).ShowDialog = false;
         }
@@ -196,7 +225,8 @@ namespace DungeonMapEditor
 
                     if (headerText != null)
                     {
-                        headerText.Text = e.NewName;
+                        headerText.Text = !projectOverview.GetUnsavedChanges() ? e.NewName : e.NewName + "*";
+                        headerText.FontStyle = !projectOverview.GetUnsavedChanges() ? FontStyles.Normal : FontStyles.Italic;
                     }
                 }
             }

@@ -18,54 +18,7 @@ namespace DungeonMapEditor.ViewModel
         /// </summary>
         /// <param name="collectionName"><inheritdoc/></param>
         /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
-        /// <param name="message"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int limit, ViewModelMessage message = ViewModelMessage.None) : 
-            base(collectionName, message)
-        {
-            this.limit = limit;
-        }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
-        /// <param name="item"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int limit, T item) : base(collectionName, item)
-        {
-            this.limit = limit;
-        }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
         public VeryObservableStackCollection(string collectionName, int limit) : base(collectionName, false)
-        {
-            this.limit = limit;
-        }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>
-        /// <param name="items"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int limit, List<T> items) : 
-            base(collectionName, items.Take(limit))
-        {
-            this.limit = limit;
-        }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="collectionName"><inheritdoc/></param>
-        /// <param name="limit">The maximum allowed amount of items in this list. If amount is exceeded the last item is removed.</param>S
-        /// <param name="items"><inheritdoc/></param>
-        public VeryObservableStackCollection(string collectionName, int limit, IEnumerable<T> items) : 
-            base(collectionName, items.Take(limit))
         {
             this.limit = limit;
         }

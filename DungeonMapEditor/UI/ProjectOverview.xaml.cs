@@ -2,6 +2,7 @@
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace DungeonMapEditor.UI
 
         public event EventHandler<NameChangedEventArgs> ProjectNameChanged;
         public event EventHandler<OpenDialogEventArgs> OpenDialog;
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
         public ProjectOverview() : this(new ProjectFile("Untitled dungeon"))
         {
@@ -46,15 +48,26 @@ namespace DungeonMapEditor.UI
             ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
             projectFile.Load();
             vm.ProjectFile = projectFile;
-            vm.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
+            //vm.ProjectNameChanged += ProjectOverview_ProjectNameChanged;
+            vm.ChangeObserved += ProjectOverview_ChangeObserved;
             roomTabStyle = Application.Current.Resources.MergedDictionaries[1]["RoomTabItem"] as Style;
             floorTabStyle = Application.Current.Resources.MergedDictionaries[1]["FloorTabItem"] as Style;
             documentLayoutTabStyle = Application.Current.Resources.MergedDictionaries[1]["LayoutTabItem"] as Style;
         }
 
+        private void ProjectOverview_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
+        }
+
         public string GetProjectName()
         {
             return (DataContext as ProjectOverviewViewModel).ProjectFile?.Name;
+        }
+
+        public bool GetUnsavedChanges()
+        {
+            return (DataContext as ProjectOverviewViewModel).ProjectFile?.UnsavedChanges ?? false;
         }
 
         public string GetProjectGuid()
@@ -220,16 +233,6 @@ namespace DungeonMapEditor.UI
             return tabControl.Items.Count - 1;
         }
 
-        protected virtual void OnProjectNameChanged(NameChangedEventArgs e)
-        {
-            ProjectNameChanged?.Invoke(this, e);
-        }
-
-        protected virtual void OnOpenDialog(OpenDialogEventArgs e)
-        {
-            OpenDialog?.Invoke(this, e);
-        }
-
         private void TabCloseButton_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button).Tag is TabItem targetTab)
@@ -301,6 +304,85 @@ namespace DungeonMapEditor.UI
         {
             //selectedTabItem = tabControl.Items[0] as TabItem;
             //selectedTabItem.FontWeight = FontWeights.Bold;
+        }
+
+        private void RemoveRoom_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveSelectedRoom();
+        }
+
+        private void RemoveSelectedRoom()
+        {
+            ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+            DialogRemoveObject dialog = new DialogRemoveObject(vm.SelectedRoomAssignment.RoomPlan.Name);
+            dialog.DialogCompleted += DialogRemoveRoom_DialogCompleted;
+
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void DialogRemoveRoom_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            {
+                ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is RoomPlanGrid roomPlan &&
+                                        roomPlan.GetRoomPlanGuid() == vm.SelectedRoomAssignment.RoomPlan.Guid);
+
+                if (openTab != null)
+                {
+                    tabControl.Items.Remove(openTab);
+                }
+
+                vm.SelectedRoomAssignment.RoomPlan.Delete();
+                vm.ProjectFile.RoomPlans.Remove(vm.SelectedRoomAssignment);
+            }
+        }
+
+        private void RemoveFloor_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveSelectedFloor();
+        }
+
+        private void RemoveSelectedFloor()
+        {
+            ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+            TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid floorPlan &&
+                                    floorPlan.GetFloorPlanGuid() == vm.SelectedFloorAssignment.FloorPlan.Guid);
+
+            if (openTab != null)
+            {
+                tabControl.Items.Remove(openTab);
+            }
+
+            DialogRemoveObject dialog = new DialogRemoveObject(vm.SelectedFloorAssignment.FloorPlan.Name);
+            dialog.DialogCompleted += DialogRemoveFloor_DialogCompleted;
+
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void DialogRemoveFloor_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            {
+                ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                vm.SelectedFloorAssignment.FloorPlan.Delete();
+                vm.ProjectFile.FloorPlans.Remove(vm.SelectedFloorAssignment);
+            }
+        }
+
+        protected virtual void OnProjectNameChanged(NameChangedEventArgs e)
+        {
+            ProjectNameChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnOpenDialog(OpenDialogEventArgs e)
+        {
+            OpenDialog?.Invoke(this, e);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace DungeonMapEditor
         public static double SnapValue = 50;
 
         public static VeryObservableCollection<CollectionSet> LoadedCollections { get; set; } = 
-            new VeryObservableCollection<CollectionSet>("LoadedCollections", ViewModelMessage.LoadedCollectionsChanged);
+            new VeryObservableCollection<CollectionSet>("LoadedCollections", null, ViewModelMessage.LoadedCollectionsChanged);
 
         public static string BasePath => AppDomain.CurrentDomain.BaseDirectory;
 

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DungeonMapEditor.UI"
              xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="650" Loaded="DockPanel_Loaded">
+             d:DesignHeight="400" d:DesignWidth="800" Loaded="DockPanel_Loaded">
     <DockPanel.DataContext>
         <vm:ProjectOverviewViewModel/>
     </DockPanel.DataContext>
@@ -34,7 +34,7 @@
                     </UniformGrid>
                 </DockPanel>
                 <Border BorderThickness="0,1,0,0" DockPanel.Dock="Top" BorderBrush="{StaticResource BorderGradientBrush}"/>
-                <DockPanel DockPanel.Dock="Right" Margin="8" Width="360">
+                <DockPanel DockPanel.Dock="Right" Margin="8" Width="390">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left">
                             <TextBlock Text="Rooms" FontSize="16" Foreground="#FFD16900"/>
@@ -42,9 +42,16 @@
                         </StackPanel>
                         <Button Content="Add room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddRoom_Click"
                                 Style="{StaticResource PrimaryButton}"/>
+                        <Button Content="Remove room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveRoom_Click"
+                                Style="{StaticResource WarnButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
-                              CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column">
+                              CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
+                              SelectedItem="{Binding SelectedRoomAssignment}">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
+                        </DataGrid.Resources>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="RoomDataGridRow_PreviewMouseDoubleClick"/>
@@ -121,9 +128,16 @@
                         </StackPanel>
                         <Button Content="Add floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddFloor_Click"
                                 Style="{StaticResource PrimaryButton}"/>
+                        <Button Content="Remove floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveFloor_Click"
+                                Style="{StaticResource WarnButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
-                              CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column">
+                              CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
+                              SelectedItem="{Binding SelectedFloorAssignment}">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
+                        </DataGrid.Resources>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="FloorDataGridRow_PreviewMouseDoubleClick"/>

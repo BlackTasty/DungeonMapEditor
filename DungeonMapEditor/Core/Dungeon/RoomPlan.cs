@@ -137,6 +137,7 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="assignedProject">The project this <see cref="RoomPlan"/> belongs to</param>
         public RoomPlan(string name, int roomNumber, int tilesX, int tilesY, ProjectFile assignedProject)
         {
+            isFile = true;
             Name = name;
             mTilesX = tilesX;
             mTilesY = tilesY;
@@ -162,6 +163,18 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 mRoomPlanImage = Helper.FileToBitmapImage(roomImageFilePath);
             }
+
+            changeManager.ResetObservers();
+        }
+
+        public override void Delete()
+        {
+            base.Delete();
+            /*string imagePath = Path.Combine(filePath, Name + ".png");
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }*/
         }
 
         public void Save(string parentPath = null)

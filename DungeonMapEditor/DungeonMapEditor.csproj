@@ -89,6 +89,9 @@
     <Compile Include="Controls\DialogExportProject.xaml.cs">
       <DependentUpon>DialogExportProject.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogRemoveObject.xaml.cs">
+      <DependentUpon>DialogRemoveObject.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FloorControl.xaml.cs">
       <DependentUpon>FloorControl.xaml</DependentUpon>
     </Compile>
@@ -110,6 +113,12 @@
     <Compile Include="Core\Enum\TileType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
+    <Compile Include="Core\FileSystem\ChangeManager.cs" />
+    <Compile Include="Core\FileSystem\ChangeObserver.cs" />
+    <Compile Include="Core\FileSystem\ChangesObservedEventArgs.cs" />
+    <Compile Include="Core\FileSystem\IChangeObservedEventArgs.cs" />
+    <Compile Include="Core\FileSystem\IChangeObserver.cs" />
+    <Compile Include="Core\FileSystem\ChangeObservedEventArgs.cs" />
     <Compile Include="UI\FloorPlanGrid.xaml.cs">
       <DependentUpon>FloorPlanGrid.xaml</DependentUpon>
     </Compile>
@@ -159,6 +168,7 @@
     <Compile Include="ViewModel\CreateRoomViewModel.cs" />
     <Compile Include="ViewModel\DesignTime\TileManagerDesignViewModel.cs" />
     <Compile Include="ViewModel\DialogExportProjectViewModel.cs" />
+    <Compile Include="ViewModel\DialogRemoveObjectViewModel.cs" />
     <Compile Include="ViewModel\FloorControlViewModel.cs" />
     <Compile Include="ViewModel\FloorPlanViewModel.cs" />
     <Compile Include="ViewModel\HomeScreenViewModel.cs" />
@@ -173,7 +183,7 @@
     <Compile Include="ViewModel\TileControlViewModel.cs" />
     <Compile Include="ViewModel\TileManagerViewModel.cs" />
     <Compile Include="ViewModel\VeryObservableStackCollection.cs" />
-    <Compile Include="ViewModel\ViewModealBase.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\VeryObservableCollection.cs" />
     <Page Include="Controls\DialogCreateCollection.xaml">
       <SubType>Designer</SubType>
@@ -192,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DialogExportProject.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogRemoveObject.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

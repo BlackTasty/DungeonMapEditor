@@ -22,8 +22,7 @@ namespace DungeonMapEditor.Core.Dungeon
     {
         public event EventHandler<NameChangedEventArgs> FloorNameChanged;
 
-        private VeryObservableCollection<RoomAssignment> mRoomAssignments = new VeryObservableCollection<RoomAssignment>("RoomAssignments",
-                                                                                ViewModelMessage.RoomsChanged);
+        private VeryObservableCollection<RoomAssignment> mRoomAssignments;
         private string mFloorName;
         private string mFloorPlanImageFileName;
         private BitmapImage mFloorPlanImage;
@@ -33,6 +32,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mRoomAssignments;
             set
             {
+                changeManager.ObserveProperty(value);
                 mRoomAssignments = value;
                 InvokePropertyChanged();
             }
@@ -43,6 +43,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mFloorName;
             set
             {
+                changeManager.ObserveProperty(value);
                 mFloorName = value;
                 InvokePropertyChanged();
             }
@@ -53,6 +54,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mFloorPlanImageFileName;
             private set
             {
+                changeManager.ObserveProperty(value);
                 mFloorPlanImageFileName = value;
                 InvokePropertyChanged();
             }
@@ -77,7 +79,7 @@ namespace DungeonMapEditor.Core.Dungeon
             string floorName, string floorPlanImageFileName) : 
             base(name, description, rotation, guid)
         {
-            RoomAssignments.Clear();
+            InitializeLists();
             RoomAssignments.Add(roomAssignments);
             mFloorName = floorName;
             if (floorPlanImageFileName != null)
@@ -92,12 +94,15 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="fi">A <see cref="FileInfo"/> object containing the path to the floor plan</param>
         public FloorPlan(FileInfo fi) : base(fi)
         {
+            InitializeLists();
             Load();
             string floorImageFilePath = Path.Combine(fi.Directory.FullName, "floors", Name + ".png");
             if (File.Exists(floorImageFilePath))
             {
                 mFloorPlanImage = Helper.FileToBitmapImage(floorImageFilePath);
             }
+
+            changeManager.ResetObservers();
         }
 
         /// <summary>
@@ -106,7 +111,24 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="floorName">The name of this floor</param>
         public FloorPlan(string floorName) : base(floorName, "", 0)
         {
+            InitializeLists();
+            isFile = true;
             mFloorName = "";
+        }
+
+        private void InitializeLists()
+        {
+            mRoomAssignments = new VeryObservableCollection<RoomAssignment>("RoomAssignments", changeManager, ViewModelMessage.RoomsChanged);
+        }
+
+        public override void Delete()
+        {
+            base.Delete();
+            /*string imagePath = Path.Combine(filePath, Name + ".png");
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }*/
         }
 
         public void Load()
@@ -149,13 +171,17 @@ namespace DungeonMapEditor.Core.Dungeon
 
         public BitmapImage SaveFloorPlanImage(string path, double inputScaling = 25)
         {
-            RoomAssignment mostRightRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, true));
-            RoomAssignment mostBottomRoomAssignment = mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, false));
+            RoomAssignment mostRightRoomAssignment = mRoomAssignments.Count > 0 ? 
+                mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, true)) : null;
+            RoomAssignment mostBottomRoomAssignment = mRoomAssignments.Count > 0 ?  
+                mRoomAssignments.Aggregate((x, y) => AggregateRoomAssignment(x, y, false)) : null;
             double outpuScaling = 50;
             double scaleDiff = outpuScaling / inputScaling;
 
-            double width = (mostRightRoomAssignment.X * scaleDiff) + (mostRightRoomAssignment.RoomPlan.TilesX * outpuScaling);
-            double height = (mostBottomRoomAssignment.Y * scaleDiff) + (mostBottomRoomAssignment.RoomPlan.TilesY * outpuScaling);
+            double width = mostRightRoomAssignment != null ? 
+                (mostRightRoomAssignment.X * scaleDiff) + (mostRightRoomAssignment.RoomPlan.TilesX * outpuScaling) : 1;
+            double height = mostBottomRoomAssignment != null ?
+                (mostBottomRoomAssignment.Y * scaleDiff) + (mostBottomRoomAssignment.RoomPlan.TilesY * outpuScaling) : 1;
 
             double roomPlansTopOffset = 50;
 

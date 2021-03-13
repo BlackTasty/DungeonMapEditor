@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.ViewModel.Communication;
+﻿using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace DungeonMapEditor.ViewModel
         protected string triggerAlso;
         protected bool observeChanges = true; //If this flag is set to false the collection won't fire CollectionChanged events
         protected ViewModelMessage message;
+        protected ChangeManager changeManager;
 
         new event PropertyChangedEventHandler PropertyChanged;
 
@@ -32,16 +34,13 @@ namespace DungeonMapEditor.ViewModel
         /// Initializes the collection with the specified name.
         /// </summary>
         /// <param name="collectionName">The name of the collection (must match the property name!)</param>
-        public VeryObservableCollection(string collectionName, ViewModelMessage message = ViewModelMessage.None)
+        public VeryObservableCollection(string collectionName,
+            ChangeManager changeManager = null, ViewModelMessage message = ViewModelMessage.None)
         {
             CollectionName = collectionName;
             CollectionChanged += Collection_CollectionChanged;
             this.message = message;
-        }
-
-        public VeryObservableCollection(string collectionName, T item) : this(collectionName)
-        {
-            Add(item);
+            this.changeManager = changeManager;
         }
 
         /// <summary>
@@ -50,29 +49,10 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="collectionName">The name of the collection (must match the property name!)</param>
         /// <param name="autoSort">If true the list is sorted after every change</param>
         /// <param name="firstKeepPosition">If true the first item in the list is not affected by sorting</param>
-        public VeryObservableCollection(string collectionName, bool autoSort) : this(collectionName)
+        public VeryObservableCollection(string collectionName, bool autoSort,
+            ChangeManager changeManager = null) : this(collectionName, changeManager)
         {
             this.autoSort = autoSort;
-        }
-
-        /// <summary>
-        /// NOT IMPLEMENTED! Initializes the collection with the specified name and copies all given items into into it.
-        /// </summary>
-        /// <param name="collectionName">The name of the collection (must match the property name!)</param>
-        /// <param name="items">The <see cref="List{T}"/> to copy the items from</param>
-        public VeryObservableCollection(string collectionName, List<T> items) : this(collectionName)
-        {
-            Add(items);
-        }
-
-        /// <summary>
-        /// NOT IMPLEMENTED! Initializes the collection with the specified name and copies all given items into into it.
-        /// </summary>
-        /// <param name="collectionName">The name of the collection (must match the property name!)</param>
-        /// <param name="items">The <see cref="IEnumerable{T}"/> to copy the items from</param>
-        public VeryObservableCollection(string collectionName, IEnumerable<T> items) : this(collectionName)
-        {
-            Add(items);
         }
 
         /// <summary>
@@ -98,10 +78,14 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="items">The objects to be added to the end of the <see cref="Collection{T}"/>.</param>
         public virtual void Add(IEnumerable<T> items)
         {
+            observeChanges = false;
             foreach (T item in items)
             {
                 Add(item);
             }
+
+            observeChanges = true;
+            changeManager?.ObserveProperty(this, CollectionName);
         }
 
         /// <summary>
@@ -115,6 +99,7 @@ namespace DungeonMapEditor.ViewModel
             {
                 return;
             }
+            observeChanges = false;
             foreach (T item in items)
             {
                 if (sort)
@@ -126,6 +111,9 @@ namespace DungeonMapEditor.ViewModel
                     base.Add(item);
                 }
             }
+
+            observeChanges = true;
+            changeManager?.ObserveProperty(this, CollectionName);
         }
 
         public virtual new void Add(T item)
@@ -143,6 +131,11 @@ namespace DungeonMapEditor.ViewModel
                         Insert(lookupList.IndexOf(obj), obj);
                     }
                 }
+            }
+
+            if (observeChanges)
+            {
+                changeManager?.ObserveProperty(this, CollectionName);
             }
         }
 
@@ -197,6 +190,8 @@ namespace DungeonMapEditor.ViewModel
                 RemoveAt(startIndex);
             }
             observeChanges = true;
+
+            changeManager?.ObserveProperty(this, CollectionName);
         }
 
         public void Refresh()
@@ -212,6 +207,8 @@ namespace DungeonMapEditor.ViewModel
             {
                 OnPropertyChanged(this, new PropertyChangedEventArgs(triggerAlso));
             }
+
+            changeManager?.ObserveProperty(this, CollectionName);
         }
 
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)

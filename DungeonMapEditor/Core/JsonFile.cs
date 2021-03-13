@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.ViewModel;
+﻿using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,16 @@ namespace DungeonMapEditor.Core
         protected string fileName;
         protected bool fromFile;
         private DateTime lastModifyDate;
+        protected bool isFile;
+        protected ChangeManager changeManager = new ChangeManager();
+
+        public ChangeManager ChangeManager => changeManager;
+
+        [JsonIgnore]
+        public bool UnsavedChanges
+        {
+            get => changeManager.UnsavedChanges;
+        }
 
         /// <summary>
         /// Path excluding file name
@@ -39,6 +50,7 @@ namespace DungeonMapEditor.Core
             lastModifyDate = fi.LastWriteTime;
 
             fromFile = true;
+            isFile = true;
         }
 
         public JsonFile(DirectoryInfo di)
@@ -56,6 +68,31 @@ namespace DungeonMapEditor.Core
             return Path.Combine(filePath, fileName);
         }
 
+        public virtual void Delete()
+        {
+            // Return if object has not been saved to file yet
+            if (!fromFile)
+            {
+                return;
+            }
+
+            if (isFile)
+            {
+                string path = Path.Combine(filePath, fileName);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            else
+            {
+                if (Directory.Exists(filePath))
+                {
+                    Directory.Delete(filePath, true);
+                }
+            }
+        }
+
         protected void SaveFile(string json)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -66,6 +103,7 @@ namespace DungeonMapEditor.Core
             File.WriteAllText(Path.Combine(filePath, fileName), json);
             fromFile = true;
             lastModifyDate = DateTime.Now;
+            changeManager.ResetObservers();
         }
 
         protected void SaveFile(string filePath, T @object)

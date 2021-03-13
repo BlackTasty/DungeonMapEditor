@@ -30,6 +30,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mImagePath;
             set
             {
+                changeManager.ObserveProperty(value);
                 mImagePath = value;
                 mImage = Helper.FileToBitmapImage(value);
                 InvokePropertyChanged();
@@ -42,6 +43,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mTileRotation;
             set
             {
+                changeManager.ObserveProperty(value);
                 mTileRotation = value;
                 switch (value)
                 {
@@ -67,6 +69,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mTileType;
             set
             {
+                changeManager.ObserveProperty(value);
                 mTileType = value;
                 InvokePropertyChanged();
             }
@@ -77,6 +80,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mTileText;
             set
             {
+                changeManager.ObserveProperty(value);
                 mTileText = value;
                 InvokePropertyChanged();
             }
@@ -87,6 +91,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mTextFontSize;
             set
             {
+                changeManager.ObserveProperty(value);
                 mTextFontSize = value;
                 InvokePropertyChanged();
             }
@@ -135,6 +140,8 @@ namespace DungeonMapEditor.Core.Dungeon
         public Tile(FileInfo fi) : base(fi)
         {
             Load();
+
+            changeManager.ResetObservers();
         }
 
         /// <summary>

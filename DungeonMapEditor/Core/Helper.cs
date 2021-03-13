@@ -320,7 +320,6 @@ namespace DungeonMapEditor.Core
             {
                 return axisLocation - leftoverAxis;
             }
-            return axisLocation;
         }
 
         public static System.Windows.Size ChangeSize_KeepAspectRatio(System.Windows.Size currentSize, System.Windows.Size desiredSize)

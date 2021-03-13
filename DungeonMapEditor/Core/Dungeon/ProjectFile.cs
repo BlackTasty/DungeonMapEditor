@@ -22,8 +22,8 @@ namespace DungeonMapEditor.Core.Dungeon
 
         private DateTime mLastModifyDate;
         private string mName;
-        private VeryObservableCollection<FloorAssignment> mFloorPlans = new VeryObservableCollection<FloorAssignment>("FloorPlans");
-        private VeryObservableCollection<RoomAssignment> mRoomPlans = new VeryObservableCollection<RoomAssignment>("RoomPlans");
+        private VeryObservableCollection<FloorAssignment> mFloorPlans;
+        private VeryObservableCollection<RoomAssignment> mRoomPlans;
         private DocumentSizeType mDocumentSizeType = DocumentSizeType.Image_FullHD;
         private Size mDocumentSize = new Size();
         private Orientation mDocumentOrientation = Orientation.Vertical;
@@ -38,7 +38,8 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mName;
             set
             {
-                OnProjectNameChanged(new NameChangedEventArgs(mName, value));
+                changeManager.ObserveProperty(value);
+                //OnProjectNameChanged(new NameChangedEventArgs(mName, value));
                 mName = value;
                 InvokePropertyChanged();
             }
@@ -49,6 +50,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mFloorPlans;
             set
             {
+                changeManager.ObserveProperty(value);
                 mFloorPlans = value;
                 InvokePropertyChanged();
             }
@@ -59,6 +61,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mRoomPlans;
             set
             {
+                changeManager.ObserveProperty(value);
                 mRoomPlans = value;
                 InvokePropertyChanged();
             }
@@ -69,6 +72,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mDocumentSizeType;
             set
             {
+                changeManager.ObserveProperty(value);
                 mDocumentSizeType = value;
                 InvokePropertyChanged();
                 UpdateDocumentSize();
@@ -80,6 +84,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mDocumentOrientation;
             set
             {
+                changeManager.ObserveProperty(value);
                 mDocumentOrientation = value;
                 InvokePropertyChanged();
                 UpdateDocumentSize();
@@ -104,6 +109,7 @@ namespace DungeonMapEditor.Core.Dungeon
         public ProjectFile(string name, string guid, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans, DateTime lastModifyDate,
             DocumentSizeType documentSizeType, Orientation documentOrientation) : this(name)
         {
+            InitializeLists();
             mFloorPlans.Add(floorPlans);
             mRoomPlans.Add(roomPlans);
             mLastModifyDate = lastModifyDate;
@@ -119,6 +125,7 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="name">The name of this project</param>
         public ProjectFile(string name)
         {
+            InitializeLists();
             mLastModifyDate = DateTime.Now;
             mName = name;
             fileName = name + ".dm";
@@ -131,8 +138,15 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="di">A <see cref="DirectoryInfo"/> object containing the path to the project folder</param>
         public ProjectFile(DirectoryInfo di) : base(new FileInfo(Path.Combine(di.Name + ".dm")))
         {
+            InitializeLists();
             filePath = Path.Combine(filePath, "Projects", fileName.Substring(0, fileName.LastIndexOf('.')));
             Load();
+        }
+
+        private void InitializeLists()
+        {
+            mFloorPlans = new VeryObservableCollection<FloorAssignment>("FloorPlans", changeManager);
+            mRoomPlans = new VeryObservableCollection<RoomAssignment>("RoomPlans", changeManager);
         }
 
         public void Save(string parentPath = null)

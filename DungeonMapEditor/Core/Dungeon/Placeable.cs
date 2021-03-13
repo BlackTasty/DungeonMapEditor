@@ -25,6 +25,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mImagePath;
             set
             {
+                changeManager.ObserveProperty(value);
                 mImagePath = value;
                 mImage = Helper.FileToBitmapImage(value);
                 InvokePropertyChanged();
@@ -40,6 +41,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mTileRatioX;
             set
             {
+                changeManager.ObserveProperty(value);
                 mTileRatioX = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("Width");
@@ -55,6 +57,7 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mTileRatioY;
             set
             {
+                changeManager.ObserveProperty(value);
                 mTileRatioY = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("Height");
@@ -87,6 +90,8 @@ namespace DungeonMapEditor.Core.Dungeon
         public Placeable(FileInfo fi) : base(fi)
         {
             Load();
+
+            changeManager.ResetObservers();
         }
 
         public Placeable(bool generateGuid)
