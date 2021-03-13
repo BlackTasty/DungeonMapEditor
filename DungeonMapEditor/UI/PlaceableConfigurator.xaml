@@ -64,10 +64,10 @@
         </StackPanel>
     </DockPanel>
     <Border Background="#dd000000" ClipToBounds="True">
-        <Border VerticalAlignment="Center" HorizontalAlignment="Center" Margin="32" 
+        <Border VerticalAlignment="Center" HorizontalAlignment="Center"
                 Width="{Binding Placeable.Width, UpdateSourceTrigger=PropertyChanged}"
                 Height="{Binding Placeable.Height, UpdateSourceTrigger=PropertyChanged}"
-                BorderBrush="Black" BorderThickness="1">
+                BorderBrush="{StaticResource TabItemSelectedBackground}" BorderThickness="1">
             <Border.Background>
                 <DrawingBrush TileMode="Tile" Viewport="0,0,50,50" Viewbox="0,0,50,50" ViewboxUnits="Absolute" 
                                      ViewportUnits="Absolute">

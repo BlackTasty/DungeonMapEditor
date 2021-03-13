@@ -77,7 +77,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                 Directory.CreateDirectory(Path.Combine(parentPath, "tiles"));
                 Directory.CreateDirectory(Path.Combine(parentPath, "placeables"));
                 filePath = parentPath;
-                SaveFile(Path.Combine(parentPath, fileName), this);
+                SaveFile(parentPath, this);
             }
             else
             {

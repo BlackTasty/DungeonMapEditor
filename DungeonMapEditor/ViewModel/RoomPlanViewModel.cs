@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.ViewModel.Communication;
 using System;
@@ -19,15 +20,15 @@ namespace DungeonMapEditor.ViewModel
         private RoomPlan mRoomPlan;
         private TileAssignment mSelectedTileAssignment;
         private PlaceableAssignment mSelectedPlaceableAssignment;
-        private VeryObservableCollection<Tile> mAvailableTiles = new VeryObservableCollection<Tile>("Tiles");
-        private VeryObservableCollection<Placeable> mAvailablePlaceables = new VeryObservableCollection<Placeable>("Placeables");
         private Tile mSelectedAvailableTile;
         private bool mKeepAspectRatio;
         private int mSelectedTabIndex;
+        private CollectionSet mSelectedCollection;
 
         public RoomPlanViewModel()
         {
             LoadAvailableTilesAndObjects();
+            mSelectedCollection = LoadedCollections.FirstOrDefault();
 
             Mediator.Instance.Register(o =>
             {
@@ -37,12 +38,19 @@ namespace DungeonMapEditor.ViewModel
 
         private void LoadAvailableTilesAndObjects()
         {
-            mAvailableTiles.Clear();
-            mAvailablePlaceables.Clear();
+            SelectedCollectionSet = SelectedCollectionSet;
+        }
 
-            mAvailableTiles.Add(new Tile(false));
-            mAvailableTiles.Add(App.GetLoadedTiles());
-            mAvailablePlaceables.Add(App.GetLoadedPlaceables());
+        public VeryObservableCollection<CollectionSet> LoadedCollections => App.LoadedCollections;
+
+        public CollectionSet SelectedCollectionSet
+        {
+            get => mSelectedCollection;
+            set
+            {
+                mSelectedCollection = value;
+                InvokePropertyChanged();
+            }
         }
 
         public bool KeepAspectRatio
@@ -125,26 +133,6 @@ namespace DungeonMapEditor.ViewModel
         public bool IsPlaceableAssignmentSelected => mSelectedPlaceableAssignment != null;
 
         public bool IsTileAssignmentSelected => mSelectedTileAssignment != null;
-
-        public VeryObservableCollection<Tile> AvailableTiles
-        {
-            get => mAvailableTiles;
-            set
-            {
-                mAvailableTiles = value;
-                InvokePropertyChanged();
-            }
-        }
-
-        public VeryObservableCollection<Placeable> AvailablePlaceables
-        {
-            get => mAvailablePlaceables;
-            set
-            {
-                mAvailablePlaceables = value;
-                InvokePropertyChanged();
-            }
-        }
 
         public Tile SelectedAvailableTile
         {

@@ -33,12 +33,14 @@ namespace DungeonMapEditor.UI
         private TileControl selectedTileControl;
         private PlaceableControl selectedPlaceableControl;
         private bool updateTile = true;
+        private bool isInit = true;
 
         private Size canvasBounds = new Size();
 
         public RoomPlanGrid(RoomPlan roomPlan)
         {
             InitializeComponent();
+            isInit = false;
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             roomPlan.Load();
             vm.RoomPlan = roomPlan;
@@ -161,6 +163,11 @@ namespace DungeonMapEditor.UI
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (isInit || selectedTileControl == null)
+            {
+                return;
+            }
+
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             if (updateTile)
             {

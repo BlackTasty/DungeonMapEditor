@@ -87,20 +87,23 @@
         </StackPanel>
     </DockPanel>
     <Border Background="#dd000000" ClipToBounds="True">
-        <Grid>
-            <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="32" 
+        <Border VerticalAlignment="Center" HorizontalAlignment="Center"
+                BorderBrush="{StaticResource TabItemSelectedBackground}" BorderThickness="1">
+            <Grid>
+                <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                               VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"
                                RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
-                <Image.RenderTransform>
-                    <RotateTransform Angle="{Binding TileAssignment.Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </Image.RenderTransform>
-            </Image>
-            <TextBlock Text="{Binding TileAssignment.Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    <Image.RenderTransform>
+                        <RotateTransform Angle="{Binding TileAssignment.Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Image.RenderTransform>
+                </Image>
+                <TextBlock Text="{Binding TileAssignment.Tile.TileText}" VerticalAlignment="Center" HorizontalAlignment="Center"
                FontSize="{Binding TileAssignment.Tile.TextFontSize, FallbackValue=16}" Foreground="White">
-                <TextBlock.Effect>
-                    <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
-                </TextBlock.Effect>
-            </TextBlock>
-        </Grid>
+                    <TextBlock.Effect>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="3"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+            </Grid>
+        </Border>
     </Border>
 </DockPanel>

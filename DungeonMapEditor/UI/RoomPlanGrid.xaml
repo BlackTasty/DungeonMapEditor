@@ -22,7 +22,22 @@
             <TabItem Header=" Object catalog">
                 <DockPanel>
                     <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
-                    <DataGrid ItemsSource="{Binding AvailablePlaceables}" Background="{x:Null}" AutoGenerateColumns="False" 
+                    <TextBlock Text="Collection" Margin="12,4,12,2" DockPanel.Dock="Top"/>
+                    <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
+                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}" DockPanel.Dock="Top">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}"/>
+                                    <TextBlock>
+                                            <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
+                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <DataGrid ItemsSource="{Binding SelectedCollectionSet.PlaceableFile.Data, UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}" AutoGenerateColumns="False" 
                               Foreground="White"
                               CanUserReorderColumns="False" CanUserDeleteRows="False"
                               SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
@@ -61,10 +76,26 @@
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Bottom">
                         <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
+                        <TextBlock Text="Collection" Margin="12,4,12,2"/>
+                        <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
+                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock>
+                                            <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
+                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                         <TextBlock Text="Tile" Margin="12,4,12,2"/>
-                        <ComboBox ItemsSource="{Binding AvailableTiles}" Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
-                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
+                        <ComboBox ItemsSource="{Binding SelectedCollectionSet.TileFile.Data,UpdateSourceTrigger=PropertyChanged}" 
+                                  Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
+                                  SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

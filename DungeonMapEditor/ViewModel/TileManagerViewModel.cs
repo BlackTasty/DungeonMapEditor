@@ -105,6 +105,7 @@ namespace DungeonMapEditor.ViewModel
 
         public TileManagerViewModel()
         {
+            SelectedCollection = LoadedCollections.FirstOrDefault();
         }
 
         public Tile GetSelectedTile()
