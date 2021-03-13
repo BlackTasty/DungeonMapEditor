@@ -115,6 +115,10 @@ namespace DungeonMapEditor.ViewModel
                 {
                     SelectedPlaceableAssignment.KeepAspectRatio = mKeepAspectRatio;
                 }
+                else
+                {
+                    SelectedTabIndex = 0;
+                }
             }
         }
 

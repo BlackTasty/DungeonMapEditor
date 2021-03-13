@@ -141,5 +141,22 @@ namespace DungeonMapEditor.UI
             selectedRoomControl = null;
             vm.SelectedTabIndex = 0;
         }
+
+        private void DockPanel_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete && selectedRoomControl != null)
+            {
+                RemoveRoom(selectedRoomControl);
+            }
+        }
+
+        private void RemoveRoom(RoomControl roomControl)
+        {
+            FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
+            vm.FloorPlan.RoomAssignments.Remove(roomControl.RoomAssignment);
+            grid.Children.Remove(roomControl);
+            vm.SelectedRoomAssignment = null;
+            selectedRoomControl = null;
+        }
     }
 }

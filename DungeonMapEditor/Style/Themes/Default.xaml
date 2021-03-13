@@ -16,14 +16,7 @@
 
     <Style TargetType="{x:Type ListBox}">
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#6E572D" Offset="0"/>
-                    <GradientStop Color="#B09A67" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderGradientBrush}"/>
         <Setter Property="Background">
             <Setter.Value>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

@@ -10,7 +10,7 @@
            xmlns:system="clr-namespace:System;assembly=mscorlib"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
            mc:Ignorable="d" 
-           d:DesignHeight="450" d:DesignWidth="800">
+           d:DesignHeight="450" d:DesignWidth="800" PreviewKeyDown="DockPanel_PreviewKeyDown">
     <DockPanel.DataContext>
         <vm:ProjectPlanViewModel/>
     </DockPanel.DataContext>
@@ -28,15 +28,16 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="180">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0,1,0,0">
+    <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="180">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0,1,0,0" 
+                    BorderBrush="{StaticResource BorderGradientBrush}">
             <TabItem Header="Floors">
                 <DockPanel>
                     <TextBlock Text="Floors" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
                     <DataGrid ItemsSource="{Binding AvailableFloors}" Background="{x:Null}" AutoGenerateColumns="False" 
                               CanUserReorderColumns="False"
                               SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
-                              GridLinesVisibility="None" HeadersVisibility="None">
+                              GridLinesVisibility="None" HeadersVisibility="None" SelectionMode="Single">
                         <DataGrid.Resources>
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>

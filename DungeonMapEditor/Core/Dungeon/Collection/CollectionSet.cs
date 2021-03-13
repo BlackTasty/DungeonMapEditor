@@ -11,7 +11,20 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 {
     public class CollectionSet : JsonFile<CollectionSet>
     {
-        public string Name { get; set; }
+        private string guid;
+        private string mName;
+
+        public string Guid => guid;
+
+        public string Name
+        {
+            get => mName;
+            set
+            {
+                mName = value;
+                InvokePropertyChanged();
+            }
+        }
 
         [JsonIgnore]
         public CollectionFile<Tile> TileFile { get; set; }
@@ -25,19 +38,22 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         [JsonIgnore]
         public int PlaceableCount => PlaceableFile?.Data?.Count ?? 0;
 
+        [JsonConstructor]
+        public CollectionSet(string name, string guid)
+        {
+            Name = name;
+            this.guid = guid;
+        }
+
         public CollectionSet(string name)
         {
-            fileName = name;
+            fileName = "collection.json";
+            Name = name;
+            guid = System.Guid.NewGuid().ToString();
             Initialize();
         }
 
-        public CollectionSet(FileInfo fi) : base(fi)
-        {
-            Initialize();
-            Load();
-        }
-
-        public CollectionSet(DirectoryInfo di) : base(di)
+        public CollectionSet(DirectoryInfo di) : base(di.EnumerateFiles("collection.json").FirstOrDefault())
         {
             Initialize();
             Load();
@@ -47,7 +63,6 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         {
             TileFile = new CollectionFile<Tile>(CollectionType.Tiles);
             PlaceableFile = new CollectionFile<Placeable>(CollectionType.Placeables);
-            Name = fileName;
         }
 
         public void Save(string parentPath = null)
@@ -62,11 +77,11 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                 Directory.CreateDirectory(Path.Combine(parentPath, "tiles"));
                 Directory.CreateDirectory(Path.Combine(parentPath, "placeables"));
                 filePath = parentPath;
-                //SaveFile(Path.Combine(parentPath, Name), this);
+                SaveFile(Path.Combine(parentPath, fileName), this);
             }
             else
             {
-                //SaveFile(JsonConvert.SerializeObject(this));
+                SaveFile(JsonConvert.SerializeObject(this));
             }
 
             if (TileFile.HasData)
@@ -109,7 +124,12 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 
         public void Load()
         {
-            foreach (DirectoryInfo di in new DirectoryInfo(Path.Combine(filePath, Name)).EnumerateDirectories())
+            CollectionSet collectionSet = LoadFile();
+
+            Name = collectionSet.Name;
+            guid = collectionSet.guid;
+
+            foreach (DirectoryInfo di in new DirectoryInfo(Path.Combine(filePath)).EnumerateDirectories())
             {
                 FileInfo jsonFile = di.EnumerateFiles(di.Name + ".json").FirstOrDefault();
                 if (jsonFile == null)

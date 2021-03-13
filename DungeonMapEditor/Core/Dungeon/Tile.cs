@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Core.Dungeon.Collection;
+using DungeonMapEditor.Core.Enum;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace DungeonMapEditor.Core.Dungeon
         private CollectionSet mAssignedCollection;
         private string mTileText;
         private double mTextFontSize = 16;
+        private TileRotation mTileRotation = TileRotation.Degrees_0;
+        private TileType mTileType = TileType.Wall;
 
         [JsonIgnore]
         public BitmapImage Image => mImage;
@@ -31,6 +34,41 @@ namespace DungeonMapEditor.Core.Dungeon
                 mImage = Helper.FileToBitmapImage(value);
                 InvokePropertyChanged();
                 InvokePropertyChanged("Image");
+            }
+        }
+
+        public TileRotation TileRotation
+        {
+            get => mTileRotation;
+            set
+            {
+                mTileRotation = value;
+                switch (value)
+                {
+                    case TileRotation.Degrees_0:
+                        Rotation = 0;
+                        break;
+                    case TileRotation.Degrees_90:
+                        Rotation = 90;
+                        break;
+                    case TileRotation.Degrees_180:
+                        Rotation = 180;
+                        break;
+                    case TileRotation.Degrees_270:
+                        Rotation = 270;
+                        break;
+                }
+                InvokePropertyChanged();
+            }
+        }
+
+        public TileType TileType
+        {
+            get => mTileType;
+            set
+            {
+                mTileType = value;
+                InvokePropertyChanged();
             }
         }
 
@@ -80,12 +118,14 @@ namespace DungeonMapEditor.Core.Dungeon
         /// </summary>
         [JsonConstructor]
         public Tile(string name, string description, double rotation, string guid, string imagePath, string tileText, 
-            double textFontSize) : 
+            double textFontSize, TileRotation tileRotation, TileType tileType) : 
             base(name, description, rotation, guid)
         {
             ImagePath = imagePath;
             TileText = tileText;
             TextFontSize = textFontSize;
+            TileRotation = tileRotation;
+            TileType = tileType;
         }
 
         /// <summary>
@@ -118,6 +158,10 @@ namespace DungeonMapEditor.Core.Dungeon
             Tile tile = LoadFile();
 
             ImagePath = tile.ImagePath;
+            TileText = tile.TileText;
+            TextFontSize = tile.TextFontSize;
+            TileRotation = tile.TileRotation;
+            TileType = tile.TileType;
         }
 
         public override string GetFullPath()

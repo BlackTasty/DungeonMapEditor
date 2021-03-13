@@ -105,5 +105,10 @@ namespace DungeonMapEditor.Controls
         {
             RoomMoved?.Invoke(this, e);
         }
+
+        private void Border_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

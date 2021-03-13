@@ -57,6 +57,11 @@ namespace DungeonMapEditor.UI
             return (DataContext as ProjectOverviewViewModel).ProjectFile?.Name;
         }
 
+        public string GetProjectGuid()
+        {
+            return (DataContext as ProjectOverviewViewModel).ProjectFile?.Guid;
+        }
+
         private void ProjectOverview_ProjectNameChanged(object sender, NameChangedEventArgs e)
         {
             OnProjectNameChanged(e);

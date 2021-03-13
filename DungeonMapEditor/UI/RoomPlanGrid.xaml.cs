@@ -121,7 +121,6 @@ namespace DungeonMapEditor.UI
                 placeableTagIndex++;
 
                 placeableControl.MouseLeftButtonDown += PlaceableControl_MouseLeftButtonDown;
-                placeableControl.PreviewKeyDown += PlaceableControl_KeyDown;
 
                 Canvas.SetLeft(placeableControl, placeableControl.PlaceableAssignment.PositionX);
                 Canvas.SetTop(placeableControl, placeableControl.PlaceableAssignment.PositionY);
@@ -191,7 +190,6 @@ namespace DungeonMapEditor.UI
                 placeableTagIndex++;
 
                 placeableControl.MouseLeftButtonDown += PlaceableControl_MouseLeftButtonDown;
-                placeableControl.PreviewKeyDown += PlaceableControl_KeyDown;
 
                 Canvas.SetLeft(placeableControl, placeableControl.PlaceableAssignment.PositionX);
                 Canvas.SetTop(placeableControl, placeableControl.PlaceableAssignment.PositionY);
@@ -203,12 +201,13 @@ namespace DungeonMapEditor.UI
 
         }
 
-        private void PlaceableControl_KeyDown(object sender, KeyEventArgs e)
+        private void RemovePlaceable(PlaceableControl placeableControl)
         {
-            if (e.Key == Key.Delete)
-            {
-                grid.Children.Remove(sender as PlaceableControl);
-            }
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            vm.RoomPlan.PlaceableAssignments.Remove(placeableControl.PlaceableAssignment);
+            grid.Children.Remove(placeableControl);
+            vm.SelectedPlaceableAssignment = null;
+            selectedPlaceableControl = null;
         }
 
         private void PlaceableControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -237,6 +236,14 @@ namespace DungeonMapEditor.UI
             vm.SelectedAvailableTile = null;
             updateTile = true;
             vm.SelectedTabIndex = 2;
+        }
+
+        private void DockPanel_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete && selectedPlaceableControl != null)
+            {
+                RemovePlaceable(selectedPlaceableControl);
+            }
         }
     }
 }

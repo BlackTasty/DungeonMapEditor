@@ -18,7 +18,8 @@
                                 Style="{StaticResource PrimaryButton}"/>
         </DockPanel>
     </Grid>
-    <TabControl x:Name="tabControl" BorderThickness="0,1" Margin="-2,0,-2,2" Background="Transparent" SelectionChanged="tabControl_SelectionChanged">
+    <TabControl x:Name="tabControl" BorderThickness="0,1" Margin="-2,0,-2,2" Background="Transparent" SelectionChanged="tabControl_SelectionChanged"
+                BorderBrush="{StaticResource BorderGradientBrush}">
         <TabItem Header="Project overview">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
@@ -32,8 +33,8 @@
                         </StackPanel>
                     </UniformGrid>
                 </DockPanel>
-                <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-                <DockPanel DockPanel.Dock="Right" Margin="8" Width="300">
+                <Border BorderThickness="0,1,0,0" DockPanel.Dock="Top" BorderBrush="{StaticResource BorderGradientBrush}"/>
+                <DockPanel DockPanel.Dock="Right" Margin="8" Width="360">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left">
                             <TextBlock Text="Rooms" FontSize="16" Foreground="#FFD16900"/>
@@ -61,6 +62,20 @@
                                 <DataGridTemplateColumn.HeaderTemplate>
                                     <DataTemplate>
                                         <TextBlock><Run Text="Room"/></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="34">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding RoomPlan.RoomNumber, Mode=OneWay}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock><Run Text="No."/></TextBlock>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.HeaderTemplate>
                             </DataGridTemplateColumn>
@@ -97,7 +112,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
-                <Border BorderThickness="1,0,0,0" DockPanel.Dock="Right" BorderBrush="DarkGray" Margin="0,8"/>
+                <Border BorderThickness="1,0,0,0" DockPanel.Dock="Right" Margin="0,8" BorderBrush="{StaticResource BorderGradientBrush}"/>
                 <DockPanel Margin="8">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <StackPanel DockPanel.Dock="Left">
@@ -115,7 +130,7 @@
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="40">
+                            <DataGridTemplateColumn Width="80">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel VerticalAlignment="Center">
@@ -129,10 +144,10 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.HeaderTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="60">
+                            <DataGridTemplateColumn Width="50">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <StackPanel VerticalAlignment="Center">
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <TextBlock Text="{Binding FloorPlan.RoomAssignments.Count, UpdateSourceTrigger=PropertyChanged}"/>
                                         </StackPanel>
                                     </DataTemplate>

@@ -27,6 +27,9 @@ namespace DungeonMapEditor.Core.Dungeon
         private DocumentSizeType mDocumentSizeType = DocumentSizeType.Image_FullHD;
         private Size mDocumentSize = new Size();
         private Orientation mDocumentOrientation = Orientation.Vertical;
+        private string guid;
+
+        public string Guid => guid;
 
         public DateTime LastModifyDate => mLastModifyDate;
 
@@ -98,7 +101,7 @@ namespace DungeonMapEditor.Core.Dungeon
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public ProjectFile(string name, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans, DateTime lastModifyDate,
+        public ProjectFile(string name, string guid, List<FloorAssignment> floorPlans, List<RoomAssignment> roomPlans, DateTime lastModifyDate,
             DocumentSizeType documentSizeType, Orientation documentOrientation) : this(name)
         {
             mFloorPlans.Add(floorPlans);
@@ -106,6 +109,7 @@ namespace DungeonMapEditor.Core.Dungeon
             mLastModifyDate = lastModifyDate;
             mDocumentSizeType = documentSizeType;
             mDocumentOrientation = documentOrientation;
+            this.guid = guid;
             //InitializeRoomPlans();
         }
 
@@ -117,14 +121,15 @@ namespace DungeonMapEditor.Core.Dungeon
         {
             mLastModifyDate = DateTime.Now;
             mName = name;
-            fileName = name + ".json";
+            fileName = name + ".dm";
+            guid = System.Guid.NewGuid().ToString();
         }
 
         /// <summary>
         /// Used to load existing projects from a folder. Folder has to contain a json with the same name as the folder!
         /// </summary>
         /// <param name="di">A <see cref="DirectoryInfo"/> object containing the path to the project folder</param>
-        public ProjectFile(DirectoryInfo di) : base(new FileInfo(di.Name + ".json"))
+        public ProjectFile(DirectoryInfo di) : base(new FileInfo(Path.Combine(di.Name + ".dm")))
         {
             filePath = Path.Combine(filePath, "Projects", fileName.Substring(0, fileName.LastIndexOf('.')));
             Load();
@@ -171,6 +176,7 @@ namespace DungeonMapEditor.Core.Dungeon
             ProjectFile projectFile = LoadFile();
 
             Name = projectFile.Name;
+            guid = projectFile.guid;
             FloorPlans.Clear();
             FloorPlans.Add(projectFile.FloorPlans);
             RoomPlans.Clear();

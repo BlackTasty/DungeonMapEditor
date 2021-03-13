@@ -44,8 +44,6 @@ namespace DungeonMapEditor.UI
                 {
                     vm.SelectedCollection.TileFile.Data.Add(e.Tile);
                 }
-
-                App.LoadCollections();
             }
 
             vm.IsTileConfiguratorOpen = false;
@@ -104,7 +102,10 @@ namespace DungeonMapEditor.UI
             string collectionDir = Path.Combine(App.BasePath, "Collections", vm.SelectedCollection.Name);
             Directory.CreateDirectory(collectionDir);
 
+            var selectedCollectionIndex = App.LoadedCollections.IndexOf(vm.SelectedCollection);
             vm.SelectedCollection.Save(collectionDir);
+            App.LoadCollections();
+            vm.SelectedCollection = App.LoadedCollections[selectedCollectionIndex];
 
             OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(vm.SelectedCollection.TileFile, DialogResult.OK));
         }

@@ -71,6 +71,10 @@ namespace DungeonMapEditor.ViewModel
             {
                 mSelectedFloorAssignment = value;
                 InvokePropertyChanged();
+                if (value == null)
+                {
+                    SelectedTabIndex = 0;
+                }
                 InvokePropertyChanged("IsFloorAssignmentSelected");
             }
         }

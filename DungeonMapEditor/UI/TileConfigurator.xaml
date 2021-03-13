@@ -7,6 +7,8 @@
            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
+           xmlns:enum="clr-namespace:DungeonMapEditor.Core.Enum"
+           xmlns:system="clr-namespace:System;assembly=mscorlib"
            mc:Ignorable="d" 
            d:DesignHeight="340" d:DesignWidth="500" Background="{StaticResource Background}"
            MinWidth="500" MinHeight="340">
@@ -16,6 +18,19 @@
     <DockPanel.Resources>
         <converter:IntToStringConverter x:Key="IntToStringConverter"/>
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+
+        <ObjectDataProvider x:Key="tileRotationTypes" MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enum:TileRotation"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="tileTypeTypes" MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enum:TileType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </DockPanel.Resources>
     <DockPanel DockPanel.Dock="Right" Width="240">
         <UniformGrid DockPanel.Dock="Bottom" Columns="2" Width="180">
@@ -35,16 +50,24 @@
                     <TextBox Text="{Binding TileAssignment.Tile.ImagePath, UpdateSourceTrigger=PropertyChanged}"/>
                 </DockPanel>
             </StackPanel>
-            <StackPanel Margin="0,4">
-                <TextBlock Text="Rotation"/>
-                <DockPanel Margin="0,0,0,4">
-                    <TextBlock Text=" °" DockPanel.Dock="Right"/>
-                    <xctk:DoubleUpDown Value="{Binding TileAssignment.Tile.Rotation, UpdateSourceTrigger=LostFocus}"
-                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="60"/>
-                    <Slider Maximum="360" Value="{Binding TileAssignment.Tile.Rotation, UpdateSourceTrigger=PropertyChanged}"
-                                Template="{StaticResource HorizontalSlider}"/>
-                </DockPanel>
-            </StackPanel>
+            <UniformGrid Columns="2">
+                <StackPanel Margin="0,4,4,4">
+                    <TextBlock Text="Rotation"/>
+                    <DockPanel Margin="0,0,0,4">
+                        <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:TileRotation}}}"
+                              SelectedItem="{Binding TileAssignment.Tile.TileRotation, UpdateSourceTrigger=PropertyChanged}"
+                              Template="{StaticResource ComboBoxTemplate}"/>
+                    </DockPanel>
+                </StackPanel>
+                <StackPanel Margin="4,4,0,4">
+                    <TextBlock Text="Tile category"/>
+                    <DockPanel Margin="0,0,0,4">
+                        <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:TileType}}}"
+                              SelectedItem="{Binding TileAssignment.Tile.TileType, UpdateSourceTrigger=PropertyChanged}"
+                              Template="{StaticResource ComboBoxTemplate}"/>
+                    </DockPanel>
+                </StackPanel>
+            </UniformGrid>
             <UniformGrid Columns="2" Margin="0,4">
                 <StackPanel Margin="0,0,4,0">
                     <TextBlock Text="Layered tile text"/>

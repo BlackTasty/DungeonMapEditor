@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:DungeonMapEditor.Style">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="Background" Color="#FF211D1D"></SolidColorBrush>
     <SolidColorBrush x:Key="Foreground" Color="#ddFFFFFF"></SolidColorBrush>
     <SolidColorBrush x:Key="BorderBrush" Color="#FF4C3380"></SolidColorBrush>
 
     <Color x:Key="BorderBrushColor">#FF4C3380</Color>
+    <Color x:Key="BorderBrushLightColor">#FF8A73B8</Color>
 
     <SolidColorBrush x:Key="ComboBoxItemSelectedBackground" Color="#801D0040"></SolidColorBrush>
 
@@ -20,4 +20,9 @@
     <SolidColorBrush x:Key="FloorTabSelectedBackground" Color="#AA0080FF"></SolidColorBrush>
     <SolidColorBrush x:Key="LayoutTabBackground" Color="#3F20FF00"></SolidColorBrush>
     <SolidColorBrush x:Key="LayoutTabSelectedBackground" Color="#AA20FF00"></SolidColorBrush>
+
+    <LinearGradientBrush x:Key="BorderGradientBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="{StaticResource BorderBrushColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource BorderBrushLightColor}" Offset="1"/>
+    </LinearGradientBrush>
 </ResourceDictionary>

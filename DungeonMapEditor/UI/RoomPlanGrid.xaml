@@ -8,7 +8,7 @@
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="800">
+      d:DesignHeight="500" d:DesignWidth="800" PreviewKeyDown="DockPanel_PreviewKeyDown">
     <DockPanel.DataContext>
         <vm:RoomPlanViewModel/>
     </DockPanel.DataContext>
@@ -17,8 +17,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="Gray" DockPanel.Dock="Right" Width="240">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+    <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="240">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderGradientBrush}">
             <TabItem Header=" Object catalog">
                 <DockPanel>
                     <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
@@ -26,7 +26,7 @@
                               Foreground="White"
                               CanUserReorderColumns="False" CanUserDeleteRows="False"
                               SelectionUnit="FullRow" BorderBrush="{x:Null}" CanUserResizeColumns="False" CanUserSortColumns="False" 
-                              GridLinesVisibility="None" HeadersVisibility="None">
+                              GridLinesVisibility="None" HeadersVisibility="None" SelectionMode="Single">
                         <DataGrid.Resources>
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
@@ -155,7 +155,7 @@
             <TextBox Text="{Binding RoomPlan.RoomNumber, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
     </StackPanel>
-    <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
+    <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Top"/>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">

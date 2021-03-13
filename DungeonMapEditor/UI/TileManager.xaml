@@ -59,7 +59,7 @@
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Width="60">
+                        <DataGridTemplateColumn Width="60" MinWidth="60" MaxWidth="60">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -123,6 +123,20 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="90">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center" Margin="0,-6" HorizontalAlignment="Center">
+                                        <TextBlock Text="{Binding TileType, Mode=OneWay}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock><Run Text="Type"/></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
@@ -160,12 +174,12 @@
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Width="60">
+                        <DataGridTemplateColumn Width="60" MinWidth="60" MaxWidth="60">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
                                         <Image Source="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" 
-                               RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
+                                               RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.RenderTransform>
                                                 <RotateTransform Angle="{Binding Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             </Image.RenderTransform>

@@ -56,6 +56,15 @@ namespace DungeonMapEditor.UI
             }
         }
 
+        private void RemoveFloor(FloorControl floorControl)
+        {
+            ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
+            vm.ProjectFile.FloorPlans.Remove(floorControl.FloorAssignment);
+            grid.Children.Remove(floorControl);
+            vm.SelectedFloorAssignment = null;
+            selectedFloorControl = null;
+        }
+
         private void FloorPlan_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (sender is DataGridRow clickedRow && clickedRow.DataContext is FloorPlan floorPlan)
@@ -96,6 +105,8 @@ namespace DungeonMapEditor.UI
 
             floorControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
             selectedFloorControl = floorControl;
+            selectedFloorControl.Focus();
+            Keyboard.Focus(selectedFloorControl);
             vm.SelectedTabIndex = 1;
         }
 
@@ -124,7 +135,14 @@ namespace DungeonMapEditor.UI
             ProjectPlanViewModel vm = DataContext as ProjectPlanViewModel;
             vm.SelectedFloorAssignment = null;
             selectedFloorControl = null;
-            vm.SelectedTabIndex = 0;
+        }
+
+        private void DockPanel_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete && selectedFloorControl != null)
+            {
+                RemoveFloor(selectedFloorControl);
+            }
         }
     }
 }

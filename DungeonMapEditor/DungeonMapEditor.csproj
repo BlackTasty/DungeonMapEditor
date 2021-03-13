@@ -106,6 +106,8 @@
     <Compile Include="Core\Enum\DocumentSizeType.cs" />
     <Compile Include="Core\Enum\EnumBindingSourceExtension .cs" />
     <Compile Include="Core\Enum\ExportType.cs" />
+    <Compile Include="Core\Enum\TileRotation.cs" />
+    <Compile Include="Core\Enum\TileType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
     <Compile Include="UI\FloorPlanGrid.xaml.cs">

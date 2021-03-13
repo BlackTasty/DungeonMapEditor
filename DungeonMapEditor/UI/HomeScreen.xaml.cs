@@ -1,8 +1,10 @@
 ﻿using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,12 +34,31 @@ namespace DungeonMapEditor.UI
 
         private void CreateMap_Click(object sender, RoutedEventArgs e)
         {
+            CreateMap();
+        }
+
+        public void CreateMap()
+        {
             OnSelectionMade(new HomeScreenSelectionMadeEventArgs(HomeScreenSelectionType.NewProject));
         }
 
         private void LoadMapFromFile_Click(object sender, RoutedEventArgs e)
         {
+            LoadMapFromFile();
+        }
 
+        public void LoadMapFromFile()
+        {
+            OpenFileDialog dialog = new OpenFileDialog()
+            {
+                Title = "Open a project",
+                Filter = "Dungeon map file (*.dm)|*.dm"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                OnSelectionMade(new HomeScreenSelectionMadeEventArgs(new ProjectFile(new FileInfo(dialog.FileName).Directory)));
+            }
         }
 
         private void ManageTiles_Click(object sender, RoutedEventArgs e)

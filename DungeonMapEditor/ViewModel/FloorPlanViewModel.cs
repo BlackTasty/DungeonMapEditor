@@ -80,6 +80,10 @@ namespace DungeonMapEditor.ViewModel
             {
                 mSelectedRoomAssignment = value;
                 InvokePropertyChanged();
+                if (value == null)
+                {
+                    SelectedTabIndex = 0;
+                }
                 InvokePropertyChanged("IsRoomAssignmentSelected");
             }
         }

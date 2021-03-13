@@ -15,7 +15,7 @@
     </DockPanel.Resources>
     <DockPanel Width="260">
         <TextBlock Foreground="White" TextAlignment="Center" FontWeight="Bold" FontSize="32" TextWrapping="Wrap"
-                   DockPanel.Dock="Top" Margin="0,48,0,-48">
+                   DockPanel.Dock="Top" Margin="0,32,0,-32">
             <TextBlock.Effect>
                 <DropShadowEffect ShadowDepth="0" BlurRadius="6"/>
             </TextBlock.Effect>

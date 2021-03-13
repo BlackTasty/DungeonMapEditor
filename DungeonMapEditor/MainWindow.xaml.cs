@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Xceed.Wpf.AvalonDock.Controls;
 
 namespace DungeonMapEditor
 {
@@ -29,15 +30,35 @@ namespace DungeonMapEditor
     public partial class MainWindow : Window
     {
         private TabItem selectedTabItem;
+        private HomeScreen homeInstance;
 
         public MainWindow()
         {
             InitializeComponent();
-            AddTab(new HomeScreen(), "Home", true);
+            homeInstance = new HomeScreen();
+            homeInstance.SelectionMade += HomeScreen_SelectionMade;
+            AddTab(homeInstance, "Home", true);
         }
 
         private int AddTab(FrameworkElement element, string headerString, bool isSelected = false, object tabItemTag = null)
         {
+            var existingTabs = tabControl.Items.OfType<TabItem>();
+
+            foreach (var tab in existingTabs)
+            {
+                if (element is HomeScreen elementHome && tab.Content is HomeScreen tabHome)
+                {
+                    return tabControl.Items.IndexOf(tab);
+                }
+                else if (element is ProjectOverview elementProjectOverview && tab.Content is ProjectOverview tabProjectOverview)
+                {
+                    if (elementProjectOverview.GetProjectGuid() == tabProjectOverview.GetProjectGuid())
+                    {
+                        return tabControl.Items.IndexOf(tab);
+                    }
+                }
+            }
+
             StackPanel header = new StackPanel()
             {
                 Orientation = Orientation.Horizontal
@@ -65,11 +86,6 @@ namespace DungeonMapEditor
             tabCloseButton.Tag = tabItem;
 
             tabControl.Items.Add(tabItem);
-
-            if (tabItem.Content is HomeScreen homeScreen)
-            {
-                homeScreen.SelectionMade += HomeScreen_SelectionMade;
-            }
 
             if (isSelected)
             {
@@ -190,11 +206,7 @@ namespace DungeonMapEditor
         {
             if ((sender as Button).Tag is TabItem targetTab)
             {
-                if (targetTab.Content is HomeScreen homeScreen)
-                {
-                    homeScreen.SelectionMade -= HomeScreen_SelectionMade;
-                }
-                else if (targetTab.Content is ProjectOverview projectOverview)
+                if (targetTab.Content is ProjectOverview projectOverview)
                 {
                     projectOverview.ProjectNameChanged -= ProjectOverview_ProjectNameChanged;
                 }
@@ -229,6 +241,21 @@ namespace DungeonMapEditor
         {
             //selectedTabItem = tabControl.Items[0] as TabItem;
             //selectedTabItem.FontWeight = FontWeights.Bold;
+        }
+
+        private void OpenHomeScreen_Click(object sender, RoutedEventArgs e)
+        {
+            AddTab(homeInstance, "Home", true);
+        }
+
+        private void CreateProject_Click(object sender, RoutedEventArgs e)
+        {
+            homeInstance.CreateMap();
+        }
+
+        private void LoadFromFile_Click(object sender, RoutedEventArgs e)
+        {
+            homeInstance.LoadMapFromFile();
         }
     }
 }
