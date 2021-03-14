@@ -3,6 +3,7 @@ using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace DungeonMapEditor.UI
     public partial class RoomPlanGrid : DockPanel
     {
         public event EventHandler<NameChangedEventArgs> RoomNameChanged;
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
         private int tileTagIndex = 0;
         private int placeableTagIndex = 0;
@@ -44,9 +46,23 @@ namespace DungeonMapEditor.UI
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             roomPlan.Load();
             vm.RoomPlan = roomPlan;
+            roomPlan.ChangeManager.ChangeObserved += ChangeManager_ChangeObserved;
             vm.RoomNameChanged += Vm_RoomNameChanged;
             vm.GridSizeChanged += Vm_GridSizeChanged;
             AddTilesAndPlaceables();
+        }
+
+        private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            if (e.Observer.PropertyName == "Name")
+            {
+                OnRoomNameChanged(new NameChangedEventArgs("", e.UnsavedChanges ? e.NewValue + "*" : e.NewValue));
+            }
+            else
+            {
+                RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+                OnChangeObserved(new ChangeObservedEventArgs(vm.RoomPlan.UnsavedChanges, vm.RoomPlan.Name, e.Observer));
+            }
         }
 
         public string GetRoomPlanGuid()
@@ -179,11 +195,6 @@ namespace DungeonMapEditor.UI
             tilePreview.TileAssignment.Tile = vm.SelectedAvailableTile;
         }
 
-        protected virtual void OnRoomNameChanged(NameChangedEventArgs e)
-        {
-            RoomNameChanged?.Invoke(this, e);
-        }
-
         private void Placeables_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (sender is DataGridRow clickedRow && clickedRow.DataContext is Placeable placeable)
@@ -251,6 +262,16 @@ namespace DungeonMapEditor.UI
             {
                 RemovePlaceable(selectedPlaceableControl);
             }
+        }
+
+        protected virtual void OnRoomNameChanged(NameChangedEventArgs e)
+        {
+            RoomNameChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

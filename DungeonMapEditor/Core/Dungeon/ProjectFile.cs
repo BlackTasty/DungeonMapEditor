@@ -191,6 +191,7 @@ namespace DungeonMapEditor.Core.Dungeon
 
             Name = projectFile.Name;
             guid = projectFile.guid;
+
             FloorPlans.Clear();
             FloorPlans.Add(projectFile.FloorPlans);
             RoomPlans.Clear();

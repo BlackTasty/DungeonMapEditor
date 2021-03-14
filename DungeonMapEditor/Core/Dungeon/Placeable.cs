@@ -79,8 +79,8 @@ namespace DungeonMapEditor.Core.Dungeon
             base(name, description, rotation, guid)
         {
             ImagePath = imagePath;
-            mTileRatioX = tileRatioX;
-            mTileRatioY = tileRatioY;
+            TileRatioX = tileRatioX;
+            TileRatioY = tileRatioY;
         }
 
         /// <summary>

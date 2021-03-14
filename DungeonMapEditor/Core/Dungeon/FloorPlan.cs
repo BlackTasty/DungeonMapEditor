@@ -81,7 +81,7 @@ namespace DungeonMapEditor.Core.Dungeon
         {
             InitializeLists();
             RoomAssignments.Add(roomAssignments);
-            mFloorName = floorName;
+            FloorName = floorName;
             if (floorPlanImageFileName != null)
             {
                 FloorPlanImageFileName = floorPlanImageFileName;
@@ -113,7 +113,7 @@ namespace DungeonMapEditor.Core.Dungeon
         {
             InitializeLists();
             isFile = true;
-            mFloorName = "";
+            FloorName = "";
         }
 
         private void InitializeLists()

@@ -60,9 +60,9 @@ namespace DungeonMapEditor.Core.Dungeon
         [JsonConstructor]
         public BaseData(string name, string description, double rotation, string guid)
         {
-            mName = name;
-            mDescription = description;
-            mRotation = rotation;
+            Name = name;
+            Description = description;
+            Rotation = rotation;
             this.guid = guid;
         }
 
@@ -74,9 +74,10 @@ namespace DungeonMapEditor.Core.Dungeon
         /// <param name="rotation">The rotation of this object (clock-wise)</param>
         public BaseData(string name, string description, double rotation) : this()
         {
-            mName = name;
-            mDescription = description;
-            mRotation = rotation;
+            Name = "";
+            Name = name;
+            Description = description;
+            Rotation = rotation;
         }
 
         /// <summary>

@@ -52,12 +52,6 @@ namespace DungeonMapEditor.Core.FileSystem
             }
         }
 
-        private void Observer_ChangeObserved(object sender, ChangeObservedEventArgs e)
-        {
-            InvokePropertyChanged("UnsavedChanges");
-            ChangeObserved?.Invoke(this, e);
-        }
-
         /// <summary>
         /// Set currentValue as originalValue on every observer
         /// </summary>
@@ -67,6 +61,12 @@ namespace DungeonMapEditor.Core.FileSystem
             {
                 observer.Reset();
             }
+            InvokePropertyChanged("UnsavedChanges");
+        }
+
+        private void Observer_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
             InvokePropertyChanged("UnsavedChanges");
         }
     }

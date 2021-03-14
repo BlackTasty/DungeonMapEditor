@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
@@ -141,26 +142,72 @@ namespace DungeonMapEditor.UI
             ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
 
             FloorPlanGrid floorPlanGrid = new FloorPlanGrid(floorPlan, vm.ProjectFile);
-            floorPlanGrid.FloorNameChanged += PlanGrid_NameChanged;
+            floorPlanGrid.ChangeObserved += FloorPlanGrid_ChangeObserved;
+            //floorPlanGrid.FloorNameChanged += PlanGrid_NameChanged;
 
             tabControl.SelectedIndex = AddTab(floorPlanGrid, floorPlan.Name, floorTabStyle, Guid.NewGuid().ToString());
             SetCurrentTabItemBold(tabControl.Items[tabControl.SelectedIndex] as TabItem);
         }
 
+        private void FloorPlanGrid_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            if (sender is FloorPlanGrid target)
+            {
+                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Tag == target.Tag);
+                if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
+                {
+                    TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
+
+                    if (headerText != null)
+                    {
+                        headerText.Text = !e.UnsavedChanges ? e.NewValue : e.NewValue + "*";
+                        headerText.FontStyle = !e.UnsavedChanges ? FontStyles.Normal : FontStyles.Italic;
+                    }
+                }
+
+                ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                OnChangeObserved(new ChangeObservedEventArgs(e.UnsavedChanges, vm.ProjectFile.Name, e.Observer));
+            }
+        }
+
         public void OpenRoomPlan(RoomPlan roomPlan)
         {
             RoomPlanGrid roomPlanGrid = new RoomPlanGrid(roomPlan);
+            roomPlanGrid.ChangeObserved += RoomPlanGrid_ChangeObserved;
             roomPlanGrid.RoomNameChanged += PlanGrid_NameChanged;
 
             tabControl.SelectedIndex = AddTab(roomPlanGrid, roomPlan.Name, roomTabStyle, Guid.NewGuid().ToString());
             SetCurrentTabItemBold(tabControl.Items[tabControl.SelectedIndex] as TabItem);
         }
 
+        private void RoomPlanGrid_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            if (sender is RoomPlanGrid target)
+            {
+                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is RoomPlanGrid tab && 
+                                            tab.GetRoomPlanGuid() == target.GetRoomPlanGuid());
+                if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
+                {
+                    TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
+
+                    if (headerText != null)
+                    {
+                        headerText.Text = !e.UnsavedChanges ? e.NewValue : e.NewValue + "*";
+                        headerText.FontStyle = !e.UnsavedChanges ? FontStyles.Normal : FontStyles.Italic;
+                    }
+                }
+
+                ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                OnChangeObserved(new ChangeObservedEventArgs(e.UnsavedChanges, vm.ProjectFile.Name, e.Observer));
+            }
+        }
+
         private void PlanGrid_NameChanged(object sender, NameChangedEventArgs e)
         {
-            if (sender is FrameworkElement target)
+            if (sender is FloorPlanGrid target)
             {
-                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Tag == target.Tag);
+                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid tab && 
+                                            tab.GetFloorPlanGuid() == target.GetFloorPlanGuid());
                 if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
                 {
                     TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
@@ -237,13 +284,84 @@ namespace DungeonMapEditor.UI
         {
             if ((sender as Button).Tag is TabItem targetTab)
             {
+                bool removeWithoutSaving = false;
                 if (targetTab.Content is FloorPlanGrid floorPlanGrid)
                 {
-                    floorPlanGrid.FloorNameChanged -= PlanGrid_NameChanged;
+                    var floorPlanVm = floorPlanGrid.DataContext as FloorPlanViewModel;
+                    if (floorPlanVm.FloorPlan.UnsavedChanges)
+                    {
+                        ShowUnsavedDialog(floorPlanGrid, targetTab);
+                    }
+                    else
+                    {
+                        floorPlanGrid.FloorNameChanged -= PlanGrid_NameChanged;
+                        floorPlanGrid.ChangeObserved -= FloorPlanGrid_ChangeObserved;
+                        tabControl.Items.Remove(targetTab);
+                    }
                 }
-
-                tabControl.Items.Remove(targetTab);
+                else if (targetTab.Content is RoomPlanGrid roomPlanGrid)
+                {
+                    var roomPlanVm = roomPlanGrid.DataContext as RoomPlanViewModel;
+                    if (roomPlanVm.RoomPlan.UnsavedChanges)
+                    {
+                        ShowUnsavedDialog(roomPlanGrid, targetTab);
+                    }
+                    else
+                    {
+                        roomPlanGrid.ChangeObserved -= RoomPlanGrid_ChangeObserved;
+                        roomPlanGrid.RoomNameChanged -= PlanGrid_NameChanged;
+                        tabControl.Items.Remove(targetTab);
+                    }
+                }
             }
+        }
+
+        private void ShowUnsavedDialog<T>(T unsavedObject, TabItem targetTab)
+        {
+            DialogClosingUnsaved dialog = new DialogClosingUnsaved(targetTab);
+            dialog.SetObjectValues(unsavedObject);
+            dialog.DialogCompleted += DialogClosingUnsaved_DialogCompleted;
+
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void DialogClosingUnsaved_DialogCompleted(object sender, ClosingUnsavedDialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == DialogResult.Abort)
+            {
+                return;
+            }
+
+            if (e.Target is RoomPlanGrid roomPlanGrid)
+            {
+                if (e.DialogResult == DialogResult.Yes)
+                {
+                    var roomPlanVm = roomPlanGrid.DataContext as RoomPlanViewModel;
+                    roomPlanVm.RoomPlan.Save(System.IO.Path.Combine((DataContext as ProjectOverviewViewModel).ProjectFile.FilePath, "rooms"));
+                }
+                else
+                {
+                    (roomPlanGrid.DataContext as RoomPlanViewModel).RoomPlan.Load();
+                }
+                roomPlanGrid.ChangeObserved -= RoomPlanGrid_ChangeObserved;
+                roomPlanGrid.RoomNameChanged -= PlanGrid_NameChanged;
+            }
+            else if (e.Target is FloorPlanGrid floorPlanGrid)
+            {
+                if (e.DialogResult == DialogResult.Yes)
+                {
+                    var floorPlanVm = floorPlanGrid.DataContext as FloorPlanViewModel;
+                    floorPlanVm.FloorPlan.Save(System.IO.Path.Combine((DataContext as ProjectOverviewViewModel).ProjectFile.FilePath, "floors"));
+                }
+                else
+                {
+                    (floorPlanGrid.DataContext as FloorPlanViewModel).FloorPlan.Load();
+                }
+                floorPlanGrid.FloorNameChanged -= PlanGrid_NameChanged;
+                floorPlanGrid.ChangeObserved -= FloorPlanGrid_ChangeObserved;
+            }
+
+            tabControl.Items.Remove(e.TargetTab);
         }
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)
@@ -382,7 +500,15 @@ namespace DungeonMapEditor.UI
 
         protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
         {
-            ChangeObserved?.Invoke(this, e);
+            bool unsavedRoomPlan = tabControl.Items.OfType<TabItem>().Any(x => x.Content is RoomPlanGrid roomPlan &&
+                                    (roomPlan.DataContext as RoomPlanViewModel).RoomPlan.UnsavedChanges);
+            bool unsavedFloorPlan = tabControl.Items.OfType<TabItem>().Any(x => x.Content is FloorPlanGrid floorPlan &&
+                                    (floorPlan.DataContext as FloorPlanViewModel).FloorPlan.UnsavedChanges);
+
+            ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+
+            ChangeObserved?.Invoke(this, new ChangeObservedEventArgs(vm.ProjectFile.UnsavedChanges || unsavedRoomPlan || unsavedFloorPlan, 
+                e.NewValue, e.Observer));
         }
     }
 }

@@ -2,6 +2,7 @@
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace DungeonMapEditor.UI
     public partial class FloorPlanGrid : DockPanel
     {
         public event EventHandler<NameChangedEventArgs> FloorNameChanged;
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
         private int tagIndex;
         private ProjectFile projectFile;
@@ -37,6 +39,7 @@ namespace DungeonMapEditor.UI
             InitializeComponent();
             floorPlan.FloorNameChanged += FloorPlan_FloorNameChanged;
             floorPlan.NameChanged += FloorPlan_FloorNameChanged;
+            floorPlan.ChangeManager.ChangeObserved += ChangeManager_ChangeObserved;
             this.projectFile = projectFile;
 
             FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
@@ -44,6 +47,19 @@ namespace DungeonMapEditor.UI
             floorPlan.Load();
             vm.FloorPlan = floorPlan;
             AddRooms();
+        }
+
+        private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            if (e.Observer.PropertyName == "Name")
+            {
+                OnFloorNameChanged(new NameChangedEventArgs("", e.UnsavedChanges ? e.NewValue + "*" : e.NewValue));
+            }
+            else
+            {
+                FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
+                OnChangeObserved(new ChangeObservedEventArgs(vm.FloorPlan.UnsavedChanges, vm.FloorPlan.Name, e.Observer));
+            }
         }
 
         private void AddRooms()
@@ -72,11 +88,6 @@ namespace DungeonMapEditor.UI
         private void FloorPlan_FloorNameChanged(object sender, NameChangedEventArgs e)
         {
             OnFloorNameChanged(e);
-        }
-
-        protected virtual void OnFloorNameChanged(NameChangedEventArgs e)
-        {
-            FloorNameChanged?.Invoke(this, e);
         }
 
         public string GetFloorPlanGuid()
@@ -157,6 +168,16 @@ namespace DungeonMapEditor.UI
             grid.Children.Remove(roomControl);
             vm.SelectedRoomAssignment = null;
             selectedRoomControl = null;
+        }
+
+        protected virtual void OnFloorNameChanged(NameChangedEventArgs e)
+        {
+            FloorNameChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

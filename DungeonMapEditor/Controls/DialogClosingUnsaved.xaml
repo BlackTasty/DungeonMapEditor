@@ -1,4 +1,4 @@
-﻿<Border x:Class="DungeonMapEditor.Controls.DialogRemoveObject"
+﻿<Border x:Class="DungeonMapEditor.Controls.DialogClosingUnsaved"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,19 +9,20 @@
         Height="140" Width="300" Padding="4" Background="{StaticResource Background}" BorderBrush="{StaticResource BorderBrush}" 
         BorderThickness="1">
     <Border.DataContext>
-        <vm:DialogRemoveObjectViewModel/>
+        <vm:DialogUnsavedChangesViewModel/>
     </Border.DataContext>
     <DockPanel LastChildFill="False">
-        <TextBlock FontSize="20" Margin="4,0" DockPanel.Dock="Top">
-            <Run Text="Remove '"/><Run Text="{Binding Name}"/><Run Text="'?"/>
-        </TextBlock>
+        <TextBlock Text="You have unsaved changes!" FontSize="20" Margin="4,0" DockPanel.Dock="Top"/>
         <TextBlock TextWrapping="Wrap" Margin="8" DockPanel.Dock="Top">
-            <Run Text="Are you sure you want to remove '"/><Run Text="{Binding Name}"/><Run Text="'? This is irreversible!"/>
+            <Run Text="Do you want to save the "/><Run Text="{Binding ObjectName, FallbackValue=room}"/>
+            <Run Text="'"/><Run Text="{Binding Name, StringFormat={}{0}, FallbackValue=Test}"/><Run Text="' before closing?"/>
         </TextBlock>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="Confirm" Margin="8" Padding="8,2" Click="CreateFloor_Click" IsEnabled="{Binding IsValid}"
+            <Button Content="Yes" Margin="8" Padding="8,2" Click="Yes_Click" IsEnabled="{Binding IsValid}"
                     Style="{StaticResource PrimaryButton}"/>
-            <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
+            <Button Content="No" Margin="8" Padding="8,2" Click="No_Click"
+                    Style="{StaticResource WarnButton}"/>
+            <Button Content="Cancel" Margin="8" Padding="8,2" Click="Abort_Click"
                     Style="{StaticResource WarnButton}"/>
         </StackPanel>
     </DockPanel>

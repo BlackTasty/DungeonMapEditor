@@ -20,6 +20,7 @@ namespace DungeonMapEditor.Core
         protected bool isFile;
         protected ChangeManager changeManager = new ChangeManager();
 
+        [JsonIgnore]
         public ChangeManager ChangeManager => changeManager;
 
         [JsonIgnore]

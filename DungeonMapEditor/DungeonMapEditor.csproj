@@ -92,6 +92,9 @@
     <Compile Include="Controls\DialogRemoveObject.xaml.cs">
       <DependentUpon>DialogRemoveObject.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogClosingUnsaved.xaml.cs">
+      <DependentUpon>DialogClosingUnsaved.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FloorControl.xaml.cs">
       <DependentUpon>FloorControl.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,8 @@
     </Compile>
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Converter\EnumDescriptionTypeConverter.cs" />
+    <Compile Include="Core\Dialog\ClosingUnsavedDialogButtonClickedEventArgs.cs" />
+    <Compile Include="Core\Dialog\IClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dungeon\Assignment\Assignment.cs" />
     <Compile Include="Core\Dungeon\ProjectExport.cs" />
@@ -169,6 +174,7 @@
     <Compile Include="ViewModel\DesignTime\TileManagerDesignViewModel.cs" />
     <Compile Include="ViewModel\DialogExportProjectViewModel.cs" />
     <Compile Include="ViewModel\DialogRemoveObjectViewModel.cs" />
+    <Compile Include="ViewModel\DialogUnsavedChangesViewModel.cs" />
     <Compile Include="ViewModel\FloorControlViewModel.cs" />
     <Compile Include="ViewModel\FloorPlanViewModel.cs" />
     <Compile Include="ViewModel\HomeScreenViewModel.cs" />
@@ -206,6 +212,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DialogRemoveObject.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogClosingUnsaved.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -261,7 +271,6 @@
       <DependentUpon>TileControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\Dungeon\BaseData.cs" />
-    <Compile Include="Core\Dungeon\FloorChangeTile.cs" />
     <Compile Include="Core\Dungeon\FloorPlan.cs" />
     <Compile Include="Core\Dungeon\Placeable.cs" />
     <Compile Include="Core\Dungeon\Assignment\PlaceableAssignment.cs" />

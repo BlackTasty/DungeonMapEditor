@@ -168,48 +168,32 @@ namespace DungeonMapEditor
         {
             if (e.Dialog is DialogCreateFloor createFloor)
             {
-                createFloor.DialogCompleted += CreateFloor_DialogCompleted;
+                createFloor.DialogCompleted += Dialog_DialogCompleted;
             }
             else if (e.Dialog is DialogCreateRoom createRoom)
             {
-                createRoom.DialogCompleted += CreateRoom_DialogCompleted;
+                createRoom.DialogCompleted += Dialog_DialogCompleted;
             }
             else if (e.Dialog is DialogCreateCollection createCollection)
             {
-                createCollection.DialogCompleted += CreateCollection_DialogCompleted;
+                createCollection.DialogCompleted += Dialog_DialogCompleted;
             }
             else if (e.Dialog is DialogExportProject exportProject)
             {
-                exportProject.DialogCompleted += ExportProject_DialogCompleted;
+                exportProject.DialogCompleted += Dialog_DialogCompleted;
             }
             else if (e.Dialog is DialogRemoveObject removeObject)
             {
-                removeObject.DialogCompleted += RemoveObject_DialogCompleted;
+                removeObject.DialogCompleted += Dialog_DialogCompleted;
+            }
+            else if (e.Dialog is DialogClosingUnsaved closingUnsaved)
+            {
+                closingUnsaved.DialogCompleted += Dialog_DialogCompleted;
             }
             (DataContext as MainViewModel).Dialog = e.Dialog;
         }
 
-        private void RemoveObject_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
-        {
-            (DataContext as MainViewModel).ShowDialog = false;
-        }
-
-        private void ExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
-        {
-            (DataContext as MainViewModel).ShowDialog = false;
-        }
-
-        private void CreateCollection_DialogCompleted(object sender, CreateDialogCompletedEventArgs<CollectionSet> e)
-        {
-            (DataContext as MainViewModel).ShowDialog = false;
-        }
-
-        private void CreateRoom_DialogCompleted(object sender, CreateDialogCompletedEventArgs<RoomPlan> e)
-        {
-            (DataContext as MainViewModel).ShowDialog = false;
-        }
-
-        private void CreateFloor_DialogCompleted(object sender, CreateDialogCompletedEventArgs<FloorPlan> e)
+        private void Dialog_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
         {
             (DataContext as MainViewModel).ShowDialog = false;
         }
@@ -238,10 +222,49 @@ namespace DungeonMapEditor
             {
                 if (targetTab.Content is ProjectOverview projectOverview)
                 {
-                    projectOverview.ProjectNameChanged -= ProjectOverview_ProjectNameChanged;
+                    var projectVm = projectOverview.DataContext as ProjectOverviewViewModel;
+                    if (projectVm.ProjectFile.UnsavedChanges)
+                    {
+                        DialogClosingUnsaved dialog = new DialogClosingUnsaved(targetTab);
+                        dialog.SetObjectValues(projectOverview);
+                        dialog.DialogCompleted += DialogClosingUnsaved_DialogCompleted;
+
+                        (DataContext as MainViewModel).Dialog = dialog;
+                    }
+                    else
+                    {
+                        projectOverview.ProjectNameChanged -= ProjectOverview_ProjectNameChanged;
+                        projectOverview.OpenDialog -= Dialog_OpenDialog;
+                        projectOverview.ChangeObserved -= ProjectOverview_ChangeObserved;
+                        tabControl.Items.Remove(targetTab);
+                    }
                 }
-                tabControl.Items.Remove(targetTab);
             }
+        }
+
+        private void DialogClosingUnsaved_DialogCompleted(object sender, Core.Dialog.ClosingUnsavedDialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.Abort)
+            {
+                return;
+            }
+
+            if (e.Target is ProjectOverview projectOverview)
+            {
+                if (e.DialogResult == Core.Dialog.DialogResult.Yes)
+                {
+                    (projectOverview.DataContext as ProjectOverviewViewModel).ProjectFile.Save();
+                }
+                else
+                {
+                    (projectOverview.DataContext as ProjectOverviewViewModel).ProjectFile.Load();
+                }
+                projectOverview.ProjectNameChanged -= ProjectOverview_ProjectNameChanged;
+                projectOverview.OpenDialog -= Dialog_OpenDialog;
+                projectOverview.ChangeObserved -= ProjectOverview_ChangeObserved;
+            }
+
+            tabControl.Items.Remove(e.TargetTab);
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
