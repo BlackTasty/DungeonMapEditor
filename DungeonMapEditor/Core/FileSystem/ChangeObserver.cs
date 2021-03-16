@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DungeonMapEditor.ViewModel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,16 @@ namespace DungeonMapEditor.Core.FileSystem
 
         private T originalValue;
         private T currentValue;
+
+        /// <summary>
+        /// The original value
+        /// </summary>
+        public T OriginalValue => originalValue;
+
+        public dynamic GetOriginalValue()
+        {
+            return originalValue;
+        }
 
         /// <summary>
         /// The current value of the observed property
@@ -42,7 +53,11 @@ namespace DungeonMapEditor.Core.FileSystem
                     return false;
                 }
 
-                if (currentValue is IList currentList)
+                if (currentValue is IVeryObservableCollection currentCollection)
+                {
+                    return currentCollection.AnyUnsavedChanges;
+                }
+                else if (currentValue is IList currentList)
                 {
                     if (originalValue != null && originalValue is IList originalList)
                     {
@@ -87,6 +102,11 @@ namespace DungeonMapEditor.Core.FileSystem
         protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
         {
             ChangeObserved?.Invoke(this, e);
+        }
+
+        public override string ToString()
+        {
+            return "{ Type: " + originalValue.GetType().ToString() + " }";
         }
     }
 }

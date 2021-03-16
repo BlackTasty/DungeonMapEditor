@@ -95,6 +95,9 @@
     <Compile Include="Controls\DialogClosingUnsaved.xaml.cs">
       <DependentUpon>DialogClosingUnsaved.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogCollectionSetClosingUnsaved.xaml.cs">
+      <DependentUpon>DialogCollectionSetClosingUnsaved.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FloorControl.xaml.cs">
       <DependentUpon>FloorControl.xaml</DependentUpon>
     </Compile>
@@ -174,10 +177,12 @@
     <Compile Include="ViewModel\DesignTime\TileManagerDesignViewModel.cs" />
     <Compile Include="ViewModel\DialogExportProjectViewModel.cs" />
     <Compile Include="ViewModel\DialogRemoveObjectViewModel.cs" />
+    <Compile Include="ViewModel\DialogCollectionSetClosingUnsavedViewModel.cs" />
     <Compile Include="ViewModel\DialogUnsavedChangesViewModel.cs" />
     <Compile Include="ViewModel\FloorControlViewModel.cs" />
     <Compile Include="ViewModel\FloorPlanViewModel.cs" />
     <Compile Include="ViewModel\HomeScreenViewModel.cs" />
+    <Compile Include="ViewModel\IVeryObservableCollection.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PlaceableConfiguratorViewModel.cs" />
     <Compile Include="ViewModel\PlaceableControlViewModel.cs" />
@@ -216,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DialogClosingUnsaved.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogCollectionSetClosingUnsaved.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

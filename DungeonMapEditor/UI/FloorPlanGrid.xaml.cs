@@ -58,7 +58,7 @@ namespace DungeonMapEditor.UI
             else
             {
                 FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
-                OnChangeObserved(new ChangeObservedEventArgs(vm.FloorPlan.UnsavedChanges, vm.FloorPlan.Name, e.Observer));
+                OnChangeObserved(new ChangeObservedEventArgs(vm.FloorPlan?.UnsavedChanges ?? false, vm.FloorPlan?.Name, e.Observer));
             }
         }
 
@@ -168,6 +168,17 @@ namespace DungeonMapEditor.UI
             grid.Children.Remove(roomControl);
             vm.SelectedRoomAssignment = null;
             selectedRoomControl = null;
+        }
+
+        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
+
+            if (!vm.FloorPlan.FromFile)
+            {
+                OnChangeObserved(new ChangeObservedEventArgs(vm.FloorPlan.UnsavedChanges, vm.FloorPlan.Name,
+                    vm.FloorPlan.ChangeManager.GetObserverByName("Name")));
+            }
         }
 
         protected virtual void OnFloorNameChanged(NameChangedEventArgs e)

@@ -218,19 +218,19 @@ namespace DungeonMapEditor.Core.Dungeon
             }
             RoomPlan roomPlan = LoadFile();
 
-            TileAssignments = roomPlan.TileAssignments;
-            PlaceableAssignments = roomPlan.PlaceableAssignments;
+            TileAssignments = roomPlan?.TileAssignments;
+            PlaceableAssignments = roomPlan?.PlaceableAssignments;
             //FloorChangeTiles = roomPlan.FloorChangeTiles;
-            TilesX = roomPlan.TilesX;
-            TilesY = roomPlan.TilesY;
-            Name = roomPlan.Name;
-            assignedProjectName = roomPlan.AssignedProjectName;
-            RoomNumber = roomPlan.RoomNumber;
+            TilesX = roomPlan?.TilesX ?? 1;
+            TilesY = roomPlan?.TilesY ?? 1;
+            Name = roomPlan?.Name;
+            assignedProjectName = roomPlan?.AssignedProjectName;
+            RoomNumber = roomPlan?.RoomNumber ?? 404;
         }
 
         public void GenerateTileGrid(int oldX, int newX, int oldY, int newY)
         {
-            if (disableGridGeneration)
+            if (disableGridGeneration || TileAssignments == null)
             {
                 return;
             }

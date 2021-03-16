@@ -114,6 +114,8 @@ namespace DungeonMapEditor
                 case HomeScreenSelectionType.OpenTileManager:
                     TileManager tileManager = new TileManager();
                     tileManager.OpenDialog += Dialog_OpenDialog;
+                    tileManager.UnsavedDialogsCompleted += TileManager_UnsavedDialogsCompleted;
+
                     selectedTabIndex = AddTab(tileManager, "Collection manager");
                     break;
             }
@@ -238,6 +240,37 @@ namespace DungeonMapEditor
                         projectOverview.ChangeObserved -= ProjectOverview_ChangeObserved;
                         tabControl.Items.Remove(targetTab);
                     }
+                }
+                else if (targetTab.Content is TileManager tileManager)
+                {
+                    var tileManagerVm = tileManager.DataContext as TileManagerViewModel;
+                    if (tileManager.AnyUnsavedChanges)
+                    {
+                        tileManager.BeginShowDialogForUnsavedCollections(targetTab);
+                    }
+                    else
+                    {
+                        tileManager.OpenDialog -= Dialog_OpenDialog;
+                        tileManager.UnsavedDialogsCompleted -= TileManager_UnsavedDialogsCompleted;
+                        tabControl.Items.Remove(targetTab);
+                    }
+                }
+                else
+                {
+                    tabControl.Items.Remove(targetTab);
+                }
+            }
+        }
+
+        private void TileManager_UnsavedDialogsCompleted(object sender, Core.Dialog.ClosingUnsavedDialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult != Core.Dialog.DialogResult.Abort)
+            {
+                if (e.Target is TileManager tileManager)
+                {
+                    tileManager.OpenDialog -= Dialog_OpenDialog;
+                    tileManager.UnsavedDialogsCompleted -= TileManager_UnsavedDialogsCompleted;
+                    tabControl.Items.Remove(e.TargetTab);
                 }
             }
         }

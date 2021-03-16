@@ -97,7 +97,7 @@ namespace DungeonMapEditor.UI
 
         private void RoomPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<RoomPlan> e)
         {
-            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
                 vm.ProjectFile.RoomPlans.Add(new RoomAssignment(e.ResultObject, vm.ProjectFile));
@@ -107,7 +107,7 @@ namespace DungeonMapEditor.UI
 
         private void FloorPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<FloorPlan> e)
         {
-            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
                 vm.ProjectFile.FloorPlans.Add(new FloorAssignment(e.ResultObject, vm.ProjectFile));
@@ -153,7 +153,8 @@ namespace DungeonMapEditor.UI
         {
             if (sender is FloorPlanGrid target)
             {
-                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Tag == target.Tag);
+                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid tab &&
+                                            tab.GetFloorPlanGuid() == target.GetFloorPlanGuid());
                 if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
                 {
                     TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
@@ -204,10 +205,24 @@ namespace DungeonMapEditor.UI
 
         private void PlanGrid_NameChanged(object sender, NameChangedEventArgs e)
         {
-            if (sender is FloorPlanGrid target)
+            if (sender is FloorPlanGrid floorPlanGrid)
             {
                 TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid tab && 
-                                            tab.GetFloorPlanGuid() == target.GetFloorPlanGuid());
+                                            tab.GetFloorPlanGuid() == floorPlanGrid.GetFloorPlanGuid());
+                if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
+                {
+                    TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
+
+                    if (headerText != null)
+                    {
+                        headerText.Text = e.NewName;
+                    }
+                }
+            }
+            else if(sender is RoomPlanGrid roomPlanGrid)
+            {
+                TabItem targetTabItem = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is RoomPlanGrid tab &&
+                                            tab.GetRoomPlanGuid() == roomPlanGrid.GetRoomPlanGuid());
                 if (targetTabItem != null && targetTabItem.Header is StackPanel headerStack)
                 {
                     TextBlock headerText = headerStack.Children.OfType<TextBlock>().FirstOrDefault();
@@ -284,7 +299,6 @@ namespace DungeonMapEditor.UI
         {
             if ((sender as Button).Tag is TabItem targetTab)
             {
-                bool removeWithoutSaving = false;
                 if (targetTab.Content is FloorPlanGrid floorPlanGrid)
                 {
                     var floorPlanVm = floorPlanGrid.DataContext as FloorPlanViewModel;
@@ -438,9 +452,9 @@ namespace DungeonMapEditor.UI
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void DialogRemoveRoom_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        private void DialogRemoveRoom_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
         {
-            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
                 TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is RoomPlanGrid roomPlan &&
@@ -453,6 +467,7 @@ namespace DungeonMapEditor.UI
 
                 vm.SelectedRoomAssignment.RoomPlan.Delete();
                 vm.ProjectFile.RoomPlans.Remove(vm.SelectedRoomAssignment);
+                vm.ProjectFile.SaveOnlyRooms();
             }
         }
 
@@ -478,13 +493,22 @@ namespace DungeonMapEditor.UI
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void DialogRemoveFloor_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        private void DialogRemoveFloor_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
         {
-            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
+                TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid roomPlan &&
+                                        roomPlan.GetFloorPlanGuid() == vm.SelectedFloorAssignment.FloorPlan.Guid);
+
+                if (openTab != null)
+                {
+                    tabControl.Items.Remove(openTab);
+                }
+
                 vm.SelectedFloorAssignment.FloorPlan.Delete();
                 vm.ProjectFile.FloorPlans.Remove(vm.SelectedFloorAssignment);
+                vm.ProjectFile.SaveOnlyFloors();
             }
         }
 

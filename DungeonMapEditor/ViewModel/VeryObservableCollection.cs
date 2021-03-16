@@ -1,5 +1,7 @@
-﻿using DungeonMapEditor.Core.FileSystem;
+﻿using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel.Communication;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +18,7 @@ namespace DungeonMapEditor.ViewModel
     /// (this removes the need to call the "OnNotifyPropertyChanged" event every time you add, edit or remove an entry.
     /// </summary>
     /// <typeparam name="T">The type of elements in the collection.</typeparam>
-    public class VeryObservableCollection<T> : ObservableCollection<T>, INotifyPropertyChanged
+    public class VeryObservableCollection<T> : ObservableCollection<T>, INotifyPropertyChanged, IVeryObservableCollection
     {
         public event EventHandler<EventArgs> ObserveChanges;
 
@@ -29,6 +31,44 @@ namespace DungeonMapEditor.ViewModel
         new event PropertyChangedEventHandler PropertyChanged;
 
         public string CollectionName { get; }
+
+        [JsonIgnore]
+        public bool UnsavedChanged
+        {
+            get
+            {
+                foreach (var observer in changeManager.ChangeObservers)
+                {
+                    if (observer is ChangeObserver<IVeryObservableCollection>)
+                    {
+                        continue;
+                    }
+
+                    if (observer.UnsavedChanges)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        [JsonIgnore]
+        public bool AnyUnsavedChanges
+        {
+            get
+            {
+                foreach (var item in this)
+                {
+                    if (item is IBaseData data)
+                    {
+                        return data.UnsavedChanges;
+                    }
+                }
+                return false;
+            }
+        }
 
         /// <summary>
         /// Initializes the collection with the specified name.

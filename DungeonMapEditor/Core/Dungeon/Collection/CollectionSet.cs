@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.ViewModel.Communication;
+﻿using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,14 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 {
     public class CollectionSet : JsonFile<CollectionSet>
     {
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
+
         private string guid;
         private string mName;
+        private bool mAnyUnsavedChanges;
+
+        private CollectionFile<Tile> tileFile;
+        private CollectionFile<Placeable> placeableFile;
 
         public string Guid => guid;
 
@@ -23,17 +30,53 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             {
                 mName = value;
                 InvokePropertyChanged();
+                changeManager.ObserveProperty(value);
             }
         }
 
         [JsonIgnore]
-        public CollectionFile<Tile> TileFile { get; set; }
+        public bool AnyUnsavedChanges
+        {
+            get => mAnyUnsavedChanges;
+            private set
+            {
+                mAnyUnsavedChanges = value;
+                InvokePropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        public CollectionFile<Tile> TileFile
+        {
+            get => tileFile;
+            set
+            {
+                if (tileFile != null)
+                {
+                    tileFile.ChangeObserved -= Collection_ChangeObserved;
+                }
+                tileFile = value;
+                tileFile.ChangeObserved += Collection_ChangeObserved;
+            }
+        }
 
         [JsonIgnore]
         public int TileCount => TileFile?.Data?.Count ?? 0;
 
         [JsonIgnore]
-        public CollectionFile<Placeable> PlaceableFile { get; set; }
+        public CollectionFile<Placeable> PlaceableFile
+        {
+            get => placeableFile;
+            set
+            {
+                if (placeableFile != null)
+                {
+                    placeableFile.ChangeObserved -= Collection_ChangeObserved;
+                }
+                placeableFile = value;
+                placeableFile.ChangeObserved += Collection_ChangeObserved;
+            }
+        }
 
         [JsonIgnore]
         public int PlaceableCount => PlaceableFile?.Data?.Count ?? 0;
@@ -57,12 +100,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         {
             Initialize();
             Load();
-        }
-
-        private void Initialize()
-        {
-            TileFile = new CollectionFile<Tile>(CollectionType.Tiles);
-            PlaceableFile = new CollectionFile<Placeable>(CollectionType.Placeables);
+            changeManager.ResetObservers();
         }
 
         public void Save(string parentPath = null)
@@ -146,6 +184,24 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                         break;
                 }
             }
+        }
+
+        private void Initialize()
+        {
+            TileFile = new CollectionFile<Tile>(CollectionType.Tiles);
+            PlaceableFile = new CollectionFile<Placeable>(CollectionType.Placeables);
+        }
+
+        private void Collection_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(new ChangeObservedEventArgs(tileFile.UnsavedChanges || placeableFile.UnsavedChanges ||
+                UnsavedChanges, e.NewValue, e.Observer));
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            AnyUnsavedChanges = e.UnsavedChanges;
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

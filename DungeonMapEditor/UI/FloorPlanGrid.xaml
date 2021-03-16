@@ -8,7 +8,8 @@
            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
            mc:Ignorable="d" 
-           d:DesignHeight="450" d:DesignWidth="800" PreviewKeyDown="DockPanel_PreviewKeyDown">
+           d:DesignHeight="450" d:DesignWidth="800" PreviewKeyDown="DockPanel_PreviewKeyDown"
+           Loaded="DockPanel_Loaded">
     <DockPanel.DataContext>
         <vm:FloorPlanViewModel/>
     </DockPanel.DataContext>

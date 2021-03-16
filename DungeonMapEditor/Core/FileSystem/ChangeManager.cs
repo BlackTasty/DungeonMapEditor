@@ -19,6 +19,8 @@ namespace DungeonMapEditor.Core.FileSystem
         /// </summary>
         public bool UnsavedChanges => changeObservers.Any(x => x.UnsavedChanges);
 
+        public List<IChangeObserver> ChangeObservers => changeObservers;
+
         ~ChangeManager()
         {
             foreach (var observer in changeObservers)
@@ -52,6 +54,11 @@ namespace DungeonMapEditor.Core.FileSystem
             }
         }
 
+        public IChangeObserver GetObserverByName(string name)
+        {
+            return ChangeObservers.FirstOrDefault(x => x.PropertyName == name);
+        }
+
         /// <summary>
         /// Set currentValue as originalValue on every observer
         /// </summary>
@@ -60,14 +67,46 @@ namespace DungeonMapEditor.Core.FileSystem
             foreach (var observer in changeObservers)
             {
                 observer.Reset();
+                OnChangeObserved(new ChangeObservedEventArgs(UnsavedChanges, observer.GetOriginalValue(), observer));
             }
-            InvokePropertyChanged("UnsavedChanges");
+            /*InvokePropertyChanged("UnsavedChanges");
+            if (changeObservers.FirstOrDefault(x => x.PropertyName == "Name") is ChangeObserver<string> nameObserver)
+            {
+                OnChangeObserved(new ChangeObservedEventArgs(UnsavedChanges, nameObserver.CurrentValue, nameObserver));
+            }*/
         }
 
         private void Observer_ChangeObserved(object sender, ChangeObservedEventArgs e)
         {
-            ChangeObserved?.Invoke(this, e);
+            OnChangeObserved(e);
             InvokePropertyChanged("UnsavedChanges");
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
+        }
+
+        public override string ToString()
+        {
+            if (changeObservers == null)
+            {
+                return "Not initialized!";
+            }
+
+            string observerString = "";
+            foreach (var observer in changeObservers)
+            {
+                if (observerString != "")
+                {
+                    observerString += ", " + observer.ToString();
+                }
+                else
+                {
+                    observerString = observer.ToString();
+                }
+            }
+            return "{" + string.Format(" Observer count: {0}; Observers: {1} ", changeObservers.Count, observerString) + "}";
         }
     }
 }

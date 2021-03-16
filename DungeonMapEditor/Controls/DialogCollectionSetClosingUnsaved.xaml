@@ -1,4 +1,4 @@
-﻿<Border x:Class="DungeonMapEditor.Controls.DialogClosingUnsaved"
+﻿<Border x:Class="DungeonMapEditor.Controls.DialogCollectionSetClosingUnsaved"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,14 +9,12 @@
         Height="140" Width="300" Padding="4" Background="{StaticResource Background}" BorderBrush="{StaticResource BorderBrush}" 
         BorderThickness="1">
     <Border.DataContext>
-        <vm:DialogUnsavedChangesViewModel/>
+        <vm:DialogCollectionSetClosingUnsavedViewModel/>
     </Border.DataContext>
     <DockPanel LastChildFill="False">
         <TextBlock Text="You have unsaved changes!" FontSize="20" Margin="4,0" DockPanel.Dock="Top"/>
         <TextBlock TextWrapping="Wrap" Margin="8" DockPanel.Dock="Top">
-            <Run Text="Do you want to save the"/>
-            <Run Text="{Binding ObjectName, FallbackValue=room}"/>
-            <Run Text="'"/><Run Text="{Binding Name, StringFormat={}{0}, FallbackValue=Test}"/><Run Text="' before closing?"/>
+            <Run Text="Do you want to save your changes in the collection '"/><Run Text="{Binding UnsavedCollection.Name}"/><Run Text="' before closing?"/>
         </TextBlock>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Yes" Margin="8" Padding="8,2" Click="Yes_Click"

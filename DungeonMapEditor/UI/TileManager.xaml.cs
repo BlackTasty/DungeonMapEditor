@@ -4,6 +4,7 @@ using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -29,10 +30,67 @@ namespace DungeonMapEditor.UI
     {
         public event EventHandler<TileManagerDialogButtonClickedEventArgs> DialogButtonClicked;
         public event EventHandler<OpenDialogEventArgs> OpenDialog;
+        public event EventHandler<ClosingUnsavedDialogButtonClickedEventArgs> UnsavedDialogsCompleted;
+
+        private List<CollectionSet> unsavedCollections;
+        private int currentDialogIndex;
+        private bool abortShowDialogs;
+
+        public bool AnyUnsavedChanges => (DataContext as TileManagerViewModel).LoadedCollections.Any(x => x.AnyUnsavedChanges);
 
         public TileManager()
         {
             InitializeComponent();
+        }
+
+        public void BeginShowDialogForUnsavedCollections(TabItem targetTab)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            unsavedCollections = vm.LoadedCollections.Where(x => x.AnyUnsavedChanges).ToList();
+            abortShowDialogs = false;
+            currentDialogIndex = 0;
+            ShowDialogForUnsavedCollection(targetTab);
+        }
+
+        private void ShowDialogForUnsavedCollection(TabItem targetTab)
+        {
+            if (abortShowDialogs)
+            {
+                return;
+            }
+
+            DialogCollectionSetClosingUnsaved dialog = new DialogCollectionSetClosingUnsaved(targetTab, unsavedCollections[currentDialogIndex], this);
+            dialog.DialogCompleted += DialogUnsavedCollection_DialogCompleted;
+        }
+
+        private void DialogUnsavedCollection_DialogCompleted(object sender, ClosingUnsavedDialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == DialogResult.Abort)
+            {
+                abortShowDialogs = true;
+                OnUnsavedDialogsCompleted(new ClosingUnsavedDialogButtonClickedEventArgs(e.DialogResult));
+                return;
+            }
+
+            if (e.DialogResult == DialogResult.Yes)
+            {
+                unsavedCollections[currentDialogIndex].Save();
+            }
+            else
+            {
+                unsavedCollections[currentDialogIndex].Load();
+            }
+
+            currentDialogIndex++;
+
+            if (currentDialogIndex < unsavedCollections.Count)
+            {
+                ShowDialogForUnsavedCollection(e.TargetTab);
+            }
+            else
+            {
+                OnUnsavedDialogsCompleted(new ClosingUnsavedDialogButtonClickedEventArgs(e.DialogResult));
+            }
         }
 
         private void TileConfigurator_DialogButtonClicked(object sender, TileDialogButtonClickedEventArgs e)
@@ -199,6 +257,11 @@ namespace DungeonMapEditor.UI
         protected virtual void OnOpenDialog(OpenDialogEventArgs e)
         {
             OpenDialog?.Invoke(this, e);
+        }
+
+        protected virtual void OnUnsavedDialogsCompleted(ClosingUnsavedDialogButtonClickedEventArgs e)
+        {
+            UnsavedDialogsCompleted?.Invoke(this, e);
         }
     }
 }

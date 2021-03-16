@@ -32,7 +32,6 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mRoomAssignments;
             set
             {
-                changeManager.ObserveProperty(value);
                 mRoomAssignments = value;
                 InvokePropertyChanged();
             }
@@ -114,6 +113,7 @@ namespace DungeonMapEditor.Core.Dungeon
             InitializeLists();
             isFile = true;
             FloorName = "";
+            FloorName = floorName;
         }
 
         private void InitializeLists()
@@ -144,10 +144,13 @@ namespace DungeonMapEditor.Core.Dungeon
             }
             FloorPlan floorPlan = LoadFile();
 
-            Name = floorPlan.Name;
-            FloorName = floorPlan.Name;
+            Name = floorPlan?.Name;
+            FloorName = floorPlan?.Name;
             RoomAssignments.Clear();
-            RoomAssignments.Add(floorPlan.RoomAssignments);
+            if (floorPlan?.RoomAssignments != null)
+            {
+                RoomAssignments.Add(floorPlan.RoomAssignments);
+            }
         }
 
         public void Save(string parentPath = null)

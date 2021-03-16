@@ -13,5 +13,7 @@ namespace DungeonMapEditor.Core.Dungeon
         string Description { get; set; }
 
         double Rotation { get; set; }
+
+        bool UnsavedChanges { get; }
     }
 }

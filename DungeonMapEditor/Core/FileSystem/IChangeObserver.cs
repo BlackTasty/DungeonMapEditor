@@ -10,6 +10,8 @@ namespace DungeonMapEditor.Core.FileSystem
     {
         event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
+        dynamic GetOriginalValue();
+
         bool UnsavedChanges { get; }
 
         string PropertyName { get; }

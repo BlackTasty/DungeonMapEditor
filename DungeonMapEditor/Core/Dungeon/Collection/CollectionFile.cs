@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.ViewModel;
+﻿using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
 {
     public class CollectionFile<T> : JsonFile<CollectionFile<T>>
     {
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
+
         private VeryObservableCollection<T> data;
         private CollectionType collectionType;
 
@@ -77,6 +80,12 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
         private void InitializeLists()
         {
             data = new VeryObservableCollection<T>("Data", changeManager);
+            changeManager.ChangeObserved += ChangeManager_ChangeObserved;
+        }
+
+        private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         public void Save(string parentPath = null)
@@ -126,6 +135,11 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             }
 
             data.Add(fileData.Data);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

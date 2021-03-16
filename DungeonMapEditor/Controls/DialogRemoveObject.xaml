@@ -19,7 +19,7 @@
             <Run Text="Are you sure you want to remove '"/><Run Text="{Binding Name}"/><Run Text="'? This is irreversible!"/>
         </TextBlock>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="Confirm" Margin="8" Padding="8,2" Click="CreateFloor_Click" IsEnabled="{Binding IsValid}"
+            <Button Content="Confirm" Margin="8" Padding="8,2" Click="CreateFloor_Click"
                     Style="{StaticResource PrimaryButton}"/>
             <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
                     Style="{StaticResource WarnButton}"/>

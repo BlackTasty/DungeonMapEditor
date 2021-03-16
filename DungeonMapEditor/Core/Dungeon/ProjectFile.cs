@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;
@@ -50,7 +51,6 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mFloorPlans;
             set
             {
-                changeManager.ObserveProperty(value);
                 mFloorPlans = value;
                 InvokePropertyChanged();
             }
@@ -61,7 +61,6 @@ namespace DungeonMapEditor.Core.Dungeon
             get => mRoomPlans;
             set
             {
-                changeManager.ObserveProperty(value);
                 mRoomPlans = value;
                 InvokePropertyChanged();
             }
@@ -183,6 +182,22 @@ namespace DungeonMapEditor.Core.Dungeon
             Mediator.Instance.NotifyColleagues(ViewModelMessage.RoomsChanged, RoomPlans);
             Mediator.Instance.NotifyColleagues(ViewModelMessage.FloorsChanged, FloorPlans);
             App.LoadHistory();
+        }
+
+        public void SaveOnlyRooms()
+        {
+            ProjectFile copy = new ProjectFile(new DirectoryInfo(filePath));
+            copy.RoomPlans = RoomPlans;
+
+            copy.Save();
+        }
+
+        public void SaveOnlyFloors()
+        {
+            ProjectFile copy = new ProjectFile(new DirectoryInfo(filePath));
+            copy.FloorPlans = FloorPlans;
+
+            copy.Save();
         }
 
         public void Load()

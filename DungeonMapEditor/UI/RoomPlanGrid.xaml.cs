@@ -58,11 +58,9 @@ namespace DungeonMapEditor.UI
             {
                 OnRoomNameChanged(new NameChangedEventArgs("", e.UnsavedChanges ? e.NewValue + "*" : e.NewValue));
             }
-            else
-            {
-                RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
-                OnChangeObserved(new ChangeObservedEventArgs(vm.RoomPlan.UnsavedChanges, vm.RoomPlan.Name, e.Observer));
-            }
+
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            OnChangeObserved(new ChangeObservedEventArgs(vm.RoomPlan.UnsavedChanges, vm.RoomPlan.Name, e.Observer));
         }
 
         public string GetRoomPlanGuid()
@@ -261,6 +259,17 @@ namespace DungeonMapEditor.UI
             if (e.Key == Key.Delete && selectedPlaceableControl != null)
             {
                 RemovePlaceable(selectedPlaceableControl);
+            }
+        }
+
+        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+
+            if (!vm.RoomPlan.FromFile)
+            {
+                OnChangeObserved(new ChangeObservedEventArgs(vm.RoomPlan.UnsavedChanges, vm.RoomPlan.Name,
+                    vm.RoomPlan.ChangeManager.GetObserverByName("Name")));
             }
         }
 

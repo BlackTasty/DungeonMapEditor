@@ -96,7 +96,6 @@ namespace DungeonMapEditor.Core.Dungeon
                     BorderThickness = new Thickness(0)
                 };
 
-
                 Canvas.SetLeft(floorControl, floorControl.FloorAssignment.X + 2);
                 Canvas.SetTop(floorControl, floorControl.FloorAssignment.Y + 2);
 
@@ -110,6 +109,7 @@ namespace DungeonMapEditor.Core.Dungeon
                 Padding = new Thickness(8),
                 Width = canvas.Width,
                 TextAlignment = TextAlignment.Center,
+                Foreground = Brushes.Black,
                 FontFamily = new FontFamily(new Uri("pack://application:,,,/DungeonMapEditor;component/Resources/Fonts/"), "./#Ace Records")
             };
 
@@ -118,6 +118,7 @@ namespace DungeonMapEditor.Core.Dungeon
             TextBlock footNote = new TextBlock()
             {
                 Text = "1 tile = 5 ft.",
+                Foreground = Brushes.Black,
                 FontSize = 32,
                 Background = Brushes.White,
                 Padding = new Thickness(8, 4, 8, 4)

@@ -101,5 +101,22 @@ namespace DungeonMapEditor.Core.Dungeon
         {
             NameChanged?.Invoke(this, e);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is BaseData<T> target)
+            {
+                if (target.Guid != Guid)
+                {
+                    return false;
+                }
+
+                return !UnsavedChanges;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

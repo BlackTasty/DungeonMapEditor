@@ -120,12 +120,13 @@ namespace DungeonMapEditor.Core
 
         protected T LoadFile()
         {
-            if (!fromFile)
+            string targetPath = Path.Combine(filePath, fileName);
+            if (!fromFile || !File.Exists(targetPath))
             {
                 return default;
             }
 
-            string json = File.ReadAllText(Path.Combine(filePath, fileName));
+            string json = File.ReadAllText(targetPath);
             return JsonConvert.DeserializeObject<T>(json);
         }
     }
