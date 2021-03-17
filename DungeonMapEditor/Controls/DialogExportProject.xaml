@@ -17,7 +17,7 @@
             <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateProject_Click" IsEnabled="{Binding IsValid}"
                     Style="{StaticResource PrimaryButton}"/>
             <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
-                    Style="{StaticResource WarnButton}"/>
+                    Style="{StaticResource RedButton}"/>
         </StackPanel>
         <CheckBox Content="Also export notes" DockPanel.Dock="Bottom" Margin="8,4,8,0" IsChecked="{Binding ExportNotes}"
                   Foreground="{StaticResource Foreground}"/>

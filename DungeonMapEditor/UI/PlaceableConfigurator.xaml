@@ -19,7 +19,7 @@
     <DockPanel DockPanel.Dock="Right" Width="240">
         <UniformGrid DockPanel.Dock="Bottom" Columns="2" Width="180">
             <Button Content="Save" Margin="8,4" Click="Save_Click" Style="{StaticResource PrimaryButton}"/>
-            <Button Content="Cancel" Margin="8,4" Click="Abort_Click" Style="{StaticResource WarnButton}"/>
+            <Button Content="Cancel" Margin="8,4" Click="Abort_Click" Style="{StaticResource RedButton}"/>
         </UniformGrid>
         <StackPanel Margin="8">
             <StackPanel Margin="0,4">

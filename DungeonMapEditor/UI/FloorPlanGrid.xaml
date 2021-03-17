@@ -48,8 +48,10 @@
                                         <DockPanel Margin="4">
                                             <Image Height="50" Width="50" Source="{Binding RoomPlanImage}" ToolTipService.ShowDuration="60000">
                                                 <Image.ToolTip>
-                                                    <Image Height="{Binding RoomPlanImage.Height}" Width="{Binding RoomPlanImage.Width}" 
+                                                    <Grid Background="White">
+                                                        <Image Height="{Binding RoomPlanImage.Height}" Width="{Binding RoomPlanImage.Width}" 
                                                            Source="{Binding RoomPlanImage}"/>
+                                                    </Grid>
                                                 </Image.ToolTip>
                                             </Image>
                                             <TextBlock Text="{Binding Name}" FontSize="20" Margin="8,0,0,0" VerticalAlignment="Center"/>

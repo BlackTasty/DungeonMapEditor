@@ -22,7 +22,7 @@
             <Button Content="Confirm" Margin="8" Padding="8,2" Click="CreateFloor_Click"
                     Style="{StaticResource PrimaryButton}"/>
             <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
-                    Style="{StaticResource WarnButton}"/>
+                    Style="{StaticResource RedButton}"/>
         </StackPanel>
     </DockPanel>
 </Border>

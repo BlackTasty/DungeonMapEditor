@@ -195,7 +195,7 @@
         <StackPanel Orientation="Horizontal" Visibility="{Binding IsRoomDrawEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Button x:Name="confirmDrawRoom" Content="Confirm room" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" 
                     Height="30" Margin="8,0" Click="ConfirmDrawRoom_Click" IsEnabled="False"/>
-            <Button Content="Reset" Style="{StaticResource WarnButton}" VerticalAlignment="Center" Height="30" Margin="8,0" Click="ResetDrawRoom_Click"/>
+            <Button Content="Reset" Style="{StaticResource YellowButton}" VerticalAlignment="Center" Height="30" Margin="8,0" Click="ResetDrawRoom_Click"/>
             <StackPanel>
                 <TextBlock Text="Collection" Margin="12,4,12,2"/>
                 <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
@@ -217,7 +217,8 @@
                        Margin="16,0" FontSize="16"/>
         </StackPanel>
         <ToggleButton DockPanel.Dock="Right" VerticalAlignment="Center" Height="30" Width="30" Style="{DynamicResource ToggleButtonStyle}"
-                      Margin="8,0" IsChecked="{Binding IsRoomDrawEnabled}" Checked="RoomDraw_CheckedChanged" Unchecked="RoomDraw_CheckedChanged">
+                      Margin="8,0" IsChecked="{Binding IsRoomDrawEnabled}" Checked="RoomDraw_CheckedChanged" Unchecked="RoomDraw_CheckedChanged"
+                      ToolTip="Draw a room">
             <Viewbox Width="16" Height="18" Margin="-3,-3,0,0">
                 <Canvas Width="20" Height="20">
                     <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton, Mode=FindAncestor}, Path=Foreground}" 

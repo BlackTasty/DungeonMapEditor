@@ -107,6 +107,7 @@
     <Compile Include="Controls\RoomControl.xaml.cs">
       <DependentUpon>RoomControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\DoubleDivideByConverter.cs" />
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Converter\EnumDescriptionTypeConverter.cs" />
     <Compile Include="Converter\InverseBooleanToVisibilityConverter.cs" />

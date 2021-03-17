@@ -43,7 +43,7 @@
                         <Button Content="Add room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddRoom_Click"
                                 Style="{StaticResource PrimaryButton}"/>
                         <Button Content="Remove room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveRoom_Click"
-                                Style="{StaticResource WarnButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
+                                Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
                               CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
@@ -129,7 +129,7 @@
                         <Button Content="Add floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddFloor_Click"
                                 Style="{StaticResource PrimaryButton}"/>
                         <Button Content="Remove floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveFloor_Click"
-                                Style="{StaticResource WarnButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
+                                Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
                               CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
