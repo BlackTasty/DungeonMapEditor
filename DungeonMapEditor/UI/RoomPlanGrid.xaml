@@ -8,7 +8,7 @@
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="870" PreviewKeyDown="DockPanel_PreviewKeyDown" Loaded="DockPanel_Loaded">
+      d:DesignHeight="500" d:DesignWidth="870" PreviewKeyDown="DockPanel_PreviewKeyDown" Loaded="DockPanel_Loaded" Unloaded="DockPanel_Unloaded">
     <DockPanel.DataContext>
         <vm:RoomPlanViewModel/>
     </DockPanel.DataContext>
@@ -196,6 +196,25 @@
             <Button x:Name="confirmDrawRoom" Content="Confirm room" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" 
                     Height="30" Margin="8,0" Click="ConfirmDrawRoom_Click" IsEnabled="False"/>
             <Button Content="Reset" Style="{StaticResource WarnButton}" VerticalAlignment="Center" Height="30" Margin="8,0" Click="ResetDrawRoom_Click"/>
+            <StackPanel>
+                <TextBlock Text="Collection" Margin="12,4,12,2"/>
+                <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
+                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock>
+                                            <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
+                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            <TextBlock x:Name="noRoomError" Text="No room detected!" Foreground="Orange" VerticalAlignment="Center" FontWeight="Bold"
+                       Margin="16,0" FontSize="16"/>
         </StackPanel>
         <ToggleButton DockPanel.Dock="Right" VerticalAlignment="Center" Height="30" Width="30" Style="{DynamicResource ToggleButtonStyle}"
                       Margin="8,0" IsChecked="{Binding IsRoomDrawEnabled}" Checked="RoomDraw_CheckedChanged" Unchecked="RoomDraw_CheckedChanged">

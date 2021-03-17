@@ -21,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace DungeonMapEditor.UI
 {
@@ -39,15 +40,23 @@ namespace DungeonMapEditor.UI
         private bool updateTile = true;
         private bool isInit = true;
 
+        private DispatcherTimer predictInnerRoomTimer;
         private List<TileControl> drawRoomSelectedTiles = new List<TileControl>();
+        private List<TileAssignment> inRoomTiles = new List<TileAssignment>();
 
         private Size canvasBounds = new Size();
         private SolidColorBrush highlightColor = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
         private SolidColorBrush drawRoomColor = new SolidColorBrush(Color.FromArgb(64, 128, 255, 0));
+        private SolidColorBrush innerRoomPredictColor = new SolidColorBrush(Color.FromArgb(64, 64, 64, 64));
+
+        private bool isClosing;
 
         public RoomPlanGrid(RoomPlan roomPlan)
         {
             InitializeComponent();
+            predictInnerRoomTimer = new DispatcherTimer();
+            predictInnerRoomTimer.Interval = TimeSpan.FromMilliseconds(500);
+            predictInnerRoomTimer.Tick += PredictInnerRoomTimer_Tick;
             isInit = false;
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             roomPlan.Load();
@@ -56,6 +65,11 @@ namespace DungeonMapEditor.UI
             vm.RoomNameChanged += Vm_RoomNameChanged;
             vm.GridSizeChanged += Vm_GridSizeChanged;
             AddTilesAndPlaceables();
+        }
+
+        private void PredictInnerRoomTimer_Tick(object sender, EventArgs e)
+        {
+            PredictInnerRoom();
         }
 
         private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
@@ -167,6 +181,8 @@ namespace DungeonMapEditor.UI
                         confirmDrawRoom.IsEnabled = false;
                     }
                 }
+                predictInnerRoomTimer.Stop();
+                predictInnerRoomTimer.Start();
             }
         }
 
@@ -182,6 +198,9 @@ namespace DungeonMapEditor.UI
                         drawRoomSelectedTiles.Add(tileControl);
                         confirmDrawRoom.IsEnabled = true;
                     }
+
+                    predictInnerRoomTimer.Stop();
+                    predictInnerRoomTimer.Start();
                 }
                 else if (Mouse.RightButton == MouseButtonState.Pressed)
                 {
@@ -194,6 +213,9 @@ namespace DungeonMapEditor.UI
                             confirmDrawRoom.IsEnabled = false;
                         }
                     }
+
+                    predictInnerRoomTimer.Stop();
+                    predictInnerRoomTimer.Start();
                 }
             }
         }
@@ -235,6 +257,8 @@ namespace DungeonMapEditor.UI
                 }
                 else
                 {
+                    predictInnerRoomTimer.Stop();
+                    predictInnerRoomTimer.Start();
                     if (!drawRoomSelectedTiles.Any(x => x.Tag.ToString() == tileControl.Tag.ToString()))
                     {
                         tileControl.Background = drawRoomColor;
@@ -243,6 +267,93 @@ namespace DungeonMapEditor.UI
                     }
                 }
             }
+        }
+
+        private void PredictInnerRoom()
+        {
+            if (isClosing)
+            {
+                return;
+            }
+
+            foreach (TileAssignment oldInnerRoom in inRoomTiles)
+            {
+                if (!drawRoomSelectedTiles.Any(x => x.TileAssignment.X == oldInnerRoom.X && x.TileAssignment.Y == oldInnerRoom.Y))
+                {
+                    oldInnerRoom.Control.Background = Brushes.Transparent;
+                }
+            }
+
+            inRoomTiles.Clear();
+
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            for (int y = 1; y <= vm.RoomPlan.TilesY; y++)
+            {
+                for (int x = 1; x <= vm.RoomPlan.TilesX; x++)
+                {
+                    if (!drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == y))
+                    {
+                        TileAssignment inRoomTile = vm.RoomPlan.TileAssignments.FirstOrDefault(t => t.X == x && t.Y == y);
+                        bool hasNeighbours = vm.RoomPlan.TileAssignments.Any(t => t.X == x - 1 && t.Y == y) &&
+                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x && t.Y == y - 1) &&
+                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x + 1 && t.Y == y) &&
+                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x && t.Y == y + 1);
+                        if (inRoomTile != null)
+                        {
+                            int wallCount = 0;
+                            #region Check if enclosed by top wall
+                            for (int yCheck = y - 1; yCheck >= 1; yCheck--)
+                            {
+                                if (drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == yCheck))
+                                {
+                                    wallCount++;
+                                    break;
+                                }
+                            }
+                            #endregion
+                            #region Check if enclosed by bottom wall
+                            for (int yCheck = y + 1; yCheck <= vm.RoomPlan.TilesY; yCheck++)
+                            {
+                                if (drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == yCheck))
+                                {
+                                    wallCount++;
+                                    break;
+                                }
+                            }
+                            #endregion
+                            #region Check if enclosed by left wall
+                            for (int xCheck = x - 1; xCheck >= 1; xCheck--)
+                            {
+                                if (drawRoomSelectedTiles.Any(t => t.TileAssignment.X == xCheck && t.TileAssignment.Y == y))
+                                {
+                                    wallCount++;
+                                    break;
+                                }
+                            }
+                            #endregion
+                            #region Check if enclosed by right wall
+                            for (int xCheck = x + 1; xCheck <= vm.RoomPlan.TilesX; xCheck++)
+                            {
+                                if (drawRoomSelectedTiles.Any(t => t.TileAssignment.X == xCheck && t.TileAssignment.Y == y))
+                                {
+                                    wallCount++;
+                                    break;
+                                }
+                            }
+                            #endregion
+
+                            if (wallCount >= 4)
+                            {
+                                inRoomTiles.Add(inRoomTile);
+                                inRoomTile.Control.Background = innerRoomPredictColor;
+                            }
+                        }
+                    }
+                }
+            }
+
+            noRoomError.Visibility = inRoomTiles.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
+            predictInnerRoomTimer.Stop();
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -389,7 +500,13 @@ namespace DungeonMapEditor.UI
                     tileControl.Background = Brushes.Transparent;
                 }
                 drawRoomSelectedTiles.Clear();
+                foreach (TileAssignment tileassignment in inRoomTiles)
+                {
+                    tileassignment.Control.Background = Brushes.Transparent;
+                }
+                inRoomTiles.Clear();
                 confirmDrawRoom.IsEnabled = false;
+                noRoomError.Visibility = Visibility.Visible;
             }
         }
 
@@ -400,41 +517,18 @@ namespace DungeonMapEditor.UI
                 tileControl.Background = Brushes.Transparent;
             }
             drawRoomSelectedTiles.Clear();
+            foreach (TileAssignment tileassignment in inRoomTiles)
+            {
+                tileassignment.Control.Background = Brushes.Transparent;
+            }
+            inRoomTiles.Clear();
             confirmDrawRoom.IsEnabled = false;
+            noRoomError.Visibility = Visibility.Visible;
         }
 
         private void ConfirmDrawRoom_Click(object sender, RoutedEventArgs e)
         {
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
-
-            List<TileAssignment> inRoomTiles = new List<TileAssignment>();
-
-            bool isInRoom = false;
-            for (int y = 1; y <= vm.RoomPlan.TilesY; y++)
-            {
-                isInRoom = false;
-                for (int x = 1; x <= vm.RoomPlan.TilesX; x++)
-                {
-                    bool isWall = drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == y);
-                    if (isWall && (isInRoom || !drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x + 1 && t.TileAssignment.Y == y)))
-                    {
-                        isInRoom = !isInRoom;
-                    }
-
-                    if (isInRoom && !drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == y))
-                    {
-                        TileAssignment inRoomTile = vm.RoomPlan.TileAssignments.FirstOrDefault(t => t.X == x && t.Y == y);
-                        bool hasNeighbours = vm.RoomPlan.TileAssignments.Any(t => t.X == x - 1 && t.Y == y) &&
-                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x && t.Y == y - 1) &&
-                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x + 1 && t.Y == y) &&
-                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x && t.Y == y + 1);
-                        if (inRoomTile != null && hasNeighbours)
-                        {
-                            inRoomTiles.Add(inRoomTile);
-                        }
-                    }
-                }
-            }
 
             foreach (TileControl selectedTile in drawRoomSelectedTiles)
             {
@@ -514,6 +608,21 @@ namespace DungeonMapEditor.UI
                             .FirstOrDefault(x => x.TileType == TileType.Corner && x.TileRotation == TileRotation.Degrees_270);
                     }
                 }
+            }
+        }
+
+        private void DockPanel_Unloaded(object sender, RoutedEventArgs e)
+        {
+            isClosing = true;
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+
+            foreach (TileAssignment tileAssignment in vm.RoomPlan.TileAssignments.Where(x => x.Control != null))
+            {
+                tileAssignment.UnsetControl();
+            }
+            foreach (PlaceableAssignment placeableAssignment in vm.RoomPlan.PlaceableAssignments.Where(x => x.Control != null))
+            {
+                placeableAssignment.UnsetControl();
             }
         }
     }

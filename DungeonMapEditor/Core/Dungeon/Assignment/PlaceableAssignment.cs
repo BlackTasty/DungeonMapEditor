@@ -165,5 +165,10 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             this.control = control;
             return true;
         }
+
+        public void UnsetControl()
+        {
+            this.control = null;
+        }
     }
 }
