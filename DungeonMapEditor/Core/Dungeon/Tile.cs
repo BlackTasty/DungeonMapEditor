@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -174,6 +175,21 @@ namespace DungeonMapEditor.Core.Dungeon
         public override string GetFullPath()
         {
             return !IsEmpty ? base.GetFullPath() : null;
+        }
+
+        public override IBaseData Copy()
+        {
+            return new Tile(false)
+            {
+                Name = Name,
+                Description = Description,
+                TileRotation = TileRotation,
+                TileText = TileText,
+                TileType = TileType,
+                guid = guid,
+                ImagePath = ImagePath,
+                TextFontSize = TextFontSize
+            };
         }
     }
 }

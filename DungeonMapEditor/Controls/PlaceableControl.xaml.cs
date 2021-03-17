@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace DungeonMapEditor.Controls
     /// </summary>
     public partial class PlaceableControl : Border
     {
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
         public event EventHandler<EventArgs> PlaceableMoved;
 
         protected bool isDragging;
@@ -59,7 +61,13 @@ namespace DungeonMapEditor.Controls
             {
                 value.SetControl(this);
                 (DataContext as PlaceableControlViewModel).PlaceableAssignment = value;
+                value.ChangeObserved += Value_ChangeObserved;
             }
+        }
+
+        private void Value_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         private void Control_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -101,12 +109,9 @@ namespace DungeonMapEditor.Controls
             PlaceableMoved?.Invoke(this, e);
         }
 
-        private void Border_PreviewKeyDown(object sender, KeyEventArgs e)
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
         {
-            if (e.Key == Key.Delete)
-            {
-
-            }
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

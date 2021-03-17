@@ -24,15 +24,22 @@ namespace DungeonMapEditor.Controls
     {
         public event EventHandler<DialogButtonClickedEventArgs> DialogCompleted;
 
+        private object data;
+
         public DialogRemoveObject(string name)
         {
             InitializeComponent();
             (DataContext as DialogRemoveObjectViewModel).Name = name;
         }
 
+        public DialogRemoveObject(string name, object data) : this(name)
+        {
+            this.data = data;
+        }
+
         private void CreateFloor_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogCompleted(new DialogButtonClickedEventArgs(DialogResult.OK));
+            OnDialogCompleted(new DialogButtonClickedEventArgs(DialogResult.OK, data));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)

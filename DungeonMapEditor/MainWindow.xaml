@@ -22,7 +22,6 @@
                 <MenuItem Header="Home" Click="OpenHomeScreen_Click"/>
                 <MenuItem Header="Create new map" Click="CreateProject_Click"/>
                 <MenuItem Header="Load from file" Click="LoadFromFile_Click"/>
-                
             </MenuItem>
         </Menu>
         <Grid>

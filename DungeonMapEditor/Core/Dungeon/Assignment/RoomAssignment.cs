@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -18,6 +19,12 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         private double mRotationOverride;
         private int mRoomNumberOverride;
 
+        private int x;
+        private int y;
+
+        [JsonIgnore]
+        public bool AnyUnsavedChanges => UnsavedChanges || (roomPlan?.UnsavedChanges ?? false);
+
         public string AssignedProjectPath { get; set; }
 
         [JsonIgnore]
@@ -28,15 +35,32 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         public string RoomPlanFile => !string.IsNullOrWhiteSpace(roomPlan.Name) ? roomPlan.Name + ".json" : null;
 
-        public int X { get; set; }
+        public int X
+        {
+            get => x;
+            set
+            {
+                changeManager.ObserveProperty(value);
+                x = value;
+            }
+        }
 
-        public int Y { get; set; }
+        public int Y 
+        {
+            get => y;
+            set
+            {
+                changeManager.ObserveProperty(value);
+                y = value;
+            }
+        }
 
         public double RotationOverride
         {
             get => mRotationOverride;
             set
             {
+                changeManager.ObserveProperty(value);
                 mRotationOverride = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("RealRotation");
@@ -51,6 +75,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             get => mRoomNumberOverride;
             set
             {
+                changeManager.ObserveProperty(value);
                 mRoomNumberOverride = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("RealRoomNumber");
@@ -107,6 +132,11 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
             this.control = control;
             return true;
+        }
+
+        protected override void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            base.OnChangeObserved(new ChangeObservedEventArgs(AnyUnsavedChanges, e.NewValue, e.Observer));
         }
     }
 }

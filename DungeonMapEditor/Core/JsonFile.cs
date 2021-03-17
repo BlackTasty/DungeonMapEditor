@@ -71,13 +71,18 @@ namespace DungeonMapEditor.Core
 
         public virtual void Delete()
         {
+            Delete(false);
+        }
+
+        public void Delete(bool forceDeleteParentDir = false)
+        {
             // Return if object has not been saved to file yet
             if (!fromFile)
             {
                 return;
             }
 
-            if (isFile)
+            if (isFile && !forceDeleteParentDir)
             {
                 string path = Path.Combine(filePath, fileName);
                 if (File.Exists(path))

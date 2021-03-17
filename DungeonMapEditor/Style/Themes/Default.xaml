@@ -18,11 +18,33 @@
         <Setter Property="Background" Value="{StaticResource TabItemBackground}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="Template" Value="{DynamicResource MenuItemTemplate}"/>
+        <Setter Property="Padding" Value="4,2"/>
     </Style>
 
     <Style TargetType="Menu">
         <Setter Property="Background" Value="#66000000"/>
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
+    </Style>
+
+    <Style TargetType="ContextMenu">
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                            Background="{StaticResource TabItemBackground}"
+                            BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+                        <StackPanel IsItemsHost="True" Margin="4"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow"
+                            Value="true">
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     
     <ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
@@ -621,6 +643,7 @@
 
     <Style TargetType="DataGridRow" x:Key="RowStyle">
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
     <Style TargetType="TabControl">

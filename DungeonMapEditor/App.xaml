@@ -9,6 +9,9 @@
                 <ResourceDictionary Source="Style/Colors.xaml"/>
                 <ResourceDictionary Source="Style/Themes/Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
+            <SolidColorBrush x:Key="{x:Static SystemColors.ActiveBorderBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

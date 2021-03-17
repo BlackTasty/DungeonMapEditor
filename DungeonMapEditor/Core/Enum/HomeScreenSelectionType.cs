@@ -10,6 +10,7 @@ namespace DungeonMapEditor.Core.Enum
     {
         NewProject,
         OpenTileManager,
-        LoadProject
+        LoadProject,
+        RemoveProject
     }
 }

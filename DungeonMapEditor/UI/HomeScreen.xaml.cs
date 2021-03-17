@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.Core.Dungeon;
+﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using Microsoft.Win32;
@@ -25,6 +26,7 @@ namespace DungeonMapEditor.UI
     /// </summary>
     public partial class HomeScreen : DockPanel
     {
+        public event EventHandler<OpenDialogEventArgs> OpenDialog;
         public event EventHandler<HomeScreenSelectionMadeEventArgs> SelectionMade;
 
         public HomeScreen()
@@ -66,17 +68,49 @@ namespace DungeonMapEditor.UI
             OnSelectionMade(new HomeScreenSelectionMadeEventArgs(HomeScreenSelectionType.OpenTileManager));
         }
 
-        protected virtual void OnSelectionMade(HomeScreenSelectionMadeEventArgs e)
-        {
-            SelectionMade?.Invoke(this, e);
-        }
-
         private void ProjectHistoryItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if ((sender as DataGridRow).DataContext is ProjectFile projectFile)
             {
                 OnSelectionMade(new HomeScreenSelectionMadeEventArgs(projectFile));
             }
+        }
+
+        private void MenuItem_OpenProject_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as MenuItem).DataContext is ProjectFile projectFile)
+            {
+                OnSelectionMade(new HomeScreenSelectionMadeEventArgs(projectFile));
+            }
+        }
+
+        private void MenuItem_RemoveProject_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as MenuItem).DataContext is ProjectFile projectFile)
+            {
+                OnSelectionMade(new HomeScreenSelectionMadeEventArgs(projectFile, HomeScreenSelectionType.RemoveProject));
+                /*DialogRemoveObject dialog = new DialogRemoveObject(projectFile.Name);
+                dialog.DialogCompleted += DialogRemoveProject_DialogCompleted;
+
+                OnOpenDialog(new OpenDialogEventArgs(dialog));*/
+            }
+        }
+
+        private void DialogRemoveProject_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.Yes && e.Data is ProjectFile selectedProject)
+            {
+            }
+        }
+
+        protected virtual void OnSelectionMade(HomeScreenSelectionMadeEventArgs e)
+        {
+            SelectionMade?.Invoke(this, e);
+        }
+
+        protected virtual void OnOpenDialog(OpenDialogEventArgs e)
+        {
+            OpenDialog?.Invoke(this, e);
         }
     }
 }

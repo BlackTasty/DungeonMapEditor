@@ -38,6 +38,7 @@ namespace DungeonMapEditor
             InitializeComponent();
             homeInstance = new HomeScreen();
             homeInstance.SelectionMade += HomeScreen_SelectionMade;
+            homeInstance.OpenDialog += Dialog_OpenDialog;
             AddTab(homeInstance, "Home", true);
         }
 
@@ -99,14 +100,14 @@ namespace DungeonMapEditor
         private void HomeScreen_SelectionMade(object sender, HomeScreenSelectionMadeEventArgs e)
         {
             int selectedTabIndex = -1;
+            MainViewModel vm = DataContext as MainViewModel;
             switch (e.Selection)
             {
                 case HomeScreenSelectionType.NewProject:
-                    MainViewModel vm = DataContext as MainViewModel;
-                    DialogCreateProject dialog = new DialogCreateProject();
-                    dialog.DialogCompleted += Dialog_DialogCompleted;
+                    DialogCreateProject createDialog = new DialogCreateProject();
+                    createDialog.DialogCompleted += Dialog_DialogCompleted;
 
-                    vm.Dialog = dialog;
+                    vm.Dialog = createDialog;
                     break;
                 case HomeScreenSelectionType.LoadProject:
                     OpenProject(e.SelectedProject);
@@ -118,12 +119,38 @@ namespace DungeonMapEditor
 
                     selectedTabIndex = AddTab(tileManager, "Collection manager");
                     break;
+                case HomeScreenSelectionType.RemoveProject:
+                    DialogRemoveObject removeDialog = new DialogRemoveObject(e.SelectedProject.Name, e.SelectedProject);
+                    removeDialog.DialogCompleted += RemoveDialog_DialogCompleted;
+
+                    vm.Dialog = removeDialog;
+                    break;
             }
 
             if (selectedTabIndex >= 0)
             {
                 tabControl.SelectedIndex = selectedTabIndex;
             }
+        }
+
+        private void RemoveDialog_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == Core.Dialog.DialogResult.OK && e.Data is ProjectFile selectedProject)
+            {
+                TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is ProjectOverview projectOverview &&
+                                        projectOverview.GetProjectGuid() == selectedProject.Guid);
+
+                if (openTab != null)
+                {
+                    tabControl.Items.Remove(openTab);
+                }
+
+                selectedProject.Delete();
+
+                App.LoadHistory();
+            }
+
+            (DataContext as MainViewModel).ShowDialog = false;
         }
 
         private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectFile> e)
@@ -225,7 +252,7 @@ namespace DungeonMapEditor
                 if (targetTab.Content is ProjectOverview projectOverview)
                 {
                     var projectVm = projectOverview.DataContext as ProjectOverviewViewModel;
-                    if (projectVm.ProjectFile.UnsavedChanges)
+                    if (projectVm.ProjectFile.AnyUnsavedChanges)
                     {
                         DialogClosingUnsaved dialog = new DialogClosingUnsaved(targetTab);
                         dialog.SetObjectValues(projectOverview);
@@ -279,6 +306,7 @@ namespace DungeonMapEditor
         {
             if (e.DialogResult == Core.Dialog.DialogResult.Abort)
             {
+                (DataContext as MainViewModel).ShowDialog = false;
                 return;
             }
 

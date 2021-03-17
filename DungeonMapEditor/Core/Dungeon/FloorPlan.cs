@@ -27,6 +27,8 @@ namespace DungeonMapEditor.Core.Dungeon
         private string mFloorPlanImageFileName;
         private BitmapImage mFloorPlanImage;
 
+        public bool AnyUnsavedChanges => UnsavedChanges || RoomAssignments.Any(x => x.RoomPlan.AnyUnsavedChanges);
+
         public VeryObservableCollection<RoomAssignment> RoomAssignments
         {
             get => mRoomAssignments;

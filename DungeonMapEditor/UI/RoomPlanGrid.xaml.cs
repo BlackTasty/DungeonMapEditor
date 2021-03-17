@@ -63,6 +63,7 @@ namespace DungeonMapEditor.UI
             roomPlan.ChangeManager.ChangeObserved += ChangeManager_ChangeObserved;
             vm.RoomNameChanged += Vm_RoomNameChanged;
             vm.GridSizeChanged += Vm_GridSizeChanged;
+            vm.ChangeObserved += ChangeManager_ChangeObserved;
             predictInnerRoomTimer.Tick += PredictInnerRoomTimer_Tick;
             AddTilesAndPlaceables();
         }
@@ -74,13 +75,13 @@ namespace DungeonMapEditor.UI
 
         private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
         {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             if (e.Observer.PropertyName == "Name")
             {
-                OnRoomNameChanged(new NameChangedEventArgs("", e.UnsavedChanges ? e.NewValue + "*" : e.NewValue));
+                OnRoomNameChanged(new NameChangedEventArgs("", vm.RoomPlan.AnyUnsavedChanges ? e.NewValue + "*" : e.NewValue));
             }
 
-            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
-            OnChangeObserved(new ChangeObservedEventArgs(vm.RoomPlan.UnsavedChanges, vm.RoomPlan.Name, e.Observer));
+            OnChangeObserved(new ChangeObservedEventArgs(vm.RoomPlan.AnyUnsavedChanges, vm.RoomPlan.Name, e.Observer));
         }
 
         public string GetRoomPlanGuid()
@@ -106,7 +107,7 @@ namespace DungeonMapEditor.UI
         private void AddTilesAndPlaceables(bool addRoomBorder = true)
         {
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
-            canvasBounds = new Size(vm.RoomPlan.TilesX * 50, vm.RoomPlan.TilesY * 50);
+            canvasBounds = new Size(vm.RoomPlan.TilesX * 50 + 2, vm.RoomPlan.TilesY * 50 + 2);
             grid.Width = canvasBounds.Width;
             grid.Height = canvasBounds.Height;
 
@@ -144,10 +145,12 @@ namespace DungeonMapEditor.UI
                 tileControl.MouseLeftButtonDown += TileControl_MouseLeftButtonDown;
                 tileControl.MouseRightButtonDown += TileControl_MouseRightButtonDown;
                 tileControl.MouseEnter += TileControl_MouseEnter;
+                tileControl.ChangeObserved += ChangeManager_ChangeObserved;
+
                 tileTagIndex++;
 
-                Canvas.SetLeft(tileControl, tileAssignment.CanvasX - 4);
-                Canvas.SetTop(tileControl, tileAssignment.CanvasY - 4);
+                Canvas.SetLeft(tileControl, tileAssignment.CanvasX);
+                Canvas.SetTop(tileControl, tileAssignment.CanvasY);
 
                 tileAssignment.SetControl(tileControl);
                 grid.Children.Add(tileControl);
@@ -166,6 +169,7 @@ namespace DungeonMapEditor.UI
                 placeableTagIndex++;
 
                 placeableControl.MouseLeftButtonDown += PlaceableControl_MouseLeftButtonDown;
+                placeableControl.ChangeObserved += ChangeManager_ChangeObserved;
 
                 Canvas.SetLeft(placeableControl, placeableControl.PlaceableAssignment.PositionX);
                 Canvas.SetTop(placeableControl, placeableControl.PlaceableAssignment.PositionY);
@@ -250,14 +254,17 @@ namespace DungeonMapEditor.UI
                     tileControl.Background = highlightColor;
                     selectedTileControl = tileControl;
                     updateTile = false;
-                    vm.SelectedAvailableTile = null;
                     updateTile = true;
                     vm.SelectedTabIndex = 1;
                     if (tileAssignment.TileGuid != null)
                     {
-                        App.GetTileAndCollectionByTileGuid(tileAssignment.TileGuid, out CollectionSet collection, out Tile tile);
-                        vm.SelectedCollectionSet = collection;
-                        vm.SelectedAvailableTile = tile;
+                        string tileGuid = tileAssignment.TileGuid;
+                        vm.SelectedCollectionSet = App.LoadedCollections.FirstOrDefault(x => x.TileFile.Data.Any(y => y.Guid == tileGuid));
+                        vm.SelectedAvailableTile = vm.CollectionTiles.FirstOrDefault(x => x.Guid == tileGuid);
+                    }
+                    else
+                    {
+                        vm.SelectedAvailableTile = vm.CollectionTiles.FirstOrDefault();
                     }
                 }
                 else
@@ -369,14 +376,17 @@ namespace DungeonMapEditor.UI
             }
 
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
-            if (updateTile)
+            if (vm.SelectedAvailableTile != null)
             {
-                vm.SelectedTileAssignment.Tile = vm.SelectedAvailableTile;
-                //vm.SelectedTileAssignment.Control.TileAssignment.Tile = vm.SelectedAvailableTile;
+                if (updateTile)
+                {
+                    vm.SelectedTileAssignment.Tile = vm.SelectedAvailableTile;
+                    //vm.SelectedTileAssignment.Control.TileAssignment.Tile = vm.SelectedAvailableTile;
 
-                selectedTileControl.TileAssignment.Tile = vm.SelectedAvailableTile;
+                    selectedTileControl.TileAssignment.Tile = vm.SelectedAvailableTile;
+                }
+                tilePreview.TileAssignment.Tile = vm.SelectedAvailableTile;
             }
-            tilePreview.TileAssignment.Tile = vm.SelectedAvailableTile;
         }
 
         private void Placeables_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -542,7 +552,24 @@ namespace DungeonMapEditor.UI
                 TileControl rightTile = drawRoomSelectedTiles.FirstOrDefault(x => x.TileAssignment.X == selectedTile.TileAssignment.X + 1 && x.TileAssignment.Y == selectedTile.TileAssignment.Y);
                 TileControl bottomTile = drawRoomSelectedTiles.FirstOrDefault(x => x.TileAssignment.X == selectedTile.TileAssignment.X && x.TileAssignment.Y == selectedTile.TileAssignment.Y + 1);
 
-                if (leftTile != null && rightTile != null && topTile == null && bottomTile == null) // Horizonzal wall
+                TileAssignment leftInRoom = inRoomTiles.FirstOrDefault(x => x.X == selectedTile.TileAssignment.X - 1 && x.Y == selectedTile.TileAssignment.Y);
+                TileAssignment topInRoom = inRoomTiles.FirstOrDefault(x => x.X == selectedTile.TileAssignment.X && x.Y == selectedTile.TileAssignment.Y - 1);
+                TileAssignment rightInRoom = inRoomTiles.FirstOrDefault(x => x.X == selectedTile.TileAssignment.X + 1 && x.Y == selectedTile.TileAssignment.Y);
+                TileAssignment bottomInRoom= inRoomTiles.FirstOrDefault(x => x.X == selectedTile.TileAssignment.X && x.Y == selectedTile.TileAssignment.Y + 1);
+                if ((topTile != null || bottomTile != null) && leftInRoom != null && rightInRoom != null) // Vertical center wall
+                {
+                    selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                        .FirstOrDefault(x => x.TileType == TileType.Wall_Centered && (x.TileRotation == TileRotation.Degrees_90 | 
+                        x.TileRotation == TileRotation.Degrees_270));
+                }
+                if ((leftTile != null || rightTile != null) && topInRoom != null && bottomInRoom != null) // Horizontal center wall
+                {
+                    selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                        .FirstOrDefault(x => x.TileType == TileType.Wall_Centered && (x.TileRotation == TileRotation.Degrees_0 |
+                        x.TileRotation == TileRotation.Degrees_180));
+                }
+                if (leftTile != null && rightTile != null && (topTile == null && bottomTile == null || 
+                    topTile != null && bottomTile == null || topTile == null && bottomTile != null)) // Horizonzal wall
                 {
                     TileRotation rotation = inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1) ? 
                         TileRotation.Degrees_0 : TileRotation.Degrees_180;
@@ -550,7 +577,8 @@ namespace DungeonMapEditor.UI
                     selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
                         .FirstOrDefault(x => x.TileType == TileType.Wall && x.TileRotation == rotation);
                 }
-                else if (topTile != null && bottomTile != null && leftTile == null && rightTile == null) // Vertical wall
+                else if (topTile != null && bottomTile != null && (leftTile == null && rightTile == null ||
+                    leftTile != null && rightTile == null || leftTile == null && rightTile != null)) // Vertical wall
                 {
                     TileRotation rotation = inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X + 1) ?
                         TileRotation.Degrees_270 : TileRotation.Degrees_90;
@@ -626,6 +654,7 @@ namespace DungeonMapEditor.UI
                 tileAssignment.Control.MouseLeftButtonDown -= TileControl_MouseLeftButtonDown;
                 tileAssignment.Control.MouseRightButtonDown -= TileControl_MouseRightButtonDown;
                 tileAssignment.Control.MouseEnter -= TileControl_MouseEnter;
+                tileAssignment.Control.ChangeObserved -= ChangeManager_ChangeObserved;
                 grid.Children.Remove(tileAssignment.Control);
                 tileAssignment.UnsetControl();
             }
@@ -633,6 +662,7 @@ namespace DungeonMapEditor.UI
             foreach (PlaceableAssignment placeableAssignment in vm.RoomPlan.PlaceableAssignments.Where(x => x.Control != null))
             {
                 placeableAssignment.Control.MouseLeftButtonDown -= PlaceableControl_MouseLeftButtonDown;
+                placeableAssignment.Control.ChangeObserved -= ChangeManager_ChangeObserved;
                 grid.Children.Remove(placeableAssignment.Control);
                 placeableAssignment.UnsetControl();
             }
@@ -640,11 +670,21 @@ namespace DungeonMapEditor.UI
             vm.RoomPlan.ChangeManager.ChangeObserved -= ChangeManager_ChangeObserved;
             vm.RoomNameChanged -= Vm_RoomNameChanged;
             vm.GridSizeChanged -= Vm_GridSizeChanged;
+            vm.ChangeObserved -= ChangeManager_ChangeObserved;
             predictInnerRoomTimer.Tick -= PredictInnerRoomTimer_Tick;
         }
 
         private void DockPanel_Unloaded(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void ClearGrid_Click(object sender, RoutedEventArgs e)
+        {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            foreach (TileAssignment tileAssignment in vm.RoomPlan.TileAssignments)
+            {
+                tileAssignment.Tile = new Tile(false);
+            }
         }
     }
 }

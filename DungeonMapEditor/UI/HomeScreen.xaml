@@ -12,6 +12,12 @@
     </DockPanel.DataContext>
     <DockPanel.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <ContextMenu x:Key="projectMenu">
+            <MenuItem Header="Open project" Click="MenuItem_OpenProject_Click"/>
+            <!--<MenuItem Header="Export project"/>-->
+            <MenuItem Header="Delete project" Click="MenuItem_RemoveProject_Click"/>
+        </ContextMenu>
     </DockPanel.Resources>
     <DockPanel Width="260">
         <TextBlock Foreground="White" TextAlignment="Center" FontWeight="Bold" FontSize="32" TextWrapping="Wrap"
@@ -43,10 +49,7 @@
                 </DataGrid.Resources>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
-                        <Style.Resources>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
-                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
-                        </Style.Resources>
+                        <Setter Property="ContextMenu" Value="{StaticResource projectMenu}"/>
                         <EventSetter Event="MouseDoubleClick" Handler="ProjectHistoryItem_MouseDoubleClick"/>
                     </Style>
                 </DataGrid.RowStyle>

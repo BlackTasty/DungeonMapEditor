@@ -8,7 +8,7 @@
         mc:Ignorable="d" 
         d:DesignHeight="50" d:DesignWidth="50"
         MouseLeftButtonDown="Control_MouseLeftButtonDown" MouseLeftButtonUp="Control_MouseLeftButtonUp"
-        MouseMove="Control_MouseMove" PreviewKeyDown="Border_PreviewKeyDown">
+        MouseMove="Control_MouseMove">
     <Border.DataContext>
         <vm:PlaceableControlViewModel/>
     </Border.DataContext>

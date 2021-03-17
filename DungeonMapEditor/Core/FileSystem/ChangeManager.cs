@@ -87,6 +87,24 @@ namespace DungeonMapEditor.Core.FileSystem
             ChangeObserved?.Invoke(this, e);
         }
 
+        public bool Compare(ChangeManager changeManager)
+        {
+            foreach (var observer in ChangeObservers)
+            {
+                var targetObserver = changeManager.ChangeObservers.FirstOrDefault(x => x.PropertyName == observer.PropertyName);
+                if (targetObserver == null ||
+                    observer.GetOriginalValue() == null && targetObserver.GetOriginalValue() == null ||
+                    (observer.GetOriginalValue() == null && targetObserver.GetOriginalValue() != null) ||
+                    (observer.GetOriginalValue() != null && targetObserver.GetOriginalValue() == null) ||
+                    !observer.GetOriginalValue().Equals(targetObserver.GetOriginalValue()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public override string ToString()
         {
             if (changeObservers == null)

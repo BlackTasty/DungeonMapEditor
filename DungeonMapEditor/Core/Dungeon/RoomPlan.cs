@@ -1,5 +1,6 @@
 ﻿using DungeonMapEditor.Controls;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.FileSystem;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -104,6 +105,9 @@ namespace DungeonMapEditor.Core.Dungeon
 
         [JsonIgnore]
         public int RoomNumberOverride { get; set; }
+
+        [JsonIgnore]
+        public bool AnyUnsavedChanges => UnsavedChanges || TileAssignments.Any(x => x.AnyUnsavedChanges) || PlaceableAssignments.Any(x => x.AnyUnsavedChanges);
 
         /// <summary>
         /// Only required by JSON parser!
@@ -225,11 +229,24 @@ namespace DungeonMapEditor.Core.Dungeon
             TilesY = roomPlan?.TilesY ?? 1;
             disableGridGeneration = false;
             TileAssignments = roomPlan?.TileAssignments;
+            foreach (var tileAssignment in TileAssignments)
+            {
+                tileAssignment.ChangeObserved += Assignment_ChangeObserved1;
+            }
             PlaceableAssignments = roomPlan?.PlaceableAssignments;
+            foreach (var placeableAssignment in PlaceableAssignments)
+            {
+                placeableAssignment.ChangeObserved += Assignment_ChangeObserved1;
+            }
             //FloorChangeTiles = roomPlan.FloorChangeTiles;
             Name = roomPlan?.Name;
             assignedProjectName = roomPlan?.AssignedProjectName;
             RoomNumber = roomPlan?.RoomNumber ?? 404;
+        }
+
+        private void Assignment_ChangeObserved1(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         public void GenerateTileGrid(int oldX, int newX, int oldY, int newY)
@@ -245,6 +262,8 @@ namespace DungeonMapEditor.Core.Dungeon
                 {
                     for (int y = oldY; y <= newY; y++)
                     {
+                        TileAssignment tileAssignment = new TileAssignment(new Tile(false), x, y);
+                        tileAssignment.ChangeObserved += TileAssignment_ChangeObserved;
                         TileAssignments.Add(new TileAssignment(new Tile(false), x, y));
                     }
                 }
@@ -275,6 +294,11 @@ namespace DungeonMapEditor.Core.Dungeon
                     }
                 }
             }
+        }
+
+        private void TileAssignment_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(new ChangeObservedEventArgs(AnyUnsavedChanges, e.NewValue, e.Observer));
         }
 
         public BitmapImage SaveRoomPlanImage(string path)

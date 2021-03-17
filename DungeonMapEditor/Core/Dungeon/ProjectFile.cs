@@ -30,6 +30,8 @@ namespace DungeonMapEditor.Core.Dungeon
         private Orientation mDocumentOrientation = Orientation.Vertical;
         private string guid;
 
+        public bool AnyUnsavedChanges => UnsavedChanges || FloorPlans.Any(x => x.AnyUnsavedChanges) || RoomPlans.Any(x => x.AnyUnsavedChanges);
+
         public string Guid => guid;
 
         public DateTime LastModifyDate => mLastModifyDate;
@@ -255,6 +257,11 @@ namespace DungeonMapEditor.Core.Dungeon
             }
 
             return notes;
+        }
+
+        public override void Delete()
+        {
+            base.Delete(true);
         }
     }
 }

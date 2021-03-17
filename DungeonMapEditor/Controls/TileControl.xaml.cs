@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
 using System;
@@ -25,6 +26,8 @@ namespace DungeonMapEditor.Controls
     /// </summary>
     public partial class TileControl : Border
     {
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
+
         public TileControl() : this(new TileAssignment(new Tile(false)))
         {
 
@@ -40,18 +43,29 @@ namespace DungeonMapEditor.Controls
             }
         }
 
+        private void TileAssignment_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
+        }
+
         public TileAssignment TileAssignment
         {
             get => (DataContext as TileControlViewModel).TileAssignment;
             set
             {
                 (DataContext as TileControlViewModel).TileAssignment = value;
+                value.ChangeObserved += TileAssignment_ChangeObserved;
             }
         }
 
         public override string ToString()
         {
             return TileAssignment?.ToString();
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

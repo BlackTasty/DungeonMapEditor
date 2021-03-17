@@ -51,14 +51,14 @@ namespace DungeonMapEditor.UI
 
         private void ChangeManager_ChangeObserved(object sender, ChangeObservedEventArgs e)
         {
+            FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
             if (e.Observer.PropertyName == "Name")
             {
-                OnFloorNameChanged(new NameChangedEventArgs("", e.UnsavedChanges ? e.NewValue + "*" : e.NewValue));
+                OnFloorNameChanged(new NameChangedEventArgs("", vm.FloorPlan?.AnyUnsavedChanges ?? false ? e.NewValue + "*" : e.NewValue));
             }
             else
             {
-                FloorPlanViewModel vm = DataContext as FloorPlanViewModel;
-                OnChangeObserved(new ChangeObservedEventArgs(vm.FloorPlan?.UnsavedChanges ?? false, vm.FloorPlan?.Name, e.Observer));
+                OnChangeObserved(new ChangeObservedEventArgs(vm.FloorPlan?.AnyUnsavedChanges ?? false, vm.FloorPlan?.Name, e.Observer));
             }
         }
 
@@ -77,6 +77,7 @@ namespace DungeonMapEditor.UI
                 tagIndex++;
 
                 roomControl.MouseLeftButtonDown += RoomControl_MouseLeftButtonDown;
+                roomControl.ChangeObserved += ChangeManager_ChangeObserved;
 
                 Canvas.SetLeft(roomControl, roomAssignment.X);
                 Canvas.SetTop(roomControl, roomAssignment.Y);

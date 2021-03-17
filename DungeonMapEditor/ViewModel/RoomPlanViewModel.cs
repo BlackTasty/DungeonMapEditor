@@ -3,6 +3,7 @@ using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel.Communication;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace DungeonMapEditor.ViewModel
     {
         public event EventHandler<NameChangedEventArgs> RoomNameChanged;
         public event EventHandler<EventArgs> GridSizeChanged;
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
         private RoomPlan mRoomPlan;
         private TileAssignment mSelectedTileAssignment;
@@ -109,13 +111,20 @@ namespace DungeonMapEditor.ViewModel
                 {
                     mRoomPlan.NameChanged -= RoomPlan_NameChanged;
                     mRoomPlan.GridSizeChanged -= RoomPlan_GridSizeChanged;
+                    mRoomPlan.ChangeObserved -= RoomPlan_ChangeObserved;
                 }
 
                 mRoomPlan = value;
                 mRoomPlan.NameChanged += RoomPlan_NameChanged;
                 mRoomPlan.GridSizeChanged += RoomPlan_GridSizeChanged;
+                mRoomPlan.ChangeObserved += RoomPlan_ChangeObserved;
                 InvokePropertyChanged();
             }
+        }
+
+        private void RoomPlan_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         public int SelectedTabIndex
@@ -190,6 +199,11 @@ namespace DungeonMapEditor.ViewModel
         protected virtual void OnGridSizeChanged(EventArgs e)
         {
             GridSizeChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

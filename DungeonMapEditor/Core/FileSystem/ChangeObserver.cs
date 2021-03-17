@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.ViewModel;
+﻿using DungeonMapEditor.Core.Dungeon;
+using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,7 +56,20 @@ namespace DungeonMapEditor.Core.FileSystem
 
                 if (currentValue is IVeryObservableCollection currentCollection)
                 {
-                    return currentCollection.AnyUnsavedChanges;
+                    if (originalValue is IVeryObservableCollection originalCollection)
+                    {
+                        return originalCollection.Count != currentCollection.Count && currentCollection.AnyUnsavedChanges;
+                    }
+
+                    return true;
+                }
+                else if (currentValue is IBaseData currentBaseData)
+                {
+                    if (originalValue is IBaseData originalBaseData)
+                    {
+                        return currentBaseData.ChangeManager.Compare(originalBaseData.ChangeManager);
+                    }
+                    return true;
                 }
                 else if (currentValue is IList currentList)
                 {
@@ -87,8 +101,8 @@ namespace DungeonMapEditor.Core.FileSystem
         public ChangeObserver(string propertyName, T currentValue)
         {
             this.propertyName = propertyName;
-            originalValue = currentValue;
             this.currentValue = currentValue;
+            Reset();
         }
 
         /// <summary>
@@ -96,7 +110,18 @@ namespace DungeonMapEditor.Core.FileSystem
         /// </summary>
         public void Reset()
         {
-            originalValue = currentValue;
+            if (currentValue is IVeryObservableCollection currentCollection)
+            {
+                originalValue = (T)currentCollection.Copy();
+            }
+            else if (currentValue is IBaseData currentBaseData)
+            {
+                originalValue = (T)currentBaseData.Copy();
+            }
+            else
+            {
+                originalValue = currentValue;
+            }
         }
 
         protected virtual void OnChangeObserved(ChangeObservedEventArgs e)

@@ -96,7 +96,7 @@
                             </ComboBox>
 
                             <TextBlock Text="Tile" Margin="12,4,12,2"/>
-                            <ComboBox ItemsSource="{Binding SelectedCollectionSet.TileFile.Data, UpdateSourceTrigger=PropertyChanged}" 
+                            <ComboBox ItemsSource="{Binding CollectionTiles, UpdateSourceTrigger=PropertyChanged}" 
                                   Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
                                   SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
                                 <ComboBox.ItemTemplate>
@@ -195,7 +195,10 @@
         <StackPanel Orientation="Horizontal" Visibility="{Binding IsRoomDrawEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Button x:Name="confirmDrawRoom" Content="Confirm room" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" 
                     Height="30" Margin="8,0" Click="ConfirmDrawRoom_Click" IsEnabled="False"/>
-            <Button Content="Reset" Style="{StaticResource YellowButton}" VerticalAlignment="Center" Height="30" Margin="8,0" Click="ResetDrawRoom_Click"/>
+            <Button Content="Reset" Style="{StaticResource YellowButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
+                    Click="ResetDrawRoom_Click"/>
+            <Button Content="Clear grid" Style="{StaticResource RedButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
+                    Click="ClearGrid_Click"/>
             <StackPanel>
                 <TextBlock Text="Collection" Margin="12,4,12,2"/>
                 <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
@@ -232,7 +235,7 @@
         <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True">
                 <Canvas.Background>
-                    <DrawingBrush TileMode="Tile" Viewport="-2.5,-2.5,50,50" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
+                    <DrawingBrush TileMode="Tile" Viewport="2,2,50,50" Viewbox="0,0,49,49" ViewboxUnits="Absolute" 
                                      ViewportUnits="Absolute">
                         <DrawingBrush.Drawing>
                             <GeometryDrawing>

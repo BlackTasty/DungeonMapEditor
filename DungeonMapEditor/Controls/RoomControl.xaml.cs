@@ -1,6 +1,7 @@
 ﻿using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace DungeonMapEditor.Controls
     /// </summary>
     public partial class RoomControl : Border
     {
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
         public event EventHandler<EventArgs> RoomMoved;
 
         protected bool isDragging;
@@ -56,7 +58,13 @@ namespace DungeonMapEditor.Controls
             {
                 value.SetControl(this);
                 (DataContext as RoomControlViewModel).RoomAssignment = value;
+                value.ChangeObserved += Value_ChangeObserved;
             }
+        }
+
+        private void Value_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         private void Control_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -98,6 +106,11 @@ namespace DungeonMapEditor.Controls
         protected virtual void OnRoomMoved(EventArgs e)
         {
             RoomMoved?.Invoke(this, e);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -17,6 +18,12 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         private double mRotationOverride;
 
+        private double x;
+        private double y;
+
+        [JsonIgnore]
+        public bool AnyUnsavedChanges => UnsavedChanges || (floorPlan?.UnsavedChanges ?? false);
+
         public string AssignedProjectPath { get; set; }
 
         [JsonIgnore]
@@ -27,15 +34,32 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         public string FloorPlanFile => !string.IsNullOrWhiteSpace(floorPlan.Name) ? floorPlan.Name + ".json" : null;
 
-        public double X { get; set; }
+        public double X 
+        {
+            get => x;
+            set
+            {
+                changeManager.ObserveProperty(value);
+                x = value;
+            }
+        }
 
-        public double Y { get; set; }
+        public double Y 
+        {
+            get => y;
+            set
+            {
+                changeManager.ObserveProperty(value);
+                y = value;
+            }
+        }
 
         public double RotationOverride
         {
             get => Math.Round(mRotationOverride, 0);
             set
             {
+                changeManager.ObserveProperty(value);
                 mRotationOverride = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("RealRotation");
@@ -90,6 +114,11 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
             this.control = control;
             return true;
+        }
+
+        protected override void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            base.OnChangeObserved(new ChangeObservedEventArgs(AnyUnsavedChanges, e.NewValue, e.Observer));
         }
     }
 }

@@ -28,5 +28,10 @@ namespace DungeonMapEditor.Core.Events
             this.selectedProject = selectedProject;
             selection = HomeScreenSelectionType.LoadProject;
         }
+
+        public HomeScreenSelectionMadeEventArgs(ProjectFile selectedProject, HomeScreenSelectionType selection) : this(selection)
+        {
+            this.selectedProject = selectedProject;
+        }
     }
 }

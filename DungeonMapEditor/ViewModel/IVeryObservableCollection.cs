@@ -11,5 +11,9 @@ namespace DungeonMapEditor.ViewModel
         bool UnsavedChanged { get; }
 
         bool AnyUnsavedChanges { get; }
+
+        int Count { get; }
+
+        IVeryObservableCollection Copy();
     }
 }

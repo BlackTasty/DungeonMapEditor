@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +14,7 @@ namespace DungeonMapEditor.Core.Dungeon
     public class BaseData<T> : JsonFile<T>, IBaseData
     {
         public event EventHandler<NameChangedEventArgs> NameChanged;
+        public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
         private string mName;
         private string mDescription;
@@ -97,11 +99,6 @@ namespace DungeonMapEditor.Core.Dungeon
             guid = System.Guid.NewGuid().ToString();
         }
 
-        protected virtual void OnNameChanged(NameChangedEventArgs e)
-        {
-            NameChanged?.Invoke(this, e);
-        }
-
         public override bool Equals(object obj)
         {
             if (obj is BaseData<T> target)
@@ -117,6 +114,27 @@ namespace DungeonMapEditor.Core.Dungeon
             {
                 return false;
             }
+        }
+
+        public virtual IBaseData Copy()
+        {
+            return new BaseData<T>
+            {
+                Name = Name,
+                Description = Description,
+                guid = guid,
+                Rotation = Rotation
+            };
+        }
+
+        protected virtual void OnNameChanged(NameChangedEventArgs e)
+        {
+            NameChanged?.Invoke(this, e);
+        }
+
+        protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            ChangeObserved?.Invoke(this, e);
         }
     }
 }

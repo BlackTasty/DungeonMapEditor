@@ -251,6 +251,14 @@ namespace DungeonMapEditor.ViewModel
             changeManager?.ObserveProperty(this, CollectionName);
         }
 
+        public IVeryObservableCollection Copy()
+        {
+            VeryObservableCollection<T> copy = new VeryObservableCollection<T>("");
+            copy.Add(this.ToList());
+
+            return copy;
+        }
+
         protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(sender, e);

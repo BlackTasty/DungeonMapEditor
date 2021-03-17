@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -14,27 +15,49 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 {
     public class PlaceableAssignment : Assignment
     {
-        private Placeable placeable;
+        private Placeable mPlaceable;
         private PlaceableControl control;
 
         private double mRotationOverride;
         private double mTileRatioXOverride;
         private double mTileRatioYOverride;
 
+        private double positionX;
+        private double positionY;
+
+        [JsonIgnore]
+        public bool AnyUnsavedChanges => UnsavedChanges || (mPlaceable?.UnsavedChanges ?? false);
+
         [JsonIgnore]
         public bool KeepAspectRatio { get; set; }
 
         [JsonIgnore]
-        public Placeable Placeable => placeable;
+        public Placeable Placeable => mPlaceable;
 
         [JsonIgnore]
         public PlaceableControl Control => control;
 
-        public string PlaceableGuid => placeable?.Guid;
+        public string PlaceableGuid => mPlaceable?.Guid;
 
-        public double PositionX { get; set; }
+        public double PositionX
+        { 
+            get => positionX;
+            set
+            {
+                changeManager.ObserveProperty(value);
+                positionX = value;
+            }
+        }
 
-        public double PositionY { get; set; }
+        public double PositionY
+        {
+            get => positionY;
+            set
+            {
+                changeManager.ObserveProperty(value);
+                positionY = value;
+            }
+        }
 
         public int ZIndex { get; set; } = 1;
 
@@ -43,6 +66,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             get => Math.Round(mRotationOverride, 0);
             set
             {
+                changeManager.ObserveProperty(value);
                 mRotationOverride = value;
                 InvokePropertyChanged();
                 InvokePropertyChanged("RealRotation");
@@ -59,6 +83,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
                     Size current = new Size(mTileRatioXOverride, mTileRatioYOverride);
                     Size desired = new Size(value, mTileRatioYOverride);
                     mTileRatioYOverride = Helper.ChangeSize_KeepAspectRatio(current, desired).Height;
+                    changeManager.ObserveProperty(mTileRatioYOverride, "TileRatioYOverride");
                     if (control != null)
                     {
                         control.Height = Height;
@@ -66,6 +91,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
                     InvokePropertyChanged("TileRatioYOverride");
                 }
 
+                changeManager.ObserveProperty(value);
                 mTileRatioXOverride = value;
                 if (control != null)
                 {
@@ -85,6 +111,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
                     Size current = new Size(mTileRatioXOverride, mTileRatioYOverride);
                     Size desired = new Size(mTileRatioXOverride, value);
                     mTileRatioXOverride = Helper.ChangeSize_KeepAspectRatio(current, desired).Width;
+                    changeManager.ObserveProperty(mTileRatioXOverride, "TileRatioXOverride");
                     if (control != null)
                     {
                         control.Width = Width;
@@ -92,6 +119,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
                     InvokePropertyChanged("TileRatioXOverride");
                 }
 
+                changeManager.ObserveProperty(value);
                 mTileRatioYOverride = value;
                 if (control != null)
                 {
@@ -105,10 +133,10 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public double RealRotation => Placeable.Rotation + RotationOverride;
 
         [JsonIgnore]
-        public double Width => mTileRatioXOverride > 0 ? App.SnapValue * mTileRatioXOverride : placeable.Width;
+        public double Width => mTileRatioXOverride > 0 ? App.SnapValue * mTileRatioXOverride : mPlaceable.Width;
 
         [JsonIgnore]
-        public double Height => mTileRatioYOverride > 0 ? App.SnapValue * mTileRatioYOverride : placeable.Height;
+        public double Height => mTileRatioYOverride > 0 ? App.SnapValue * mTileRatioYOverride : mPlaceable.Height;
 
         /// <summary>
         /// Only required by JSON parser!
@@ -119,11 +147,11 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         {
             if (!string.IsNullOrWhiteSpace(placeableGuid))
             {
-                placeable = App.GetPlaceableByGuid(placeableGuid);
+                mPlaceable = App.GetPlaceableByGuid(placeableGuid);
             }
             else
             {
-                placeable = new Placeable(false);
+                mPlaceable = new Placeable(false);
             }
 
             PositionX = posX;
@@ -152,7 +180,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// <param name="placeable">The placeable object to assign</param>
         public PlaceableAssignment(Placeable placeable)
         {
-            this.placeable = placeable;
+            this.mPlaceable = placeable;
         }
 
         public bool SetControl(PlaceableControl control)
@@ -169,6 +197,11 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public void UnsetControl()
         {
             this.control = null;
+        }
+
+        protected override void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            base.OnChangeObserved(new ChangeObservedEventArgs(AnyUnsavedChanges, e.NewValue, e.Observer));
         }
     }
 }

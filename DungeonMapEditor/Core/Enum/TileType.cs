@@ -18,6 +18,10 @@ namespace DungeonMapEditor.Core.Enum
         [Description("Inner corner")]
         Corner_Inner,
         [Description("Door")]
-        Door
+        Door,
+        [Description("Centered wall")]
+        Wall_Centered,
+        //[Description("T wall")]
+        //Wall_T
     }
 }

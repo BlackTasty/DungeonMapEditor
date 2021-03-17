@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -20,14 +21,27 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         private double canvasY;
 
         [JsonIgnore]
+        public bool AnyUnsavedChanges => UnsavedChanges || (mTile?.UnsavedChanges ?? false);
+
+        [JsonIgnore]
         public Tile Tile
         {
             get => mTile;
             set
             {
+                if (mTile != null)
+                {
+                    mTile.ChangeObserved -= Tile_ChangeObserved;
+                }
                 mTile = value;
+                mTile.ChangeObserved += Tile_ChangeObserved;
                 InvokePropertyChanged();
             }
+        }
+
+        private void Tile_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         [JsonIgnore]
@@ -53,17 +67,18 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         {
             if (!string.IsNullOrWhiteSpace(tileGuid))
             {
-                mTile = App.GetTileByGuid(tileGuid);
+                Tile = App.GetTileByGuid(tileGuid);
             }
             else
             {
-                mTile = new Tile(false);
+                Tile = new Tile(false);
             }
             X = x;
             Y = y;
 
             canvasX = X * App.SnapValue - 50;
             canvasY = Y * App.SnapValue - 50;
+            changeManager.ResetObservers();
         }
 
         /// <summary>
@@ -98,17 +113,29 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             }
 
             this.control = control;
+            control.ChangeObserved += Control_ChangeObserved;
             return true;
+        }
+
+        private void Control_ChangeObserved(object sender, ChangeObservedEventArgs e)
+        {
+            OnChangeObserved(e);
         }
 
         public void UnsetControl()
         {
+            control.ChangeObserved -= Control_ChangeObserved;
             this.control = null;
         }
 
         public override string ToString()
         {
             return "X: " + X + "; Y: " + Y;
+        }
+
+        protected override void OnChangeObserved(ChangeObservedEventArgs e)
+        {
+            base.OnChangeObserved(new ChangeObservedEventArgs(AnyUnsavedChanges, e.NewValue, e.Observer));
         }
     }
 }

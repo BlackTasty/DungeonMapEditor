@@ -54,12 +54,6 @@ namespace DungeonMapEditor
             app.Run();
         }
 
-        public static void GetTileAndCollectionByTileGuid(string tileGuid, out CollectionSet collection, out Tile tile)
-        {
-            collection = LoadedCollections.FirstOrDefault(x => x.TileFile.Data.Any(y => y.Guid == tileGuid));
-            tile = collection?.TileFile.Data.FirstOrDefault(x => x.Guid == tileGuid);
-        }
-
         public static void LoadCollections()
         {
             LoadedCollections.Clear();
