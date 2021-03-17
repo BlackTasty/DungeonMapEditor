@@ -322,10 +322,15 @@ namespace DungeonMapEditor.UI
                     }
                     else
                     {
+                        roomPlanGrid.UnloadGrid();
                         roomPlanGrid.ChangeObserved -= RoomPlanGrid_ChangeObserved;
                         roomPlanGrid.RoomNameChanged -= PlanGrid_NameChanged;
                         tabControl.Items.Remove(targetTab);
                     }
+                }
+                else
+                {
+                    tabControl.Items.Remove(targetTab);
                 }
             }
         }
@@ -357,6 +362,7 @@ namespace DungeonMapEditor.UI
                 {
                     (roomPlanGrid.DataContext as RoomPlanViewModel).RoomPlan.Load();
                 }
+                roomPlanGrid.UnloadGrid();
                 roomPlanGrid.ChangeObserved -= RoomPlanGrid_ChangeObserved;
                 roomPlanGrid.RoomNameChanged -= PlanGrid_NameChanged;
             }

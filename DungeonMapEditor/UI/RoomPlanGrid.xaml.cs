@@ -56,7 +56,6 @@ namespace DungeonMapEditor.UI
             InitializeComponent();
             predictInnerRoomTimer = new DispatcherTimer();
             predictInnerRoomTimer.Interval = TimeSpan.FromMilliseconds(500);
-            predictInnerRoomTimer.Tick += PredictInnerRoomTimer_Tick;
             isInit = false;
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
             roomPlan.Load();
@@ -64,6 +63,7 @@ namespace DungeonMapEditor.UI
             roomPlan.ChangeManager.ChangeObserved += ChangeManager_ChangeObserved;
             vm.RoomNameChanged += Vm_RoomNameChanged;
             vm.GridSizeChanged += Vm_GridSizeChanged;
+            predictInnerRoomTimer.Tick += PredictInnerRoomTimer_Tick;
             AddTilesAndPlaceables();
         }
 
@@ -127,6 +127,7 @@ namespace DungeonMapEditor.UI
                 grid.Children.Add(roomBorder);
             }
 
+            // Generate tile control for every assignment without control
             foreach (TileAssignment tileAssignment in vm.RoomPlan.TileAssignments.Where(x => x.Control == null))
             {
                 TileControl tileControl = new TileControl(tileAssignment)
@@ -145,9 +146,9 @@ namespace DungeonMapEditor.UI
 
                 tileAssignment.SetControl(tileControl);
                 grid.Children.Add(tileControl);
-                Console.WriteLine("TileControl generated for position: X={0}; Y={1}", tileAssignment.X, tileAssignment.Y);
             }
 
+            // Generate placeable control for every assignment without control
             foreach (PlaceableAssignment placeableAssignment in vm.RoomPlan.PlaceableAssignments.Where(x => x.Control == null))
             {
                 PlaceableControl placeableControl = new PlaceableControl(placeableAssignment, canvasBounds)
@@ -163,7 +164,6 @@ namespace DungeonMapEditor.UI
 
                 Canvas.SetLeft(placeableControl, placeableControl.PlaceableAssignment.PositionX);
                 Canvas.SetTop(placeableControl, placeableControl.PlaceableAssignment.PositionY);
-
                 grid.Children.Add(placeableControl);
             }
         }
@@ -611,19 +611,35 @@ namespace DungeonMapEditor.UI
             }
         }
 
-        private void DockPanel_Unloaded(object sender, RoutedEventArgs e)
+        public void UnloadGrid()
         {
             isClosing = true;
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
 
             foreach (TileAssignment tileAssignment in vm.RoomPlan.TileAssignments.Where(x => x.Control != null))
             {
+                tileAssignment.Control.MouseLeftButtonDown -= TileControl_MouseLeftButtonDown;
+                tileAssignment.Control.MouseRightButtonDown -= TileControl_MouseRightButtonDown;
+                tileAssignment.Control.MouseEnter -= TileControl_MouseEnter;
+                grid.Children.Remove(tileAssignment.Control);
                 tileAssignment.UnsetControl();
             }
+
             foreach (PlaceableAssignment placeableAssignment in vm.RoomPlan.PlaceableAssignments.Where(x => x.Control != null))
             {
+                placeableAssignment.Control.MouseLeftButtonDown -= PlaceableControl_MouseLeftButtonDown;
+                grid.Children.Remove(placeableAssignment.Control);
                 placeableAssignment.UnsetControl();
             }
+
+            vm.RoomPlan.ChangeManager.ChangeObserved -= ChangeManager_ChangeObserved;
+            vm.RoomNameChanged -= Vm_RoomNameChanged;
+            vm.GridSizeChanged -= Vm_GridSizeChanged;
+            predictInnerRoomTimer.Tick -= PredictInnerRoomTimer_Tick;
+        }
+
+        private void DockPanel_Unloaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
