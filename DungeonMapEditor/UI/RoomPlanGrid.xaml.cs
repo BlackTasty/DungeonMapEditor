@@ -2,6 +2,8 @@
 using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
+using DungeonMapEditor.Core.Dungeon.Collection;
+using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.Core.FileSystem;
 using DungeonMapEditor.ViewModel;
@@ -37,7 +39,11 @@ namespace DungeonMapEditor.UI
         private bool updateTile = true;
         private bool isInit = true;
 
+        private List<TileControl> drawRoomSelectedTiles = new List<TileControl>();
+
         private Size canvasBounds = new Size();
+        private SolidColorBrush highlightColor = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
+        private SolidColorBrush drawRoomColor = new SolidColorBrush(Color.FromArgb(64, 128, 255, 0));
 
         public RoomPlanGrid(RoomPlan roomPlan)
         {
@@ -116,6 +122,8 @@ namespace DungeonMapEditor.UI
                     Tag = tileTagIndex
                 };
                 tileControl.MouseLeftButtonDown += TileControl_MouseLeftButtonDown;
+                tileControl.MouseRightButtonDown += TileControl_MouseRightButtonDown;
+                tileControl.MouseEnter += TileControl_MouseEnter;
                 tileTagIndex++;
 
                 Canvas.SetLeft(tileControl, tileAssignment.CanvasX - 4);
@@ -132,7 +140,8 @@ namespace DungeonMapEditor.UI
                 {
                     Width = placeableAssignment.Width,
                     Height = placeableAssignment.Height,
-                    Tag = placeableTagIndex
+                    Tag = placeableTagIndex,
+                    IsHitTestVisible = !vm.IsRoomDrawEnabled
                 };
                 placeableTagIndex++;
 
@@ -145,33 +154,94 @@ namespace DungeonMapEditor.UI
             }
         }
 
+        private void TileControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if ((DataContext as RoomPlanViewModel).IsRoomDrawEnabled && sender is TileControl tileControl)
+            {
+                if (drawRoomSelectedTiles.Any(x => x.Tag.ToString() == tileControl.Tag.ToString()))
+                {
+                    tileControl.Background = Brushes.Transparent;
+                    drawRoomSelectedTiles.Remove(tileControl);
+                    if (drawRoomSelectedTiles.Count == 0)
+                    {
+                        confirmDrawRoom.IsEnabled = false;
+                    }
+                }
+            }
+        }
+
+        private void TileControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if ((DataContext as RoomPlanViewModel).IsRoomDrawEnabled && sender is TileControl tileControl)
+            {
+                if (Mouse.LeftButton == MouseButtonState.Pressed)
+                {
+                    if (!drawRoomSelectedTiles.Any(x => x.Tag.ToString() == tileControl.Tag.ToString()))
+                    {
+                        tileControl.Background = drawRoomColor;
+                        drawRoomSelectedTiles.Add(tileControl);
+                        confirmDrawRoom.IsEnabled = true;
+                    }
+                }
+                else if (Mouse.RightButton == MouseButtonState.Pressed)
+                {
+                    if (drawRoomSelectedTiles.Any(x => x.Tag.ToString() == tileControl.Tag.ToString()))
+                    {
+                        tileControl.Background = Brushes.Transparent;
+                        drawRoomSelectedTiles.Remove(tileControl);
+                        if (drawRoomSelectedTiles.Count == 0)
+                        {
+                            confirmDrawRoom.IsEnabled = false;
+                        }
+                    }
+                }
+            }
+        }
+
         private void TileControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
-            if (selectedPlaceableControl != null)
-            {
-                selectedPlaceableControl.Background = Brushes.Transparent;
-                selectedPlaceableControl = null;
-                vm.SelectedPlaceableAssignment = null;
-            }
-            if (selectedTileControl != null)
-            {
-                selectedTileControl.Background = Brushes.Transparent;
-            }
-            TileControl tileControl = sender as TileControl;
 
-            TileAssignment tileAssignment = tileControl.TileAssignment;
-            vm.SelectedTileAssignment = tileAssignment;
-
-            tileControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
-            selectedTileControl = tileControl;
-            updateTile = false;
-            vm.SelectedAvailableTile = null;
-            updateTile = true;
-            vm.SelectedTabIndex = 1;
-            if (tileAssignment.TileGuid != null)
+            if (sender is TileControl tileControl)
             {
-                vm.SelectedAvailableTile = tileAssignment.Tile;
+                if (!vm.IsRoomDrawEnabled)
+                {
+                    if (selectedPlaceableControl != null)
+                    {
+                        selectedPlaceableControl.Background = Brushes.Transparent;
+                        selectedPlaceableControl = null;
+                        vm.SelectedPlaceableAssignment = null;
+                    }
+                    if (selectedTileControl != null)
+                    {
+                        selectedTileControl.Background = Brushes.Transparent;
+                    }
+
+                    TileAssignment tileAssignment = tileControl.TileAssignment;
+                    vm.SelectedTileAssignment = tileAssignment;
+
+                    tileControl.Background = highlightColor;
+                    selectedTileControl = tileControl;
+                    updateTile = false;
+                    vm.SelectedAvailableTile = null;
+                    updateTile = true;
+                    vm.SelectedTabIndex = 1;
+                    if (tileAssignment.TileGuid != null)
+                    {
+                        App.GetTileAndCollectionByTileGuid(tileAssignment.TileGuid, out CollectionSet collection, out Tile tile);
+                        vm.SelectedCollectionSet = collection;
+                        vm.SelectedAvailableTile = tile;
+                    }
+                }
+                else
+                {
+                    if (!drawRoomSelectedTiles.Any(x => x.Tag.ToString() == tileControl.Tag.ToString()))
+                    {
+                        tileControl.Background = drawRoomColor;
+                        drawRoomSelectedTiles.Add(tileControl);
+                        confirmDrawRoom.IsEnabled = true;
+                    }
+                }
             }
         }
 
@@ -197,11 +267,13 @@ namespace DungeonMapEditor.UI
         {
             if (sender is DataGridRow clickedRow && clickedRow.DataContext is Placeable placeable)
             {
+                RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
                 PlaceableControl placeableControl = new PlaceableControl(placeable, canvasBounds)
                 {
                     Width = placeable.Width,
                     Height = placeable.Height,
-                    Tag = placeableTagIndex
+                    Tag = placeableTagIndex,
+                    IsHitTestVisible = !vm.IsRoomDrawEnabled
                 };
                 placeableTagIndex++;
 
@@ -212,7 +284,7 @@ namespace DungeonMapEditor.UI
 
                 grid.Children.Add(placeableControl);
 
-                (DataContext as RoomPlanViewModel).RoomPlan.PlaceableAssignments.Add(placeableControl.PlaceableAssignment);
+                vm.RoomPlan.PlaceableAssignments.Add(placeableControl.PlaceableAssignment);
             }
 
         }
@@ -246,7 +318,7 @@ namespace DungeonMapEditor.UI
             PlaceableAssignment placeableAssignment = vm.RoomPlan.PlaceableAssignments.FirstOrDefault(x => x.Control.Tag == placeableControl.Tag);
             vm.SelectedPlaceableAssignment = placeableAssignment;
 
-            placeableControl.Background = new SolidColorBrush(Color.FromArgb(64, 255, 128, 0));
+            placeableControl.Background = highlightColor;
             selectedPlaceableControl = placeableControl;
             updateTile = false;
             vm.SelectedAvailableTile = null;
@@ -281,6 +353,168 @@ namespace DungeonMapEditor.UI
         protected virtual void OnChangeObserved(ChangeObservedEventArgs e)
         {
             ChangeObserved?.Invoke(this, e);
+        }
+
+        private void RoomDraw_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+            bool roomDrawEnabled = vm.IsRoomDrawEnabled;
+            
+            foreach (PlaceableAssignment assignment in vm.RoomPlan.PlaceableAssignments)
+            {
+                assignment.Control.IsHitTestVisible = !roomDrawEnabled;
+            }
+
+            if (roomDrawEnabled)
+            {
+                if (selectedPlaceableControl != null)
+                {
+                    selectedPlaceableControl.Background = Brushes.Transparent;
+                    selectedPlaceableControl = null;
+                    vm.SelectedPlaceableAssignment = null;
+                }
+                if (selectedTileControl != null)
+                {
+                    updateTile = false;
+                    selectedTileControl.Background = Brushes.Transparent;
+                    selectedTileControl = null;
+                    vm.SelectedTileAssignment = null;
+                    updateTile = true;
+                }
+            }
+            else
+            {
+                foreach (TileControl tileControl in drawRoomSelectedTiles)
+                {
+                    tileControl.Background = Brushes.Transparent;
+                }
+                drawRoomSelectedTiles.Clear();
+                confirmDrawRoom.IsEnabled = false;
+            }
+        }
+
+        private void ResetDrawRoom_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (TileControl tileControl in drawRoomSelectedTiles)
+            {
+                tileControl.Background = Brushes.Transparent;
+            }
+            drawRoomSelectedTiles.Clear();
+            confirmDrawRoom.IsEnabled = false;
+        }
+
+        private void ConfirmDrawRoom_Click(object sender, RoutedEventArgs e)
+        {
+            RoomPlanViewModel vm = DataContext as RoomPlanViewModel;
+
+            List<TileAssignment> inRoomTiles = new List<TileAssignment>();
+
+            bool isInRoom = false;
+            for (int y = 1; y <= vm.RoomPlan.TilesY; y++)
+            {
+                isInRoom = false;
+                for (int x = 1; x <= vm.RoomPlan.TilesX; x++)
+                {
+                    bool isWall = drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == y);
+                    if (isWall && (isInRoom || !drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x + 1 && t.TileAssignment.Y == y)))
+                    {
+                        isInRoom = !isInRoom;
+                    }
+
+                    if (isInRoom && !drawRoomSelectedTiles.Any(t => t.TileAssignment.X == x && t.TileAssignment.Y == y))
+                    {
+                        TileAssignment inRoomTile = vm.RoomPlan.TileAssignments.FirstOrDefault(t => t.X == x && t.Y == y);
+                        bool hasNeighbours = vm.RoomPlan.TileAssignments.Any(t => t.X == x - 1 && t.Y == y) &&
+                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x && t.Y == y - 1) &&
+                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x + 1 && t.Y == y) &&
+                                                vm.RoomPlan.TileAssignments.Any(t => t.X == x && t.Y == y + 1);
+                        if (inRoomTile != null && hasNeighbours)
+                        {
+                            inRoomTiles.Add(inRoomTile);
+                        }
+                    }
+                }
+            }
+
+            foreach (TileControl selectedTile in drawRoomSelectedTiles)
+            {
+                TileControl leftTile = drawRoomSelectedTiles.FirstOrDefault(x => x.TileAssignment.X == selectedTile.TileAssignment.X - 1 && x.TileAssignment.Y == selectedTile.TileAssignment.Y);
+                TileControl topTile = drawRoomSelectedTiles.FirstOrDefault(x => x.TileAssignment.X == selectedTile.TileAssignment.X && x.TileAssignment.Y == selectedTile.TileAssignment.Y - 1);
+                TileControl rightTile = drawRoomSelectedTiles.FirstOrDefault(x => x.TileAssignment.X == selectedTile.TileAssignment.X + 1 && x.TileAssignment.Y == selectedTile.TileAssignment.Y);
+                TileControl bottomTile = drawRoomSelectedTiles.FirstOrDefault(x => x.TileAssignment.X == selectedTile.TileAssignment.X && x.TileAssignment.Y == selectedTile.TileAssignment.Y + 1);
+
+                if (leftTile != null && rightTile != null && topTile == null && bottomTile == null) // Horizonzal wall
+                {
+                    TileRotation rotation = inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1) ? 
+                        TileRotation.Degrees_0 : TileRotation.Degrees_180;
+
+                    selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                        .FirstOrDefault(x => x.TileType == TileType.Wall && x.TileRotation == rotation);
+                }
+                else if (topTile != null && bottomTile != null && leftTile == null && rightTile == null) // Vertical wall
+                {
+                    TileRotation rotation = inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X + 1) ?
+                        TileRotation.Degrees_270 : TileRotation.Degrees_90;
+                    selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                        .FirstOrDefault(x => x.TileType == TileType.Wall && x.TileRotation == rotation);
+                }
+                else if (leftTile != null && bottomTile != null && rightTile == null && topTile == null) // Top right corner
+                {
+                    if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X + 1) && 
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y - 1))
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_270);
+                    }
+                    else
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner && x.TileRotation == TileRotation.Degrees_90);
+                    }
+                }
+                else if (rightTile != null && bottomTile != null && leftTile == null && topTile == null) // Top left corner
+                {
+                    if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X - 1) &&
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y - 1))
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_180);
+                    }
+                    else
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner && x.TileRotation == TileRotation.Degrees_0);
+                    }
+                }
+                else if (leftTile != null && topTile != null && rightTile == null && bottomTile == null) // Bottom right corner
+                {
+                    if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X + 1) &&
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1))
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_0);
+                    }
+                    else
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner && x.TileRotation == TileRotation.Degrees_180);
+                    }
+                }
+                else if (rightTile != null && topTile != null && leftTile == null && bottomTile == null) // Bottom left corner
+                {
+                    if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X - 1) &&
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1))
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_90);
+                    }
+                    else
+                    {
+                        selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
+                            .FirstOrDefault(x => x.TileType == TileType.Corner && x.TileRotation == TileRotation.Degrees_270);
+                    }
+                }
+            }
         }
     }
 }

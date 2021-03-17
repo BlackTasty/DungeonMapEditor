@@ -24,6 +24,8 @@ namespace DungeonMapEditor.ViewModel
         private bool mKeepAspectRatio;
         private int mSelectedTabIndex;
         private CollectionSet mSelectedCollection;
+        private VeryObservableCollection<Tile> mCollectionTiles = new VeryObservableCollection<Tile>("CollectionTiles");
+        private bool mIsRoomDrawEnabled;
 
         public RoomPlanViewModel()
         {
@@ -41,6 +43,36 @@ namespace DungeonMapEditor.ViewModel
             SelectedCollectionSet = SelectedCollectionSet;
         }
 
+        public bool IsRoomDrawEnabled
+        {
+            get => mIsRoomDrawEnabled;
+            set
+            {
+                mIsRoomDrawEnabled = value;
+                InvokePropertyChanged();
+                if (value)
+                {
+                    SelectedAvailableTile = null;
+                    SelectedPlaceableAssignment = null;
+                }
+            }
+        }
+
+        public VeryObservableCollection<Tile> CollectionTiles
+        {
+            get => mCollectionTiles;
+            private set
+            {
+                mCollectionTiles.Clear();
+                mCollectionTiles.Add(new Tile(false));
+                if (value != null && value.Count > 0)
+                {
+                    mCollectionTiles.Add(value);
+                }
+                InvokePropertyChanged();
+            }
+        }
+
         public VeryObservableCollection<CollectionSet> LoadedCollections => App.LoadedCollections;
 
         public CollectionSet SelectedCollectionSet
@@ -49,6 +81,7 @@ namespace DungeonMapEditor.ViewModel
             set
             {
                 mSelectedCollection = value;
+                CollectionTiles = value?.TileFile?.Data;
                 InvokePropertyChanged();
             }
         }

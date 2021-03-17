@@ -100,5 +100,10 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             this.control = control;
             return true;
         }
+
+        public override string ToString()
+        {
+            return "X: " + X + "; Y: " + Y;
+        }
     }
 }

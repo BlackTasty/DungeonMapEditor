@@ -54,6 +54,12 @@ namespace DungeonMapEditor
             app.Run();
         }
 
+        public static void GetTileAndCollectionByTileGuid(string tileGuid, out CollectionSet collection, out Tile tile)
+        {
+            collection = LoadedCollections.FirstOrDefault(x => x.TileFile.Data.Any(y => y.Guid == tileGuid));
+            tile = collection?.TileFile.Data.FirstOrDefault(x => x.Guid == tileGuid);
+        }
+
         public static void LoadCollections()
         {
             LoadedCollections.Clear();
@@ -83,11 +89,16 @@ namespace DungeonMapEditor
                 return;
             }
 
-            foreach (DirectoryInfo di in new DirectoryInfo(ProjectsPath).EnumerateDirectories()
-                .OrderBy(x => x.LastWriteTime).Reverse().Take(ProjectHistory.Limit))
+            List<ProjectFile> history = new List<ProjectFile>();
+            foreach (DirectoryInfo di in new DirectoryInfo(ProjectsPath).EnumerateDirectories())
             {
-                ProjectHistory.Add(new ProjectFile(di));
+                if (di.EnumerateFiles(di.Name + ".dm").Count() > 0)
+                {
+                    history.Add(new ProjectFile(di));
+                }
             }
+
+            ProjectHistory.Add(history.OrderBy(x => x.LastModifyDate).Reverse().Take(ProjectHistory.Limit));
         }
 
         public static List<Tile> GetLoadedTiles()

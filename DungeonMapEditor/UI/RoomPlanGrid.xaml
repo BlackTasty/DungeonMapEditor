@@ -8,7 +8,7 @@
       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="800" PreviewKeyDown="DockPanel_PreviewKeyDown" Loaded="DockPanel_Loaded">
+      d:DesignHeight="500" d:DesignWidth="870" PreviewKeyDown="DockPanel_PreviewKeyDown" Loaded="DockPanel_Loaded">
     <DockPanel.DataContext>
         <vm:RoomPlanViewModel/>
     </DockPanel.DataContext>
@@ -16,8 +16,9 @@
         <converter:IntToStringConverter x:Key="IntToStringConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+        <converter:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </DockPanel.Resources>
-    <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="240">
+    <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="210">
         <TabControl SelectedIndex="{Binding SelectedTabIndex}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderGradientBrush}">
             <TabItem Header=" Object catalog">
                 <DockPanel>
@@ -74,55 +75,59 @@
             </TabItem>
             <TabItem Header="Tile settings" IsEnabled="{Binding IsTileAssignmentSelected}">
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Bottom">
-                        <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
-                        <TextBlock Text="Collection" Margin="12,4,12,2"/>
-                        <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
+                    <Expander DockPanel.Dock="Bottom" ExpandDirection="Up" Header="Set tile" BorderThickness="0,1,0,0" 
+                              BorderBrush="{StaticResource BorderBrush}" Padding="4" Margin="-3,0,-5,0">
+                        <StackPanel Margin="-1,0,1,0">
+                            <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
+                            <TextBlock Text="Collection" Margin="12,4,12,2"/>
+                            <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
                           SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}"/>
-                                        <TextBlock>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}"/>
+                                            <TextBlock>
                                             <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
                                             <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
-                        <TextBlock Text="Tile" Margin="12,4,12,2"/>
-                        <ComboBox ItemsSource="{Binding SelectedCollectionSet.TileFile.Data,UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBlock Text="Tile" Margin="12,4,12,2"/>
+                            <ComboBox ItemsSource="{Binding SelectedCollectionSet.TileFile.Data, UpdateSourceTrigger=PropertyChanged}" 
                                   Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
                                   SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}"/>
-                                        <TextBlock Text="{Binding AssignedFile.FileName}" 
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}"/>
+                                            <TextBlock Text="{Binding AssignedFile.FileName}" 
                                            Visibility="{Binding HasAssignedFile, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Border Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1">
-                            <local:TileControl x:Name="tilePreview"/>
-                        </Border>
-                    </StackPanel>
-                    <StackPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Tile settings" FontSize="20" Margin="4"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <local:TileControl x:Name="tilePreview" Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1"/>
+                        </StackPanel>
+                    </Expander>
 
-                        <TextBlock Text="Name" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}" 
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel DockPanel.Dock="Top">
+                            <TextBlock Text="Tile settings" FontSize="20" Margin="4"/>
+
+                            <TextBlock Text="Name" Margin="12,4,12,2"/>
+                            <TextBox Text="{Binding SelectedTileAssignment.Tile.Name, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" IsReadOnly="True" IsEnabled="False"/>
-                        <TextBlock Text="Description" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBlock Text="Description" Margin="12,4,12,2"/>
+                            <TextBox Text="{Binding SelectedTileAssignment.Tile.Description, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" TextWrapping="Wrap" Height="60" IsReadOnly="True" IsEnabled="False"/>
-                        <TextBlock Text="Notes" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedTileAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBlock Text="Notes" Margin="12,4,12,2"/>
+                            <TextBox Text="{Binding SelectedTileAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" TextWrapping="Wrap" AcceptsReturn="True" Height="60"/>
-                    </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
                 </DockPanel>
             </TabItem>
             <TabItem Header="Object settings" IsEnabled="{Binding IsPlaceableAssignmentSelected}">
@@ -168,24 +173,40 @@
             </TabItem>
         </TabControl>
     </Border>
-    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-        <StackPanel Width="140" Margin="8">
-            <TextBlock Text="Name"/>
-            <TextBox Text="{Binding RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}"/>
+    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Height="56">
+        <StackPanel Orientation="Horizontal" Visibility="{Binding IsRoomDrawEnabled, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+            <StackPanel Width="140" Margin="8">
+                <TextBlock Text="Name"/>
+                <TextBox Text="{Binding RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Width="140" Margin="24,8,8,8">
+                <TextBlock Text="No. tiles horizontal"/>
+                <TextBox Text="{Binding RoomPlan.TilesX, UpdateSourceTrigger=LostFocus}"/>
+            </StackPanel>
+            <StackPanel Width="140" Margin="8">
+                <TextBlock Text="No. tiles vertical"/>
+                <TextBox Text="{Binding RoomPlan.TilesY, UpdateSourceTrigger=LostFocus}"/>
+            </StackPanel>
+            <StackPanel Width="60" Margin="8">
+                <TextBlock Text="Room no."/>
+                <TextBox Text="{Binding RoomPlan.RoomNumber, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
         </StackPanel>
-        <StackPanel Width="140" Margin="24,8,8,8">
-            <TextBlock Text="No. tiles horizontal"/>
-            <TextBox Text="{Binding RoomPlan.TilesX, UpdateSourceTrigger=LostFocus}"/>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding IsRoomDrawEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button x:Name="confirmDrawRoom" Content="Confirm room" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" 
+                    Height="30" Margin="8,0" Click="ConfirmDrawRoom_Click" IsEnabled="False"/>
+            <Button Content="Reset" Style="{StaticResource WarnButton}" VerticalAlignment="Center" Height="30" Margin="8,0" Click="ResetDrawRoom_Click"/>
         </StackPanel>
-        <StackPanel Width="140" Margin="8">
-            <TextBlock Text="No. tiles vertical"/>
-            <TextBox Text="{Binding RoomPlan.TilesY, UpdateSourceTrigger=LostFocus}"/>
-        </StackPanel>
-        <StackPanel Width="60" Margin="8">
-            <TextBlock Text="Room no."/>
-            <TextBox Text="{Binding RoomPlan.RoomNumber, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
-    </StackPanel>
+        <ToggleButton DockPanel.Dock="Right" VerticalAlignment="Center" Height="30" Width="30" Style="{DynamicResource ToggleButtonStyle}"
+                      Margin="8,0" IsChecked="{Binding IsRoomDrawEnabled}" Checked="RoomDraw_CheckedChanged" Unchecked="RoomDraw_CheckedChanged">
+            <Viewbox Width="16" Height="18" Margin="-3,-3,0,0">
+                <Canvas Width="20" Height="20">
+                    <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton, Mode=FindAncestor}, Path=Foreground}" 
+                          Data="M22,2C22,2 14.36,1.63 8.34,9.88C3.72,16.21 2,22 2,22L3.94,21C5.38,18.5 6.13,17.47 7.54,16C10.07,16.74 12.71,16.65 15,14C13,13.44 11.4,13.57 9.04,13.81C11.69,12 13.5,11.6 16,12L17,10C15.2,9.66 14,9.63 12.22,10.04C14.19,8.65 15.56,7.87 18,8L19.21,6.07C17.65,5.96 16.71,6.13 14.92,6.57C16.53,5.11 18,4.45 20.14,4.32C20.14,4.32 21.19,2.43 22,2Z" />
+                </Canvas>
+            </Viewbox>
+        </ToggleButton>
+    </DockPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Top"/>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">

@@ -109,6 +109,7 @@
     </Compile>
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Converter\EnumDescriptionTypeConverter.cs" />
+    <Compile Include="Converter\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Core\Dialog\ClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\IClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />

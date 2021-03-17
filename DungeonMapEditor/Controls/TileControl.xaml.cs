@@ -48,5 +48,10 @@ namespace DungeonMapEditor.Controls
                 (DataContext as TileControlViewModel).TileAssignment = value;
             }
         }
+
+        public override string ToString()
+        {
+            return TileAssignment?.ToString();
+        }
     }
 }

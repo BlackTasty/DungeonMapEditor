@@ -62,36 +62,38 @@
                 </DockPanel>
             </TabItem>
             <TabItem Header="Room settings" IsEnabled="{Binding IsRoomAssignmentSelected}">
-                <DockPanel>
-                    <StackPanel DockPanel.Dock="Bottom" Margin="12,8">
-                        <TextBlock Text="Preview"/>
-                        <Image Source="{Binding SelectedRoomAssignment.RoomPlan.RoomPlanImage, UpdateSourceTrigger=PropertyChanged}" 
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Bottom" Margin="12,8">
+                            <TextBlock Text="Preview"/>
+                            <Image Source="{Binding SelectedRoomAssignment.RoomPlan.RoomPlanImage, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" Height="80"/>
-                    </StackPanel>
-                    <StackPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Room settings" FontSize="20" Margin="4"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Top">
+                            <TextBlock Text="Room settings" FontSize="20" Margin="4"/>
 
-                        <TextBlock Text="Name" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedRoomAssignment.RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBlock Text="Name" Margin="12,4,12,2"/>
+                            <TextBox Text="{Binding SelectedRoomAssignment.RoomPlan.Name, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" IsReadOnly="True" IsEnabled="False"/>
-                        <TextBlock Text="Notes" Margin="12,4,12,2"/>
-                        <TextBox Text="{Binding SelectedRoomAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBlock Text="Notes" Margin="12,4,12,2"/>
+                            <TextBox Text="{Binding SelectedRoomAssignment.Notes, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
-                        
-                        <TextBlock Text="Overrides" Margin="12,12,12,2" FontSize="16"/>
-                        <TextBlock Text="Rotation" Margin="12,4,12,2"/>
-                        <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsRoomAssignmentSelected}">
-                            <TextBlock Text=" °" DockPanel.Dock="Right"/>
-                            <xctk:DoubleUpDown Value="{Binding SelectedRoomAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
+
+                            <TextBlock Text="Overrides" Margin="12,12,12,2" FontSize="16"/>
+                            <TextBlock Text="Rotation" Margin="12,4,12,2"/>
+                            <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsRoomAssignmentSelected}">
+                                <TextBlock Text=" °" DockPanel.Dock="Right"/>
+                                <xctk:DoubleUpDown Value="{Binding SelectedRoomAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
                                      DockPanel.Dock="Right" Margin="4,0,0,0" Width="45"/>
-                            <Slider Maximum="360" Value="{Binding SelectedRoomAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
+                                <Slider Maximum="360" Value="{Binding SelectedRoomAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
                                 Template="{StaticResource HorizontalSlider}"/>
-                        </DockPanel>
-                        <TextBlock Text="Room number" Margin="12,4,12,2"/>
-                        <xctk:IntegerUpDown Value="{Binding SelectedRoomAssignment.RoomNumberOverride, UpdateSourceTrigger=PropertyChanged}" 
+                            </DockPanel>
+                            <TextBlock Text="Room number" Margin="12,4,12,2"/>
+                            <xctk:IntegerUpDown Value="{Binding SelectedRoomAssignment.RoomNumberOverride, UpdateSourceTrigger=PropertyChanged}" 
                                  Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}"/>
-                    </StackPanel>
-                </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Border>
