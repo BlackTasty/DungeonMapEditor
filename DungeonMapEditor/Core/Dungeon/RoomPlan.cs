@@ -115,6 +115,10 @@ namespace DungeonMapEditor.Core.Dungeon
             base(name, description, rotation)
         {
             TileAssignments = new List<TileAssignment>();
+            disableGridGeneration = true;
+            TilesX = tilesX;
+            TilesY = tilesY;
+            disableGridGeneration = false;
             GenerateTileGrid(1, tilesX, 1, tilesY);
             foreach (TileAssignment tileAssignment in tileAssignments.Where(x => x.TileGuid != null))
             {
@@ -127,8 +131,6 @@ namespace DungeonMapEditor.Core.Dungeon
             }
             PlaceableAssignments = placeableAssignments;
             //FloorChangeTiles = floorChangeTiles;
-            TilesX = tilesX;
-            TilesY = tilesY;
             this.assignedProjectName = assignedProjectName;
             RoomPlanImageFileName = roomPlanImageFileName;
             RoomNumber = roomNumber;
@@ -218,11 +220,13 @@ namespace DungeonMapEditor.Core.Dungeon
             }
             RoomPlan roomPlan = LoadFile();
 
+            disableGridGeneration = true;
+            TilesX = roomPlan?.TilesX ?? 1;
+            TilesY = roomPlan?.TilesY ?? 1;
+            disableGridGeneration = false;
             TileAssignments = roomPlan?.TileAssignments;
             PlaceableAssignments = roomPlan?.PlaceableAssignments;
             //FloorChangeTiles = roomPlan.FloorChangeTiles;
-            TilesX = roomPlan?.TilesX ?? 1;
-            TilesY = roomPlan?.TilesY ?? 1;
             Name = roomPlan?.Name;
             assignedProjectName = roomPlan?.AssignedProjectName;
             RoomNumber = roomPlan?.RoomNumber ?? 404;

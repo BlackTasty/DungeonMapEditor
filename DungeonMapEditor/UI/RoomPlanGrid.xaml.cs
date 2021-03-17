@@ -130,6 +130,11 @@ namespace DungeonMapEditor.UI
             // Generate tile control for every assignment without control
             foreach (TileAssignment tileAssignment in vm.RoomPlan.TileAssignments.Where(x => x.Control == null))
             {
+                if (grid.Children.OfType<TileControl>().Any(t => t.TileAssignment.X == tileAssignment.X && t.TileAssignment.Y == tileAssignment.Y))
+                {
+                    continue;
+                }
+
                 TileControl tileControl = new TileControl(tileAssignment)
                 {
                     Width = 54,
@@ -555,7 +560,7 @@ namespace DungeonMapEditor.UI
                 else if (leftTile != null && bottomTile != null && rightTile == null && topTile == null) // Top right corner
                 {
                     if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X + 1) && 
-                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y - 1))
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y - 1)) // Corner is inner corner
                     {
                         selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
                             .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_270);
@@ -569,7 +574,7 @@ namespace DungeonMapEditor.UI
                 else if (rightTile != null && bottomTile != null && leftTile == null && topTile == null) // Top left corner
                 {
                     if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X - 1) &&
-                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y - 1))
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y - 1)) // Corner is inner corner
                     {
                         selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
                             .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_180);
@@ -583,7 +588,7 @@ namespace DungeonMapEditor.UI
                 else if (leftTile != null && topTile != null && rightTile == null && bottomTile == null) // Bottom right corner
                 {
                     if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X + 1) &&
-                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1))
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1)) // Corner is inner corner
                     {
                         selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
                             .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_0);
@@ -597,7 +602,7 @@ namespace DungeonMapEditor.UI
                 else if (rightTile != null && topTile != null && leftTile == null && bottomTile == null) // Bottom left corner
                 {
                     if (inRoomTiles.Any(t => t.X == selectedTile.TileAssignment.X - 1) &&
-                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1))
+                        inRoomTiles.Any(t => t.Y == selectedTile.TileAssignment.Y + 1)) // Corner is inner corner
                     {
                         selectedTile.TileAssignment.Tile = vm.SelectedCollectionSet.TileFile.Data
                             .FirstOrDefault(x => x.TileType == TileType.Corner_Inner && x.TileRotation == TileRotation.Degrees_90);

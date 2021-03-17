@@ -23,6 +23,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             }
         }
 
+        [JsonIgnore]
         public bool HasNotes => !string.IsNullOrWhiteSpace(mNotes);
 
         [JsonConstructor]
