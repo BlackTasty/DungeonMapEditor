@@ -31,30 +31,44 @@
     </DockPanel>
     <StackPanel>
         <TextBlock Text="Last projects" FontSize="22" Margin="4"/>
-        <Grid Margin="16,4,8,4">
-            <ListBox DockPanel.Dock="Right" Background="Transparent" BorderThickness="1,0,0,0" ItemsSource="{Binding ProjectHistory}" 
-             HorizontalContentAlignment="Stretch" Height="300" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
+        <Grid Margin="16,4,0,4">
+            <DataGrid DockPanel.Dock="Right" Background="Transparent" BorderThickness="1,0,0,0" ItemsSource="{Binding ProjectHistory}" 
+                      HorizontalContentAlignment="Stretch" Height="300" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" AutoGenerateColumns="False" CanUserAddRows="False"
+                      CanUserDeleteRows="False" HeadersVisibility="None" GridLinesVisibility="None" 
+                      BorderBrush="{StaticResource BorderBrush}">
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
+                </DataGrid.Resources>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
+                        </Style.Resources>
                         <EventSetter Event="MouseDoubleClick" Handler="ProjectHistoryItem_MouseDoubleClick"/>
                     </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel>
-                            <TextBlock Text="{Binding LastModifyDate, StringFormat={}{0:dd.MM.yyyy HH:mm}, UpdateSourceTrigger=PropertyChanged}" 
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="8,0">
+                                    <TextBlock Text="{Binding LastModifyDate, StringFormat={}{0:dd.MM.yyyy HH:mm}, UpdateSourceTrigger=PropertyChanged}" 
                                        DockPanel.Dock="Right" VerticalAlignment="Center" Foreground="Gray"/>
-                            <Border BorderBrush="DarkGray" BorderThickness="1,0,0,0" DockPanel.Dock="Right" Margin="4"/>
-                            <StackPanel>
-                                <TextBlock Text="{Binding Name}" DockPanel.Dock="Right" FontSize="14"/>
-                                <TextBlock Text="{Binding FilePath, TargetNullValue=C:/Hi/There}" DockPanel.Dock="Right" 
+                                    <Border BorderBrush="DarkGray" BorderThickness="1,0,0,0" DockPanel.Dock="Right" Margin="4"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" DockPanel.Dock="Right" FontSize="14"/>
+                                        <TextBlock Text="{Binding FilePath, TargetNullValue=C:/Hi/There}" DockPanel.Dock="Right" 
                                            Foreground="Gray" Margin="4,2"/>
-                            </StackPanel>
-                        </DockPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
             <TextBlock Text="You haven't worked on any maps yet." VerticalAlignment="Center" HorizontalAlignment="Center"
                        FontSize="24" Foreground="Gray" Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>

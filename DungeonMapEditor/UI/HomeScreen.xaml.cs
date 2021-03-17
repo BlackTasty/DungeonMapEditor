@@ -73,7 +73,7 @@ namespace DungeonMapEditor.UI
 
         private void ProjectHistoryItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as ListBoxItem).DataContext is ProjectFile projectFile)
+            if ((sender as DataGridRow).DataContext is ProjectFile projectFile)
             {
                 OnSelectionMade(new HomeScreenSelectionMadeEventArgs(projectFile));
             }
