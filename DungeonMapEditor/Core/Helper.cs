@@ -195,47 +195,6 @@ namespace DungeonMapEditor.Core
             BitmapSource bitmap = CaptureCanvas(surface, 96, 96, background);
             path = SaveBitmapToFile(path, bitmap);
             return FileToBitmapImage(path);
-
-            /*if (string.IsNullOrWhiteSpace(path))
-            {
-                return null;
-            }
-
-            if (background != null)
-            {
-                Canvas backgroundSurface = new Canvas()
-                {
-                    Width = surface.Width,
-                    Height = surface.Height,
-                    Background = background
-                };
-                backgroundSurface.Children.Add(surface);
-                surface = backgroundSurface;
-            }
-
-            // Save current canvas transform
-            Transform transform = surface.LayoutTransform;
-            // reset current transform (in case it is scaled or rotated)
-            surface.LayoutTransform = null;
-
-            // Get the size of canvas
-            System.Windows.Size size = new System.Windows.Size(surface.Width, surface.Height);
-            // Measure and arrange the surface
-            // VERY IMPORTANT
-            surface.Measure(size);
-            surface.Arrange(new System.Windows.Rect(size));
-
-            // Create a render bitmap and push the surface to it
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96d, 96d, PixelFormats.Pbgra32);
-            renderBitmap.Render(surface);
-
-            // Create a file stream for saving image
-            SaveBitmapToFile(path, renderBitmap);
-
-            // Restore previously saved layout
-            surface.LayoutTransform = transform;
-
-            return FileToBitmapImage(path);*/
         }
 
         public static BitmapImage ExportToPng_Old(string path, Canvas surface, SolidColorBrush background = null)
@@ -351,6 +310,34 @@ namespace DungeonMapEditor.Core
         public static System.Windows.Size GetDocumentSize(System.Windows.Size customSize)
         {
             return GetDocumentSize(DocumentSizeType.Custom, customSize);
+        }
+
+        /// <summary>
+        /// Serializes the input and returns a valid version number (e.g.: 3.2 = 3.2.0.0)
+        /// </summary>
+        /// <param name="version">Raw version string</param>
+        /// <param name="subVersionCount">The number of subversions (3 is default)</param>
+        /// <returns></returns>
+        public static string SerializeVersionNumber(string version, int subVersionCount)
+        {
+            for (int i = version.Split('.').Length; i <= subVersionCount; i++)
+                version += ".0";
+
+            return version;
+        }
+
+        /// <summary>
+        /// Returns a version string as integer
+        /// </summary>
+        /// <param name="version">Raw version string</param>
+        /// <param name="subVersionCount">The number of subversions (3 is default). Can also be 0!</param>
+        /// <returns></returns>
+        internal static int ParseVersion(string version, int subVersionCount)
+        {
+            if (subVersionCount > 0)
+                return int.Parse(SerializeVersionNumber(version, subVersionCount).Replace(new string[] { ".", " Full" }));
+            else
+                return int.Parse(version.Replace(new string[] { ".", " Full" }));
         }
 
         private static System.Windows.Size GetDocumentSize(DocumentSizeType documentSize, System.Windows.Size customSize)

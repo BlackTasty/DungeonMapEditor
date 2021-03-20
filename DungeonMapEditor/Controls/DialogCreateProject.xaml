@@ -26,7 +26,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Create!" Margin="8" Padding="8,2" Click="CreateProject_Click" IsEnabled="{Binding IsValid}"
-                    Style="{StaticResource PrimaryButton}"/>
+                    />
             <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
                     Style="{StaticResource RedButton}"/>
         </StackPanel>

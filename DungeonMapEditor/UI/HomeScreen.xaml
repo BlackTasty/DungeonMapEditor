@@ -30,9 +30,9 @@
             <Run Text="E" Foreground="#FFAC0505"/><Run Text="ditor"/>
         </TextBlock>
         <StackPanel VerticalAlignment="Center">
-            <Button Content="Create new map" Height="60" FontSize="18" Margin="16,8" Click="CreateMap_Click" Style="{StaticResource PrimaryButton}"/>
-            <Button Content="Load from file" Height="60" FontSize="18" Margin="16,8" Click="LoadMapFromFile_Click" Style="{StaticResource PrimaryButton}"/>
-            <Button Content="Manage collections" Height="60" FontSize="18" Margin="16,64,16,8" Click="ManageTiles_Click" Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Create new map" Height="60" FontSize="18" Margin="16,8" Click="CreateMap_Click" />
+            <Button Content="Load from file" Height="60" FontSize="18" Margin="16,8" Click="LoadMapFromFile_Click" />
+            <Button Content="Manage collections" Height="60" FontSize="18" Margin="16,64,16,8" Click="ManageTiles_Click" />
         </StackPanel>
     </DockPanel>
     <StackPanel>

@@ -143,14 +143,14 @@
                     <DockPanel IsEnabled="{Binding IsCollectionSelected}">
                         <StackPanel DockPanel.Dock="Bottom">
                             <Button Content="Save" Margin="8,4" Click="Save_Click" 
-                                    Style="{StaticResource PrimaryButton}"/>
+                                    />
                             <Button Content="Close" Margin="8,4" Click="Close_Click" Visibility="Collapsed"
-                                    Style="{StaticResource PrimaryButton}"/>
+                                    />
                         </StackPanel>
                         <StackPanel>
-                            <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" />
                             <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click" 
-                                    Style="{StaticResource PrimaryButton}"/>
+                                    />
                             <Button Content="Delete tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
                                     Style="{StaticResource RedButton}"/>
                         </StackPanel>
@@ -252,15 +252,15 @@
                     <DockPanel IsEnabled="{Binding IsCollectionSelected}">
                         <StackPanel DockPanel.Dock="Bottom">
                             <Button Content="Save" Margin="8,4" Click="Save_Click" 
-                                    Style="{StaticResource PrimaryButton}"/>
+                                    />
                             <Button Content="Close" Margin="8,4" Click="Close_Click" 
-                                    Style="{StaticResource PrimaryButton}" Visibility="Collapsed"/>
+                                     Visibility="Collapsed"/>
                         </StackPanel>
                         <StackPanel>
                             <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click" 
-                                    Style="{StaticResource PrimaryButton}"/>
+                                    />
                             <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="EditPlaceable_Click" 
-                                    Style="{StaticResource PrimaryButton}"/>
+                                    />
                             <Button Content="Delete object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="RemovePlaceable_Click" 
                                     Style="{StaticResource RedButton}"/>
                         </StackPanel>

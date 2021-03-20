@@ -9,9 +9,12 @@ using DungeonMapEditor.UI;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,10 +40,58 @@ namespace DungeonMapEditor
         public MainWindow()
         {
             InitializeComponent();
+            CheckCleanupFile();
             homeInstance = new HomeScreen();
             homeInstance.SelectionMade += HomeScreen_SelectionMade;
             homeInstance.OpenDialog += Dialog_OpenDialog;
             AddTab(homeInstance, "Home", true);
+        }
+
+        private void CheckCleanupFile()
+        {
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\cleanup.txt"))
+            {
+                Process[] procList = Process.GetProcessesByName("dungeonmapeditor");
+                if (procList.Length > 1)
+                {
+                }
+
+                int cycleCount = 0;
+                while (Process.GetProcessesByName("dungeonmapeditor").Length > 1)
+                {
+                    if (cycleCount == 3)
+                    {
+                        if (MessageBox.Show("Your old Dungeon Map Editor instance needs to be closed in order to cleanup after updating!\n" +
+                            "Shall I close them for you?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        {
+                            foreach (Process proc in procList)
+                            {
+                                if (Process.GetCurrentProcess().Id != proc.Id)
+                                {
+                                    proc.Kill();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Process.GetCurrentProcess().Kill();
+                        }
+                    }
+                    //Logger.Instance.WriteLog("Waiting for old Osmo process to close...");
+                    Thread.Sleep(1000);
+                    cycleCount++;
+                }
+
+                //Logger.Instance.WriteLog("Cleaning up after update...");
+                string[] lines = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory + "\\cleanup.txt");
+                foreach (string path in lines)
+                {
+                    File.Delete(path);
+                }
+
+                File.Delete(AppDomain.CurrentDomain.BaseDirectory + "\\cleanup.txt");
+                //Logger.Instance.WriteLog("Post cleanup successful!");
+            }
         }
 
         private int AddTab(FrameworkElement element, string headerString, bool isSelected = false, object tabItemTag = null)
@@ -371,6 +422,16 @@ namespace DungeonMapEditor
         private void LoadFromFile_Click(object sender, RoutedEventArgs e)
         {
             homeInstance.LoadMapFromFile();
+        }
+
+        private void SearchUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).UpdateManager.CheckForUpdates();
+        }
+
+        private void DownloadAndInstallUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).UpdateManager.DownloadUpdate();
         }
     }
 }

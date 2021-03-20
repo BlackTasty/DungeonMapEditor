@@ -19,8 +19,7 @@
             <Run Text="'"/><Run Text="{Binding Name, StringFormat={}{0}, FallbackValue=Test}"/><Run Text="' before closing?"/>
         </TextBlock>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="Yes" Margin="8" Padding="8,2" Click="Yes_Click"
-                    Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Yes" Margin="8" Padding="8,2" Click="Yes_Click"/>
             <Button Content="No" Margin="8" Padding="8,2" Click="No_Click"
                     Style="{StaticResource YellowButton}"/>
             <Button Content="Cancel" Margin="8" Padding="8,2" Click="Abort_Click"

@@ -30,9 +30,9 @@
     <Grid DockPanel.Dock="Bottom" Background="#11ffffff" Margin="-2">
         <DockPanel LastChildFill="False" Margin="4,2">
             <Button Content="Save" Margin="4" DockPanel.Dock="Right" Click="SaveProject_Click"
-                                Style="{StaticResource PrimaryButton}"/>
+                                />
             <Button Content="Export" Margin="8,4" DockPanel.Dock="Right" Click="ExportAs_Click"
-                                Style="{StaticResource PrimaryButton}"/>
+                                />
         </DockPanel>
     </Grid>
     <TabControl x:Name="tabControl" BorderThickness="0,1" Margin="-2,0,-2,2" Background="Transparent" SelectionChanged="tabControl_SelectionChanged"
@@ -42,7 +42,7 @@
                 <DockPanel DockPanel.Dock="Top">
                     <Button Content="Configure layout" Margin="8" DockPanel.Dock="Right" VerticalAlignment="Center"
                             Click="ConfigureLayout_Click"
-                                Style="{StaticResource PrimaryButton}"/>
+                                />
                     <UniformGrid Columns="3">
                         <StackPanel Margin="8">
                             <TextBlock Text="Dungeon name"/>
@@ -58,7 +58,7 @@
                             <TextBlock Text="Double-click a row to edit a room" FontSize="10" Foreground="Gray" Margin="4,0"/>
                         </StackPanel>
                         <Button Content="Create room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="CreateRoom_Click"
-                                Style="{StaticResource PrimaryButton}"/>
+                                />
                         <Button Content="Remove room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveRoom_Click"
                                 Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
                     </DockPanel>
@@ -145,7 +145,7 @@
                             <TextBlock Text="Double-click a row to edit a floor" FontSize="10" Foreground="Gray" Margin="4,0"/>
                         </StackPanel>
                         <Button Content="Create floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="CreateFloor_Click"
-                                Style="{StaticResource PrimaryButton}"/>
+                                />
                         <Button Content="Remove floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveFloor_Click"
                                 Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
                     </DockPanel>

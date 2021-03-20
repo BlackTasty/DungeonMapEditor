@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -110,6 +111,7 @@
     <Compile Include="Converter\DoubleDivideByConverter.cs" />
     <Compile Include="Converter\DoubleToStringConverter.cs" />
     <Compile Include="Converter\EnumDescriptionTypeConverter.cs" />
+    <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Converter\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Core\Dialog\ClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\IClosingUnsavedDialogButtonClickedEventArgs.cs" />
@@ -123,10 +125,19 @@
     <Compile Include="Core\Enum\TileType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
+    <Compile Include="Core\ExtensionMethods.cs" />
     <Compile Include="Core\Observer\ObserverManager.cs" />
     <Compile Include="Core\Observer\Observer.cs" />
     <Compile Include="Core\Observer\IObserver.cs" />
     <Compile Include="Core\Observer\ChangeObservedEventArgs.cs" />
+    <Compile Include="Core\Patcher\Server.cs" />
+    <Compile Include="Core\Patcher\ServerList.cs" />
+    <Compile Include="Core\Patcher\UpdateFailedEventArgs.cs" />
+    <Compile Include="Core\Patcher\UpdateFoundEventArgs.cs" />
+    <Compile Include="Core\Patcher\UpdateManager.cs" />
+    <Compile Include="Core\Patcher\UpdateStatus.cs" />
+    <Compile Include="Core\Patcher\Util.cs" />
+    <Compile Include="FixedValues.cs" />
     <Compile Include="UI\FloorPlanGrid.xaml.cs">
       <DependentUpon>FloorPlanGrid.xaml</DependentUpon>
     </Compile>

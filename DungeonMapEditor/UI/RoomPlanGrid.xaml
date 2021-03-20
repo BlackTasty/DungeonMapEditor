@@ -193,7 +193,7 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Visibility="{Binding IsRoomDrawEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Button x:Name="confirmDrawRoom" Content="Confirm room" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" 
+            <Button x:Name="confirmDrawRoom" Content="Confirm room"  VerticalAlignment="Center" 
                     Height="30" Margin="8,0" Click="ConfirmDrawRoom_Click" IsEnabled="False"/>
             <Button Content="Reset" Style="{StaticResource YellowButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
                     Click="ResetDrawRoom_Click"/>

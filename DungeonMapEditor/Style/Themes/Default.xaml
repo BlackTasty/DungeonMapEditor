@@ -46,6 +46,13 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="ProgressBar">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="MinHeight" Value="2"/>
+    </Style>
     
     <ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
         <Border x:Name="templateRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="{TemplateBinding Background}" 
@@ -264,7 +271,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PrimaryButton" TargetType="{x:Type Button}">
+    <Style TargetType="{x:Type Button}">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="4"/>
@@ -338,7 +345,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="YellowButton" TargetType="{x:Type Button}" BasedOn="{StaticResource PrimaryButton}">
+    <Style x:Key="YellowButton" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="#FFBEBC9C"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -408,7 +415,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="RedButton" TargetType="{x:Type Button}" BasedOn="{StaticResource PrimaryButton}">
+    <Style x:Key="RedButton" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="#BE9C9C"/>
         <Setter Property="Template">
             <Setter.Value>
