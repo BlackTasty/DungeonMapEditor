@@ -25,7 +25,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         [JsonIgnore]
         public bool AnyUnsavedChanges => UnsavedChanges || (roomPlan?.UnsavedChanges ?? false);
 
-        public string AssignedProjectPath { get; set; }
+        public string AssignedProjectName { get; set; }
 
         [JsonIgnore]
         public RoomPlan RoomPlan => roomPlan;
@@ -89,11 +89,11 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         /// Only required by JSON parser!
         /// </summary>
         [JsonConstructor]
-        public RoomAssignment(string assignedProjectPath, string roomPlanFile, int x, int y, double rotationOverride,
+        public RoomAssignment(string assignedProjectName, string roomPlanFile, int x, int y, double rotationOverride,
             int roomNumberOverride, string notes) : base(notes)
         {
-            roomPlan = new RoomPlan(new FileInfo(Path.Combine(assignedProjectPath, roomPlanFile)));
-            AssignedProjectPath = assignedProjectPath;
+            roomPlan = new RoomPlan(new FileInfo(Path.Combine(App.ProjectsPath, assignedProjectName, roomPlanFile)));
+            AssignedProjectName = assignedProjectName;
             X = x;
             Y = y;
             RotationOverride = rotationOverride;
@@ -120,7 +120,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public RoomAssignment(RoomPlan roomPlan, ProjectFile assignedProject)
         {
             this.roomPlan = roomPlan;
-            AssignedProjectPath = assignedProject.FilePath;
+            AssignedProjectName = assignedProject.FilePath;
         }
 
         public bool SetControl(RoomControl control)

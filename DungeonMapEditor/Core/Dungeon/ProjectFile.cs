@@ -30,6 +30,7 @@ namespace DungeonMapEditor.Core.Dungeon
         private Orientation mDocumentOrientation = Orientation.Vertical;
         private string guid;
 
+        [JsonIgnore]
         public bool AnyUnsavedChanges => UnsavedChanges || FloorPlans.Any(x => x.AnyUnsavedChanges) || RoomPlans.Any(x => x.AnyUnsavedChanges);
 
         public string Guid => guid;
@@ -137,10 +138,9 @@ namespace DungeonMapEditor.Core.Dungeon
         /// Used to load existing projects from a folder. Folder has to contain a json with the same name as the folder!
         /// </summary>
         /// <param name="di">A <see cref="DirectoryInfo"/> object containing the path to the project folder</param>
-        public ProjectFile(DirectoryInfo di) : base(new FileInfo(Path.Combine(di.Name + ".dm")))
+        public ProjectFile(DirectoryInfo di) : base(new FileInfo(Path.Combine(di.FullName, di.Name + ".dm")))
         {
             InitializeLists();
-            filePath = Path.Combine(filePath, "Projects", fileName.Substring(0, fileName.LastIndexOf('.')));
             Load();
         }
 
