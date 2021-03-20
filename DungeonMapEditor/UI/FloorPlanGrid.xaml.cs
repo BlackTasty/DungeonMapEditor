@@ -2,7 +2,7 @@
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
-using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;

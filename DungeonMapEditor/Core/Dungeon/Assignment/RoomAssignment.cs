@@ -1,5 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
-using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;

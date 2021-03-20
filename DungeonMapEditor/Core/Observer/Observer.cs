@@ -8,9 +8,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DungeonMapEditor.Core.FileSystem
+namespace DungeonMapEditor.Core.Observer
 {
-    class ChangeObserver<T> : IChangeObserver
+    class Observer<T> : IObserver
     {
         public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
@@ -98,7 +98,7 @@ namespace DungeonMapEditor.Core.FileSystem
         /// </summary>
         /// <param name="propertyName">The property name to observe</param>
         /// <param name="currentValue">The current value</param>
-        public ChangeObserver(string propertyName, T currentValue)
+        public Observer(string propertyName, T currentValue)
         {
             this.propertyName = propertyName;
             this.currentValue = currentValue;

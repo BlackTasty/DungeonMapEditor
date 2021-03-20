@@ -123,12 +123,10 @@
     <Compile Include="Core\Enum\TileType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
-    <Compile Include="Core\FileSystem\ChangeManager.cs" />
-    <Compile Include="Core\FileSystem\ChangeObserver.cs" />
-    <Compile Include="Core\FileSystem\ChangesObservedEventArgs.cs" />
-    <Compile Include="Core\FileSystem\IChangeObservedEventArgs.cs" />
-    <Compile Include="Core\FileSystem\IChangeObserver.cs" />
-    <Compile Include="Core\FileSystem\ChangeObservedEventArgs.cs" />
+    <Compile Include="Core\Observer\ObserverManager.cs" />
+    <Compile Include="Core\Observer\Observer.cs" />
+    <Compile Include="Core\Observer\IObserver.cs" />
+    <Compile Include="Core\Observer\ChangeObservedEventArgs.cs" />
     <Compile Include="UI\FloorPlanGrid.xaml.cs">
       <DependentUpon>FloorPlanGrid.xaml</DependentUpon>
     </Compile>
@@ -339,15 +337,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Demo\Dungeon_Corner.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Demo\Dungeon_InnerCorner.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Demo\Dungeon_Wall.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Resources\Demo\Dungeon_Corner.png" />
+    <Content Include="Resources\Demo\Dungeon_InnerCorner.png" />
+    <Content Include="Resources\Demo\Dungeon_Wall.png" />
     <Resource Include="Resources\icon_note_white.png" />
     <Resource Include="Resources\icon_note.png" />
     <Resource Include="Resources\icon_img.png" />
@@ -355,4 +347,21 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rmdir /s /q "$(TargetDir)\bin"
+mkdir "$(TargetDir)\bin"
+move "$(TargetDir)\*.dll" "$(TargetDir)\bin"
+move "$(TargetDir)\cs-CZ" "$(TargetDir)\bin"
+move "$(TargetDir)\de" "$(TargetDir)\bin"
+move "$(TargetDir)\es" "$(TargetDir)\bin"
+move "$(TargetDir)\fr" "$(TargetDir)\bin"
+move "$(TargetDir)\hu" "$(TargetDir)\bin"
+move "$(TargetDir)\it" "$(TargetDir)\bin"
+move "$(TargetDir)\ja-JP" "$(TargetDir)\bin"
+move "$(TargetDir)\pt-BR" "$(TargetDir)\bin"
+move "$(TargetDir)\ro" "$(TargetDir)\bin"
+move "$(TargetDir)\ru" "$(TargetDir)\bin"
+move "$(TargetDir)\sv" "$(TargetDir)\bin"
+move "$(TargetDir)\zh-Hans" "$(TargetDir)\bin"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

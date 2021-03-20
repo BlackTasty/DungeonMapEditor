@@ -1,7 +1,7 @@
 ﻿using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
-using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;

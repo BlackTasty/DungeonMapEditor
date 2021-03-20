@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DungeonMapEditor.Core.FileSystem
+namespace DungeonMapEditor.Core.Observer
 {
-    public interface IChangeObserver
+    public interface IObserver
     {
         event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 

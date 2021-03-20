@@ -1,10 +1,12 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -96,13 +98,6 @@ namespace DungeonMapEditor.UI
             }
         }
 
-        private void DialogRemoveProject_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
-        {
-            if (e.DialogResult == Core.Dialog.DialogResult.Yes && e.Data is ProjectFile selectedProject)
-            {
-            }
-        }
-
         protected virtual void OnSelectionMade(HomeScreenSelectionMadeEventArgs e)
         {
             SelectionMade?.Invoke(this, e);
@@ -111,6 +106,25 @@ namespace DungeonMapEditor.UI
         protected virtual void OnOpenDialog(OpenDialogEventArgs e)
         {
             OpenDialog?.Invoke(this, e);
+        }
+
+        private void MenuItem_ExportProject_Click(object sender, RoutedEventArgs e)
+        {
+            if ((sender as MenuItem).DataContext is ProjectFile projectFile)
+            {
+                DialogExportProject dialog = new DialogExportProject(projectFile);
+                dialog.DialogCompleted += DialogExportProject_DialogCompleted;
+                OnOpenDialog(new OpenDialogEventArgs(dialog));
+            }
+        }
+
+        private void DialogExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
+        {
+            if (e.DialogResult == DialogResult.OK)
+            {
+                string exportDir = e.ResultObject.ExportProject();
+                Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
+            }
         }
     }
 }

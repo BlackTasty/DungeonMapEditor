@@ -1,6 +1,6 @@
 ﻿using DungeonMapEditor.Controls;
 using DungeonMapEditor.Core.Dungeon.Assignment;
-using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.Core.Observer;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

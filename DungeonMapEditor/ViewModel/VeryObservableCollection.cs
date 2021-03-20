@@ -1,5 +1,5 @@
 ﻿using DungeonMapEditor.Core.Dungeon;
-using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;
 using System;
@@ -26,7 +26,7 @@ namespace DungeonMapEditor.ViewModel
         protected string triggerAlso;
         protected bool observeChanges = true; //If this flag is set to false the collection won't fire CollectionChanged events
         protected ViewModelMessage message;
-        protected ChangeManager changeManager;
+        protected ObserverManager changeManager;
 
         new event PropertyChangedEventHandler PropertyChanged;
 
@@ -39,7 +39,7 @@ namespace DungeonMapEditor.ViewModel
             {
                 foreach (var observer in changeManager.ChangeObservers)
                 {
-                    if (observer is ChangeObserver<IVeryObservableCollection>)
+                    if (observer is Observer<IVeryObservableCollection>)
                     {
                         continue;
                     }
@@ -75,7 +75,7 @@ namespace DungeonMapEditor.ViewModel
         /// </summary>
         /// <param name="collectionName">The name of the collection (must match the property name!)</param>
         public VeryObservableCollection(string collectionName,
-            ChangeManager changeManager = null, ViewModelMessage message = ViewModelMessage.None)
+            ObserverManager changeManager = null, ViewModelMessage message = ViewModelMessage.None)
         {
             CollectionName = collectionName;
             CollectionChanged += Collection_CollectionChanged;
@@ -90,7 +90,7 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="autoSort">If true the list is sorted after every change</param>
         /// <param name="firstKeepPosition">If true the first item in the list is not affected by sorting</param>
         public VeryObservableCollection(string collectionName, bool autoSort,
-            ChangeManager changeManager = null) : this(collectionName, changeManager)
+            ObserverManager changeManager = null) : this(collectionName, changeManager)
         {
             this.autoSort = autoSort;
         }

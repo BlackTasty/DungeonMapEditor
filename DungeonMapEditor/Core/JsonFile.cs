@@ -1,4 +1,4 @@
-﻿using DungeonMapEditor.Core.FileSystem;
+﻿using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -18,10 +18,10 @@ namespace DungeonMapEditor.Core
         protected bool fromFile;
         private DateTime lastModifyDate;
         protected bool isFile;
-        protected ChangeManager changeManager = new ChangeManager();
+        protected ObserverManager changeManager = new ObserverManager();
 
         [JsonIgnore]
-        public ChangeManager ChangeManager => changeManager;
+        public ObserverManager ChangeManager => changeManager;
 
         [JsonIgnore]
         public bool UnsavedChanges

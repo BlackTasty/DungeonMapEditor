@@ -15,7 +15,7 @@
 
         <ContextMenu x:Key="projectMenu">
             <MenuItem Header="Open project" Click="MenuItem_OpenProject_Click"/>
-            <!--<MenuItem Header="Export project"/>-->
+            <MenuItem Header="Export project" Click="MenuItem_ExportProject_Click"/>
             <MenuItem Header="Delete project" Click="MenuItem_RemoveProject_Click"/>
         </ContextMenu>
     </DockPanel.Resources>

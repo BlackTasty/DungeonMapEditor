@@ -1,4 +1,4 @@
-﻿using DungeonMapEditor.Core.FileSystem;
+﻿using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
 using Newtonsoft.Json;
 using System;
@@ -14,7 +14,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
         private string mNotes;
-        protected ChangeManager changeManager;
+        protected ObserverManager changeManager;
 
         [JsonIgnore]
         public bool UnsavedChanges => changeManager.UnsavedChanges;
@@ -43,7 +43,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
 
         public Assignment()
         {
-            changeManager = new ChangeManager();
+            changeManager = new ObserverManager();
             changeManager.ChangeObserved += ChangeManager_ChangeObserved;
             Notes = "";
         }

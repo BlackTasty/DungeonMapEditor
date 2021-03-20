@@ -19,6 +19,7 @@ namespace DungeonMapEditor
     /// </summary>
     public partial class App : Application
     {
+        private static readonly string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Dungeon Map Editor");
         private static VeryObservableStackCollection<ProjectFile> mProjectHistory = new VeryObservableStackCollection<ProjectFile>("ProjectHistory", 7);
 
         public static string CollectionPath => Path.Combine(BasePath, "Collections");
@@ -30,7 +31,7 @@ namespace DungeonMapEditor
         public static VeryObservableCollection<CollectionSet> LoadedCollections { get; set; } = 
             new VeryObservableCollection<CollectionSet>("LoadedCollections", null, ViewModelMessage.LoadedCollectionsChanged);
 
-        public static string BasePath => AppDomain.CurrentDomain.BaseDirectory;
+        public static string BasePath => basePath;
 
         public static string ProjectsPath => Path.Combine(BasePath, "Projects");
 
@@ -80,7 +81,7 @@ namespace DungeonMapEditor
 
             if (!Directory.Exists(ProjectsPath))
             {
-                return;
+                Directory.CreateDirectory(ProjectsPath);
             }
 
             List<ProjectFile> history = new List<ProjectFile>();

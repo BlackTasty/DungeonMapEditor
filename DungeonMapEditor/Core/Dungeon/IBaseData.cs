@@ -1,4 +1,4 @@
-﻿using DungeonMapEditor.Core.FileSystem;
+﻿using DungeonMapEditor.Core.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace DungeonMapEditor.Core.Dungeon
 {
     public interface IBaseData
     {
-        ChangeManager ChangeManager { get; }
+        ObserverManager ChangeManager { get; }
 
         string Guid { get; }
 

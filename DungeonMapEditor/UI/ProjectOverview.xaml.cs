@@ -3,7 +3,7 @@ using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
 using DungeonMapEditor.Core.Events;
-using DungeonMapEditor.Core.FileSystem;
+using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -81,14 +81,24 @@ namespace DungeonMapEditor.UI
             OnProjectNameChanged(e);
         }
 
-        private void AddFloor_Click(object sender, RoutedEventArgs e)
+        private void CreateFloor_Click(object sender, RoutedEventArgs e)
+        {
+            CreateFloor();
+        }
+
+        private void CreateFloor()
         {
             DialogCreateFloor dialog = new DialogCreateFloor((DataContext as ProjectOverviewViewModel).ProjectFile);
             dialog.DialogCompleted += FloorPlanDialog_DialogCompleted;
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void AddRoom_Click(object sender, RoutedEventArgs e)
+        private void CreateRoom_Click(object sender, RoutedEventArgs e)
+        {
+            CreateRoom();
+        }
+
+        private void CreateRoom()
         {
             DialogCreateRoom dialog = new DialogCreateRoom((DataContext as ProjectOverviewViewModel).ProjectFile);
             dialog.DialogCompleted += RoomPlanDialog_DialogCompleted;
@@ -392,13 +402,13 @@ namespace DungeonMapEditor.UI
         private void ExportAs_Click(object sender, RoutedEventArgs e)
         {
             DialogExportProject dialog = new DialogExportProject((DataContext as ProjectOverviewViewModel).ProjectFile);
-            dialog.DialogCompleted += Dialog_DialogCompleted;
+            dialog.DialogCompleted += DialogExportProject_DialogCompleted;
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
+        private void DialogExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
         {
-            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK)
             {
                 string exportDir = e.ResultObject.ExportProject();
                 Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
@@ -446,13 +456,13 @@ namespace DungeonMapEditor.UI
 
         private void RemoveRoom_Click(object sender, RoutedEventArgs e)
         {
-            RemoveSelectedRoom();
+            RemoveRoomPlan((DataContext as ProjectOverviewViewModel).SelectedRoomAssignment);
         }
 
-        private void RemoveSelectedRoom()
+        private void RemoveRoomPlan(RoomAssignment roomAssignment)
         {
             ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
-            DialogRemoveObject dialog = new DialogRemoveObject(vm.SelectedRoomAssignment.RoomPlan.Name);
+            DialogRemoveObject dialog = new DialogRemoveObject(roomAssignment.RoomPlan.Name, roomAssignment);
             dialog.DialogCompleted += DialogRemoveRoom_DialogCompleted;
 
             OnOpenDialog(new OpenDialogEventArgs(dialog));
@@ -460,40 +470,36 @@ namespace DungeonMapEditor.UI
 
         private void DialogRemoveRoom_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.Data is RoomAssignment target)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
                 TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is RoomPlanGrid roomPlan &&
-                                        roomPlan.GetRoomPlanGuid() == vm.SelectedRoomAssignment.RoomPlan.Guid);
+                                        roomPlan.GetRoomPlanGuid() == target.RoomPlan.Guid);
 
                 if (openTab != null)
                 {
                     tabControl.Items.Remove(openTab);
                 }
 
-                vm.SelectedRoomAssignment.RoomPlan.Delete();
-                vm.ProjectFile.RoomPlans.Remove(vm.SelectedRoomAssignment);
+                target.RoomPlan.Delete();
+                if (vm.SelectedRoomAssignment.RoomPlan.Guid == target.RoomPlan.Guid)
+                {
+                    vm.SelectedRoomAssignment = null;
+                }
+                vm.ProjectFile.RoomPlans.Remove(target);
                 vm.ProjectFile.SaveOnlyRooms();
             }
         }
 
         private void RemoveFloor_Click(object sender, RoutedEventArgs e)
         {
-            RemoveSelectedFloor();
+            RemoveFloorPlan((DataContext as ProjectOverviewViewModel).SelectedFloorAssignment);
         }
 
-        private void RemoveSelectedFloor()
+        private void RemoveFloorPlan(FloorAssignment floorAssignment)
         {
             ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
-            TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid floorPlan &&
-                                    floorPlan.GetFloorPlanGuid() == vm.SelectedFloorAssignment.FloorPlan.Guid);
-
-            if (openTab != null)
-            {
-                tabControl.Items.Remove(openTab);
-            }
-
-            DialogRemoveObject dialog = new DialogRemoveObject(vm.SelectedFloorAssignment.FloorPlan.Name);
+            DialogRemoveObject dialog = new DialogRemoveObject(floorAssignment.FloorPlan.Name, floorAssignment);
             dialog.DialogCompleted += DialogRemoveFloor_DialogCompleted;
 
             OnOpenDialog(new OpenDialogEventArgs(dialog));
@@ -501,19 +507,24 @@ namespace DungeonMapEditor.UI
 
         private void DialogRemoveFloor_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.Data is FloorAssignment target)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
-                TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid roomPlan &&
-                                        roomPlan.GetFloorPlanGuid() == vm.SelectedFloorAssignment.FloorPlan.Guid);
+                TabItem openTab = tabControl.Items.OfType<TabItem>().FirstOrDefault(x => x.Content is FloorPlanGrid floorPlan &&
+                                        floorPlan.GetFloorPlanGuid() == target.FloorPlan.Guid);
 
                 if (openTab != null)
                 {
                     tabControl.Items.Remove(openTab);
                 }
 
-                vm.SelectedFloorAssignment.FloorPlan.Delete();
-                vm.ProjectFile.FloorPlans.Remove(vm.SelectedFloorAssignment);
+                target.FloorPlan.Delete();
+                if (vm.SelectedFloorAssignment.FloorPlan.Guid == target.FloorPlan.Guid)
+                {
+                    vm.SelectedFloorAssignment = null;
+                }
+
+                vm.ProjectFile.FloorPlans.Remove(target);
                 vm.ProjectFile.SaveOnlyFloors();
             }
         }
@@ -539,6 +550,51 @@ namespace DungeonMapEditor.UI
 
             ChangeObserved?.Invoke(this, new ChangeObservedEventArgs(vm.ProjectFile.UnsavedChanges || unsavedRoomPlan || unsavedFloorPlan, 
                 e.NewValue, e.Observer));
+        }
+
+        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                if (menuItem.DataContext is FloorAssignment floorAssignment)
+                {
+                    OpenFloorPlan(floorAssignment.FloorPlan);
+                }
+                else if (menuItem.DataContext is RoomAssignment roomAssignment)
+                {
+                    OpenRoomPlan(roomAssignment.RoomPlan);
+                }
+            }
+        }
+
+        private void MenuItem_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                if (menuItem.DataContext is FloorAssignment floorAssignment)
+                {
+                    RemoveFloorPlan(floorAssignment);
+                }
+                else if (menuItem.DataContext is RoomAssignment roomAssignment)
+                {
+                    RemoveRoomPlan(roomAssignment);
+                }
+            }
+        }
+
+        private void MenuItem_Create_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem)
+            {
+                if (menuItem.DataContext is FloorAssignment || menuItem.Tag.ToString() == "floor")
+                {
+                    CreateFloor();
+                }
+                else if (menuItem.DataContext is RoomAssignment || menuItem.Tag.ToString() == "room")
+                {
+                    CreateRoom();
+                }
+            }
         }
     }
 }

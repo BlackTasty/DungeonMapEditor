@@ -1,4 +1,4 @@
-﻿using DungeonMapEditor.Core.FileSystem;
+﻿using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel.Communication;
 using Newtonsoft.Json;
 using System;

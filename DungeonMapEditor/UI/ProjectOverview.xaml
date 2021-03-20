@@ -10,6 +10,23 @@
     <DockPanel.DataContext>
         <vm:ProjectOverviewViewModel/>
     </DockPanel.DataContext>
+    <DockPanel.Resources>
+        <ContextMenu x:Key="floors_rooms_menu">
+            <MenuItem Header="Create" Click="MenuItem_Create_Click"/>
+            <MenuItem Header="Open" Click="MenuItem_Open_Click"/>
+            <MenuItem Header="Remove" Click="MenuItem_Remove_Click"/>
+        </ContextMenu>
+        <ContextMenu x:Key="floorlist_menu">
+            <MenuItem Header="Create" Click="MenuItem_Create_Click" Tag="floor"/>
+            <MenuItem Header="Open" IsEnabled="False"/>
+            <MenuItem Header="Remove" IsEnabled="False"/>
+        </ContextMenu>
+        <ContextMenu x:Key="roomlist_menu">
+            <MenuItem Header="Create" Click="MenuItem_Create_Click" Tag="room"/>
+            <MenuItem Header="Open" IsEnabled="False"/>
+            <MenuItem Header="Remove" IsEnabled="False"/>
+        </ContextMenu>
+    </DockPanel.Resources>
     <Grid DockPanel.Dock="Bottom" Background="#11ffffff" Margin="-2">
         <DockPanel LastChildFill="False" Margin="4,2">
             <Button Content="Save" Margin="4" DockPanel.Dock="Right" Click="SaveProject_Click"
@@ -40,20 +57,21 @@
                             <TextBlock Text="Rooms" FontSize="16" Foreground="#FFD16900"/>
                             <TextBlock Text="Double-click a row to edit a room" FontSize="10" Foreground="Gray" Margin="4,0"/>
                         </StackPanel>
-                        <Button Content="Add room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddRoom_Click"
+                        <Button Content="Create room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="CreateRoom_Click"
                                 Style="{StaticResource PrimaryButton}"/>
                         <Button Content="Remove room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveRoom_Click"
                                 Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
                               CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
-                              SelectedItem="{Binding SelectedRoomAssignment}">
+                              SelectedItem="{Binding SelectedRoomAssignment}" ContextMenu="{StaticResource roomlist_menu}">
                         <DataGrid.Resources>
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
                         </DataGrid.Resources>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
+                                <Setter Property="ContextMenu" Value="{StaticResource floors_rooms_menu}"/>
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="RoomDataGridRow_PreviewMouseDoubleClick"/>
                             </Style>
                         </DataGrid.RowStyle>
@@ -126,20 +144,21 @@
                             <TextBlock Text="Floors" FontSize="16" Foreground="#FF0080FF"/>
                             <TextBlock Text="Double-click a row to edit a floor" FontSize="10" Foreground="Gray" Margin="4,0"/>
                         </StackPanel>
-                        <Button Content="Add floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="AddFloor_Click"
+                        <Button Content="Create floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="CreateFloor_Click"
                                 Style="{StaticResource PrimaryButton}"/>
                         <Button Content="Remove floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveFloor_Click"
                                 Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
                               CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
-                              SelectedItem="{Binding SelectedFloorAssignment}">
+                              SelectedItem="{Binding SelectedFloorAssignment}" ContextMenu="{StaticResource floorlist_menu}">
                         <DataGrid.Resources>
                             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
                             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
                         </DataGrid.Resources>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
+                                <Setter Property="ContextMenu" Value="{StaticResource floors_rooms_menu}"/>
                                 <EventSetter Event="PreviewMouseDoubleClick" Handler="FloorDataGridRow_PreviewMouseDoubleClick"/>
                             </Style>
                         </DataGrid.RowStyle>

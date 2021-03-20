@@ -4,6 +4,7 @@ using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Enum;
 using DungeonMapEditor.Core.Events;
+using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.UI;
 using DungeonMapEditor.ViewModel;
 using System;
@@ -175,7 +176,7 @@ namespace DungeonMapEditor
             App.LoadHistory();
         }
 
-        private void ProjectOverview_ChangeObserved(object sender, Core.FileSystem.ChangeObservedEventArgs e)
+        private void ProjectOverview_ChangeObserved(object sender, ChangeObservedEventArgs e)
         {
             if (sender is ProjectOverview projectOverview)
             {

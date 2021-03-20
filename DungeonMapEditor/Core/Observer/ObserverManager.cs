@@ -6,22 +6,22 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DungeonMapEditor.Core.FileSystem
+namespace DungeonMapEditor.Core.Observer
 {
-    public class ChangeManager : ViewModelBase
+    public class ObserverManager : ViewModelBase
     {
         public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
-        private List<IChangeObserver> changeObservers = new List<IChangeObserver>();
+        private List<IObserver> changeObservers = new List<IObserver>();
 
         /// <summary>
         /// Returns true if any observer has unsaved changes
         /// </summary>
         public bool UnsavedChanges => changeObservers.Any(x => x.UnsavedChanges);
 
-        public List<IChangeObserver> ChangeObservers => changeObservers;
+        public List<IObserver> ChangeObservers => changeObservers;
 
-        ~ChangeManager()
+        ~ObserverManager()
         {
             foreach (var observer in changeObservers)
             {
@@ -42,19 +42,19 @@ namespace DungeonMapEditor.Core.FileSystem
                 return;
             }
 
-            if (changeObservers.FirstOrDefault(x => x.PropertyName == propertyName) is ChangeObserver<T> observer)
+            if (changeObservers.FirstOrDefault(x => x.PropertyName == propertyName) is Observer<T> observer)
             {
                 observer.CurrentValue = value;
             }
             else
             {
-                observer = new ChangeObserver<T>(propertyName, value);
+                observer = new Observer<T>(propertyName, value);
                 observer.ChangeObserved += Observer_ChangeObserved;
                 changeObservers.Add(observer);
             }
         }
 
-        public IChangeObserver GetObserverByName(string name)
+        public IObserver GetObserverByName(string name)
         {
             return ChangeObservers.FirstOrDefault(x => x.PropertyName == name);
         }
@@ -87,7 +87,7 @@ namespace DungeonMapEditor.Core.FileSystem
             ChangeObserved?.Invoke(this, e);
         }
 
-        public bool Compare(ChangeManager changeManager)
+        public bool Compare(ObserverManager changeManager)
         {
             foreach (var observer in ChangeObservers)
             {
