@@ -7,7 +7,7 @@
         xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
         xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
         mc:Ignorable="d"
-        Title="Dungeon Map Editor BETA (v0.1.3.20)" MinHeight="570" MinWidth="950" Height="450" Width="800" 
+        Title="Dungeon Map Editor BETA" MinHeight="570" MinWidth="950" Height="450" Width="800" 
         Background="{StaticResource Background}"
         Loaded="Window_Loaded">
     <Window.DataContext>

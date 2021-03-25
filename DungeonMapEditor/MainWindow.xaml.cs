@@ -45,6 +45,7 @@ namespace DungeonMapEditor
             homeInstance.SelectionMade += HomeScreen_SelectionMade;
             homeInstance.OpenDialog += Dialog_OpenDialog;
             AddTab(homeInstance, "Home", true);
+            Title += string.Format(" (v{0})", (DataContext as MainViewModel).UpdateManager.Version);
         }
 
         private void CheckCleanupFile()
