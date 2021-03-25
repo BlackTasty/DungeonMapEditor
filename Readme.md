@@ -10,15 +10,17 @@ Tired of drawing dungeon maps by yourself? Maps you find online just don't fit y
 
 ## Status
 
-![GitHub issues](https://img.shields.io/github/issues/BlackTasty/DungeonMapEditor)
-![GitHub last commit](https://img.shields.io/github/last-commit/BlackTasty/DungeonMapEditor)
+![GitHub issues](https://img.shields.io/github/issues/BlackTasty/DungeonMapEditor?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/BlackTasty/DungeonMapEditor?style=flat-square)
 
-![GitHub release](https://img.shields.io/github/release/BlackTasty/DungeonMapEditor)
-![GitHub Release Date](https://img.shields.io/github/release-date/BlackTasty/DungeonMapEditor)
+![GitHub release](https://img.shields.io/github/release/BlackTasty/DungeonMapEditor?style=flat-square)
+![GitHub Release Date](https://img.shields.io/github/release-date/BlackTasty/DungeonMapEditor?style=flat-square)
 
 ![GitHub (pre-)release](https://img.shields.io/github/release/BlackTasty/DungeonMapEditor/all.svg?style=flat-square&label=pre-release)
 ![Github Pre-Releases](https://img.shields.io/github/downloads-pre/BlackTasty/DungeonMapEditor/latest/total.svg?style=flat-square&colorB=f57b40)
 ![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/BlackTasty/DungeonMapEditor.svg?style=flat-square&label=pre-release%20date&colorB=f57b40)
+
+Interested in what's next? Check out the roadmap for this program! https://trello.com/b/z8jHD6cO/dungeon-map-editor
 
 ## First stable release ToDo
 
