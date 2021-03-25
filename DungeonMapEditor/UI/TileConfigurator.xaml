@@ -4,8 +4,8 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
            xmlns:local="clr-namespace:DungeonMapEditor.UI"
-           xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+           xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
            xmlns:enum="clr-namespace:DungeonMapEditor.Core.Enum"
            xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -55,16 +55,14 @@
                     <TextBlock Text="Rotation"/>
                     <DockPanel Margin="0,0,0,4">
                         <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:TileRotation}}}"
-                              SelectedItem="{Binding TileAssignment.Tile.TileRotation, UpdateSourceTrigger=PropertyChanged}"
-                              Template="{StaticResource ComboBoxTemplate}"/>
+                              SelectedItem="{Binding TileAssignment.Tile.TileRotation, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                 </StackPanel>
                 <StackPanel Margin="4,4,0,4">
                     <TextBlock Text="Tile category"/>
                     <DockPanel Margin="0,0,0,4">
                         <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:TileType}}}"
-                              SelectedItem="{Binding TileAssignment.Tile.TileType, UpdateSourceTrigger=PropertyChanged}"
-                              Template="{StaticResource ComboBoxTemplate}"/>
+                              SelectedItem="{Binding TileAssignment.Tile.TileType, UpdateSourceTrigger=PropertyChanged}"/>
                     </DockPanel>
                 </StackPanel>
             </UniformGrid>
@@ -75,8 +73,8 @@
                 </StackPanel>
                 <StackPanel Margin="4,0,0,0">
                     <TextBlock Text="Font size"/>
-                    <xctk:DoubleUpDown Value="{Binding TileAssignment.Tile.TextFontSize, UpdateSourceTrigger=PropertyChanged}"
-                                       Height="22" Margin="0,2,0,0"/>
+                    <controls:NumericUpDown Value="{Binding TileAssignment.Tile.TextFontSize, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                       Height="22" Margin="0,2,0,0" Minimum="1"/>
                 </StackPanel>
             </UniformGrid>
             <StackPanel Margin="0,4">

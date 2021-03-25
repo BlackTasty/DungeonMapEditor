@@ -175,6 +175,11 @@ namespace DungeonMapEditor.Core.Dungeon
             }
         }
 
+        public BitmapImage SaveFloorPlanImage(double inputScaling = 25)
+        {
+            return SaveFloorPlanImage(Path.Combine(filePath, Name + ".png"), inputScaling);
+        }
+
         public BitmapImage SaveFloorPlanImage(string path, double inputScaling = 25)
         {
             RoomAssignment mostRightRoomAssignment = mRoomAssignments.Count > 0 ? 

@@ -301,6 +301,11 @@ namespace DungeonMapEditor.Core.Dungeon
             OnChangeObserved(new ChangeObservedEventArgs(AnyUnsavedChanges, e.NewValue, e.Observer));
         }
 
+        public BitmapImage SaveRoomPlanImage()
+        {
+            return SaveRoomPlanImage(Path.Combine(filePath, Name + ".png"));
+        }
+
         public BitmapImage SaveRoomPlanImage(string path)
         {
             Canvas canvas = new Canvas()

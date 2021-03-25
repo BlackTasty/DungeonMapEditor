@@ -42,6 +42,10 @@ namespace DungeonMapEditor.Controls
             InitializeComponent();
             FloorAssignment = floorAssignment;
             this.assignedProject = assignedProject;
+            if (FloorAssignment.FloorPlan.FloorPlanImage == null)
+            {
+                FloorAssignment.FloorPlan.SaveFloorPlanImage();
+            }
             Width = floorAssignment.FloorPlan.FloorPlanImage.Width + planOffset;
             Height = floorAssignment.FloorPlan.FloorPlanImage.Height + planOffset;
 

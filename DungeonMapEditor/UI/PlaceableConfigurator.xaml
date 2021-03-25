@@ -4,7 +4,7 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
            xmlns:local="clr-namespace:DungeonMapEditor.UI" 
-           xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+           xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
            mc:Ignorable="d" 
@@ -38,8 +38,8 @@
                 <TextBlock Text="Rotation"/>
                 <DockPanel Margin="0,0,0,4">
                     <TextBlock Text=" °" DockPanel.Dock="Right"/>
-                    <xctk:DoubleUpDown Value="{Binding Placeable.Rotation, UpdateSourceTrigger=LostFocus}"
-                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="60"/>
+                    <controls:NumericUpDown Value="{Binding Placeable.Rotation, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="60" Maximum="360" DecimalPlaces="1"/>
                     <Slider Maximum="360" Value="{Binding Placeable.Rotation, UpdateSourceTrigger=PropertyChanged}"
                                 Template="{StaticResource HorizontalSlider}"/>
                 </DockPanel>
@@ -47,12 +47,12 @@
             <UniformGrid Columns="2" Margin="0,4">
                 <StackPanel>
                     <TextBlock Text="Tile ratio X"/>
-                    <xctk:DoubleUpDown Value="{Binding Placeable.TileRatioX, UpdateSourceTrigger=PropertyChanged}"
+                    <controls:NumericUpDown Value="{Binding Placeable.TileRatioX, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                              Margin="0,0,4,0"/>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Text="Tile ratio Y"/>
-                    <xctk:DoubleUpDown Value="{Binding Placeable.TileRatioY, UpdateSourceTrigger=PropertyChanged}"
+                    <controls:NumericUpDown Value="{Binding Placeable.TileRatioY, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                              Margin="0,0,4,0"/>
                 </StackPanel>
             </UniformGrid>

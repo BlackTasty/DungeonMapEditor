@@ -1,0 +1,141 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DungeonMapEditor.Themes.Default.Styles">
+
+    <Style TargetType="TabControl">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style TargetType="TabItem">
+        <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+        <Setter Property="Template" Value="{DynamicResource TabItemTemplate}"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RoomTabItem" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+        <Setter Property="Template" Value="{DynamicResource RoomTabTemplate}"/>
+    </Style>
+
+    <Style x:Key="FloorTabItem" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+        <Setter Property="Template" Value="{DynamicResource FloorTabTemplate}"/>
+    </Style>
+
+    <Style x:Key="LayoutTabItem" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+        <Setter Property="Template" Value="{DynamicResource LayoutTabTemplate}"/>
+    </Style>
+
+    <ControlTemplate x:Key="TabItemTemplate" TargetType="{x:Type TabItem}">
+        <Grid>
+            <Border Name="Border" Margin="0,0,0,0" Background="{DynamicResource TabItemBackground}"
+                  BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0">
+                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              ContentSource="Header" Margin="12,2,12,2"
+                              RecognizesAccessKey="True">
+                </ContentPresenter>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter TargetName="Border" Property="Margin" Value="0,6,0,0"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Panel.ZIndex" Value="100" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource TabItemSelectedBackground}" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource TabItemDisabledBackground}" />
+                <Setter Property="Foreground" Value="DarkGray" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="RoomTabTemplate" TargetType="{x:Type TabItem}">
+        <Grid>
+            <Border Name="Border" Margin="0,0,0,0" Background="{DynamicResource RoomTabBackground}"
+                  BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0">
+                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              ContentSource="Header" Margin="12,2,12,2"
+                              RecognizesAccessKey="True">
+                </ContentPresenter>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter TargetName="Border" Property="Margin" Value="0,6,0,0"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Panel.ZIndex" Value="100" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource RoomTabSelectedBackground}" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource TabItemDisabledBackground}" />
+                <Setter Property="Foreground" Value="DarkGray" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="FloorTabTemplate" TargetType="{x:Type TabItem}">
+        <Grid>
+            <Border Name="Border" Margin="0,0,0,0" Background="{DynamicResource FloorTabBackground}"
+                  BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0">
+                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              ContentSource="Header" Margin="12,2,12,2"
+                              RecognizesAccessKey="True">
+                </ContentPresenter>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter TargetName="Border" Property="Margin" Value="0,6,0,0"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Panel.ZIndex" Value="100" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource FloorTabSelectedBackground}" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource TabItemDisabledBackground}" />
+                <Setter Property="Foreground" Value="DarkGray" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="LayoutTabTemplate" TargetType="{x:Type TabItem}">
+        <Grid>
+            <Border Name="Border" Margin="0,0,0,0" Background="{DynamicResource LayoutTabBackground}"
+                  BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,1,1,0" CornerRadius="4,4,0,0">
+                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              ContentSource="Header" Margin="12,2,12,2"
+                              RecognizesAccessKey="True">
+                </ContentPresenter>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter TargetName="Border" Property="Margin" Value="0,6,0,0"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Panel.ZIndex" Value="100" />
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource LayoutTabSelectedBackground}" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Border" Property="Background" Value="{DynamicResource TabItemDisabledBackground}" />
+                <Setter Property="Foreground" Value="DarkGray" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+</ResourceDictionary>

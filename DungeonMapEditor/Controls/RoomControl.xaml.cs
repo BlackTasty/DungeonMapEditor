@@ -39,6 +39,10 @@ namespace DungeonMapEditor.Controls
         {
             InitializeComponent();
             RoomAssignment = roomAssignment;
+            if (RoomAssignment.RoomPlan.RoomPlanImage == null)
+            {
+                RoomAssignment.RoomPlan.SaveRoomPlanImage();
+            }
             if (!showNoteIcon)
             {
                 noteIcon.Source = null;
@@ -49,6 +53,10 @@ namespace DungeonMapEditor.Controls
         {
             InitializeComponent();
             RoomAssignment = new RoomAssignment(roomPlan, assignedProject, (int)insertPoint.X, (int)insertPoint.Y);
+            if (RoomAssignment.RoomPlan.RoomPlanImage == null)
+            {
+                RoomAssignment.RoomPlan.SaveRoomPlanImage();
+            }
         }
 
         public RoomAssignment RoomAssignment

@@ -3,9 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:DungeonMapEditor.Controls"
+      xmlns:local="clr-namespace:DungeonMapEditor.UI"
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
-      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
       xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="870" PreviewKeyDown="DockPanel_PreviewKeyDown" Loaded="DockPanel_Loaded" Unloaded="DockPanel_Unloaded">
@@ -25,7 +25,7 @@
                     <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
                     <TextBlock Text="Collection" Margin="12,4,12,2" DockPanel.Dock="Top"/>
                     <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
-                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}" DockPanel.Dock="Top">
+                          SelectionChanged="ComboBox_SelectionChanged" DockPanel.Dock="Top">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -81,7 +81,7 @@
                             <TextBlock Text="Set tile" FontSize="20" Margin="4"/>
                             <TextBlock Text="Collection" Margin="12,4,12,2"/>
                             <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
-                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
+                          SelectionChanged="ComboBox_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -98,7 +98,7 @@
                             <TextBlock Text="Tile" Margin="12,4,12,2"/>
                             <ComboBox ItemsSource="{Binding CollectionTiles, UpdateSourceTrigger=PropertyChanged}" 
                                   Margin="12,0,12,4" SelectedItem="{Binding SelectedAvailableTile}"
-                                  SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
+                                  SelectionChanged="ComboBox_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -109,7 +109,7 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <local:TileControl x:Name="tilePreview" Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1"/>
+                            <controls:TileControl x:Name="tilePreview" Margin="4,4,4,12" Width="50" Height="50" BorderBrush="Black" BorderThickness="1"/>
                         </StackPanel>
                     </Expander>
 
@@ -137,20 +137,20 @@
                         <TextBlock Text="Rotation" Margin="12,4,12,2"/>
                         <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsPlaceableAssignmentSelected}">
                             <TextBlock Text=" °" DockPanel.Dock="Right"/>
-                            <xctk:DoubleUpDown Value="{Binding SelectedPlaceableAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
-                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="45"/>
+                            <controls:NumericUpDown Value="{Binding SelectedPlaceableAssignment.RotationOverride, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="60" Maximum="360" DecimalPlaces="1"/>
                             <Slider Maximum="360" Value="{Binding SelectedPlaceableAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
                                 Template="{StaticResource HorizontalSlider}"/>
                         </DockPanel>
                         <UniformGrid Columns="2" Margin="12,4,12,2">
                             <StackPanel>
                                 <TextBlock Text="Tile ratio X"/>
-                                <xctk:DoubleUpDown Value="{Binding SelectedPlaceableAssignment.TileRatioXOverride, UpdateSourceTrigger=PropertyChanged}"
+                                <controls:NumericUpDown Value="{Binding SelectedPlaceableAssignment.TileRatioXOverride, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                              Margin="0,0,4,0"/>
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Text="Tile ratio Y"/>
-                                <xctk:DoubleUpDown Value="{Binding SelectedPlaceableAssignment.TileRatioYOverride, UpdateSourceTrigger=PropertyChanged}"
+                                <controls:NumericUpDown Value="{Binding SelectedPlaceableAssignment.TileRatioYOverride, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                              Margin="0,0,4,0"/>
                             </StackPanel>
                         </UniformGrid>
@@ -202,7 +202,7 @@
             <StackPanel>
                 <TextBlock Text="Collection" Margin="12,4,12,2"/>
                 <ComboBox ItemsSource="{Binding LoadedCollections}" Margin="12,0,12,4" SelectedItem="{Binding SelectedCollectionSet}"
-                          SelectionChanged="ComboBox_SelectionChanged" Template="{StaticResource ComboBoxTemplate}">
+                          SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

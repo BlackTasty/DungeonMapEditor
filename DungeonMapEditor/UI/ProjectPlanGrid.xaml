@@ -4,8 +4,8 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
            xmlns:local="clr-namespace:DungeonMapEditor.UI"
-           xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
            xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+           xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
            xmlns:enum="clr-namespace:DungeonMapEditor.Core.Enum"
            xmlns:system="clr-namespace:System;assembly=mscorlib"
            xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
@@ -99,8 +99,8 @@
                         <TextBlock Text="Rotation" Margin="12,4,12,2"/>
                         <DockPanel Margin="12,0,12,4" IsEnabled="{Binding IsFloorAssignmentSelected}">
                             <TextBlock Text=" °" DockPanel.Dock="Right"/>
-                            <xctk:DoubleUpDown Value="{Binding SelectedFloorAssignment.RotationOverride, UpdateSourceTrigger=LostFocus}"
-                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="45"/>
+                            <controls:NumericUpDown Value="{Binding SelectedFloorAssignment.RotationOverride, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                     DockPanel.Dock="Right" Margin="4,0,0,0" Width="60" Maximum="360" DecimalPlaces="1"/>
                             <Slider Maximum="360" Value="{Binding SelectedFloorAssignment.RotationOverride,UpdateSourceTrigger=PropertyChanged}"
                                 Template="{StaticResource HorizontalSlider}"/>
                         </DockPanel>
@@ -114,15 +114,13 @@
             <TextBlock Text="Document size"/>
             <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type enum:DocumentSizeType}}}"
                       SelectedItem="{Binding ProjectFile.DocumentSizeType, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ComboBox_SelectionChanged"
-                      Template="{StaticResource ComboBoxTemplate}"/>
+                      SelectionChanged="ComboBox_SelectionChanged"/>
         </StackPanel>
         <StackPanel Width="140" Margin="8">
             <TextBlock Text="Document orientation"/>
             <ComboBox ItemsSource="{Binding Source={enum:EnumBindingSource {x:Type Orientation}}}"
                       SelectedItem="{Binding ProjectFile.DocumentOrientation, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ComboBox_SelectionChanged"
-                      Template="{StaticResource ComboBoxTemplate}"/>
+                      SelectionChanged="ComboBox_SelectionChanged"/>
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>

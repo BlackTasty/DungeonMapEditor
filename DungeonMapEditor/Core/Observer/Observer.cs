@@ -83,6 +83,10 @@ namespace DungeonMapEditor.Core.Observer
                 }
                 else
                 {
+                    if (originalValue == null && currentValue != null)
+                    {
+                        return true;
+                    }
                     return !originalValue.Equals(currentValue);
                 }
             }

@@ -642,6 +642,8 @@ namespace DungeonMapEditor.UI
                     }
                 }
             }
+
+            vm.IsRoomDrawEnabled = false;
         }
 
         public void UnloadGrid()

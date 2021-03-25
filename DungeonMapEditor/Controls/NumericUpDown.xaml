@@ -1,0 +1,50 @@
+﻿<Border x:Class="DungeonMapEditor.Controls.NumericUpDown"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:DungeonMapEditor.Controls"
+        mc:Ignorable="d" x:Name="control"
+        d:DesignHeight="22" d:DesignWidth="40" MinWidth="40" MinHeight="22" 
+        BorderThickness="1" SnapsToDevicePixels="True" PreviewKeyDown="control_PreviewKeyDown"
+        PreviewKeyUp="control_PreviewKeyUp">
+    <Border.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF070A0E" Offset="0"/>
+            <GradientStop Color="#FF171819" Offset="1"/>
+        </LinearGradientBrush>
+    </Border.Background>
+    <Border.BorderBrush>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF4C3380" Offset="0"/>
+            <GradientStop Color="#FF684D83" Offset="1"/>
+        </LinearGradientBrush>
+    </Border.BorderBrush>
+    <DockPanel>
+        <Grid DockPanel.Dock="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="17"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="2"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border Style="{StaticResource SplitterVertical}" Grid.RowSpan="3" Margin="0,1" Width="2"/>
+            <Button Style="{StaticResource IconOnlyButton}" Content="{StaticResource Up}" Padding="2.6" Grid.Column="2"
+                    PreviewMouseDown="ValueUp_MouseDown" PreviewMouseUp="ValueButton_PreviewMouseUp" Focusable="False" IsTabStop="False"/>
+            <Border Style="{StaticResource Splitter}" Grid.Row="1" Margin="0" Grid.Column="2"/>
+            <Button Style="{StaticResource IconOnlyButton}" Content="{StaticResource Down}" Padding="2.5" Grid.Row="2" Grid.Column="2"
+                    PreviewMouseDown="ValueDown_MouseDown" PreviewMouseUp="ValueButton_PreviewMouseUp" Focusable="False" IsTabStop="False"/>
+        </Grid>
+        <local:NumericTextBox Background="Transparent" BorderThickness="0" TextAlignment="Right" VerticalContentAlignment="Stretch"
+                              ValueChanged="NumericTextBox_ValueChanged" Margin="2" MinWidth="0"
+                              FontWeight="{Binding ElementName=control, Path=FontWeight,UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                              Foreground="{Binding ElementName=control, Path=Foreground, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, FallbackValue=White}"
+                              Text="{Binding ElementName=control, Path=Value, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, FallbackValue=0}"
+                              Minimum="{Binding ElementName=control, Path=Minimum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                              Maximum="{Binding ElementName=control, Path=Maximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                              DefaultValue="{Binding ElementName=control, Path=DefaultValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+    </DockPanel>
+</Border>

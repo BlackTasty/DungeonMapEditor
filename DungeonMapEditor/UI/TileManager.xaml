@@ -28,8 +28,7 @@
             <Button Content="+" DockPanel.Dock="Right" Margin="4,0,0,0" Click="CreateCollection_Click"
                     Style="{StaticResource SettingsButton}"/>
             <ComboBox ItemsSource="{Binding LoadedCollections, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
-                      SelectedItem="{Binding SelectedCollection, UpdateSourceTrigger=PropertyChanged}"
-                      Template="{StaticResource ComboBoxTemplate}">
+                      SelectedItem="{Binding SelectedCollection, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
