@@ -166,8 +166,6 @@ namespace DungeonMapEditor
                     break;
                 case HomeScreenSelectionType.OpenTileManager:
                     TileManager tileManager = new TileManager();
-                    tileManager.OpenDialog += Dialog_OpenDialog;
-                    tileManager.UnsavedDialogsCompleted += TileManager_UnsavedDialogsCompleted;
 
                     selectedTabIndex = AddTab(tileManager, "Collection manager");
                     break;
@@ -329,27 +327,12 @@ namespace DungeonMapEditor
                     }
                     else
                     {
-                        tileManager.OpenDialog -= Dialog_OpenDialog;
-                        tileManager.UnsavedDialogsCompleted -= TileManager_UnsavedDialogsCompleted;
                         tabControl.Items.Remove(targetTab);
                     }
                 }
                 else
                 {
                     tabControl.Items.Remove(targetTab);
-                }
-            }
-        }
-
-        private void TileManager_UnsavedDialogsCompleted(object sender, Core.Dialog.ClosingUnsavedDialogButtonClickedEventArgs e)
-        {
-            if (e.DialogResult != Core.Dialog.DialogResult.Abort)
-            {
-                if (e.Target is TileManager tileManager)
-                {
-                    tileManager.OpenDialog -= Dialog_OpenDialog;
-                    tileManager.UnsavedDialogsCompleted -= TileManager_UnsavedDialogsCompleted;
-                    tabControl.Items.Remove(e.TargetTab);
                 }
             }
         }

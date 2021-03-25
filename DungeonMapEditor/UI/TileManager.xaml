@@ -20,9 +20,11 @@
         <RowDefinition Height="54"/>
         <RowDefinition/>
     </Grid.RowDefinitions>
-    <Border Grid.ColumnSpan="2" BorderBrush="DarkGray" BorderThickness="0,0,0,1" Margin="0,0,0,4">
+    <Border Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,4">
         <DockPanel VerticalAlignment="Top" Margin="4,4">
-            <TextBlock DockPanel.Dock="Top" Text="Selected collection"/>
+            <TextBlock DockPanel.Dock="Top" Text="Selected collection" Margin="0,0,0,2"/>
+            <Button Content="Import" DockPanel.Dock="Right" Margin="4,0,0,0" Click="Import_Click"
+                    Style="{StaticResource SettingsButton}"/>
             <Button Content="+" DockPanel.Dock="Right" Margin="4,0,0,0" Click="CreateCollection_Click"
                     Style="{StaticResource SettingsButton}"/>
             <ComboBox ItemsSource="{Binding LoadedCollections, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
@@ -35,7 +37,7 @@
                             <TextBlock Text="*" Visibility="{Binding AnyUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <TextBlock>
                             <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
-                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} objects)}"/>
                             </TextBlock>
                         </StackPanel>
                     </DataTemplate>
@@ -43,7 +45,7 @@
             </ComboBox>
         </DockPanel>
     </Border>
-    <TabControl Grid.Row="1" Background="Transparent">
+    <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
         <TabItem Header="Tiles">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -53,6 +55,10 @@
                 <DataGrid ItemsSource="{Binding SelectedCollection.TileFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
                           CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
                           SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedTileIndex}" Grid.Row="1">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                             <Setter Property="Height" Value="60"/>
@@ -142,9 +148,9 @@
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
                     <DockPanel IsEnabled="{Binding IsCollectionSelected}">
                         <StackPanel DockPanel.Dock="Bottom">
+                            <Button Content="Export collection" Margin="8,4" Click="Export_Click" 
+                                    IsEnabled="{Binding IsCollectionSelected}"/>
                             <Button Content="Save" Margin="8,4" Click="Save_Click" 
-                                    />
-                            <Button Content="Close" Margin="8,4" Click="Close_Click" Visibility="Collapsed"
                                     />
                         </StackPanel>
                         <StackPanel>
@@ -167,6 +173,10 @@
                 <DataGrid ItemsSource="{Binding SelectedCollection.PlaceableFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
                           CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
                           SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedPlaceableIndex}" Grid.Row="1">
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
+                    </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                             <Setter Property="Height" Value="60"/>
@@ -251,10 +261,9 @@
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
                     <DockPanel IsEnabled="{Binding IsCollectionSelected}">
                         <StackPanel DockPanel.Dock="Bottom">
-                            <Button Content="Save" Margin="8,4" Click="Save_Click" 
-                                    />
-                            <Button Content="Close" Margin="8,4" Click="Close_Click" 
-                                     Visibility="Collapsed"/>
+                            <Button Content="Export collection" Margin="8,4" Click="Export_Click" 
+                                    IsEnabled="{Binding IsCollectionSelected}"/>
+                            <Button Content="Save" Margin="8,4" Click="Save_Click"/>
                         </StackPanel>
                         <StackPanel>
                             <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click" 

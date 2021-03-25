@@ -340,6 +340,25 @@ namespace DungeonMapEditor.Core
                 return int.Parse(version.Replace(new string[] { ".", " Full" }));
         }
 
+        public static void CopyDirectory(string sourcePath, string destPath)
+        {
+            CopyDirectoryContent(new DirectoryInfo(sourcePath), destPath);
+        }
+
+        private static void CopyDirectoryContent(DirectoryInfo di, string destPath)
+        {
+            Directory.CreateDirectory(destPath);
+            foreach (DirectoryInfo subDi in di.EnumerateDirectories())
+            {
+                CopyDirectoryContent(subDi, Path.Combine(destPath, subDi.Name));
+            }
+
+            foreach(FileInfo fi in di.EnumerateFiles())
+            {
+                fi.CopyTo(Path.Combine(destPath, fi.Name));
+            }
+        }
+
         private static System.Windows.Size GetDocumentSize(DocumentSizeType documentSize, System.Windows.Size customSize)
         {
             switch (documentSize)

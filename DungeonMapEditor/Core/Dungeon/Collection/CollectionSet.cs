@@ -4,9 +4,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DungeonMapEditor.Core.Dungeon.Collection
 {
@@ -103,6 +105,30 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             changeManager.ResetObservers();
         }
 
+        public static CollectionSet ImportFromFile(string filePath)
+        {
+            FileInfo fi = new FileInfo(filePath);
+            string importedCollectionName = fi.Name.Replace(fi.Extension, "");
+
+            string collectionTargetPath = Path.Combine(App.CollectionPath, importedCollectionName);
+            if (Directory.Exists(collectionTargetPath))
+            {
+                if (MessageBox.Show("Collection exists already!", "A collection with the name \"" + importedCollectionName + 
+                    "\" exists already! Do you wish to override it?", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                {
+                    return null;
+                }
+
+                Directory.Delete(collectionTargetPath, true);
+            }
+
+            Directory.CreateDirectory(collectionTargetPath);
+            ZipFile.ExtractToDirectory(filePath, collectionTargetPath);
+            CollectionSet imported = new CollectionSet(new DirectoryInfo(collectionTargetPath));
+            imported.MakeImagePathsAbsolute();
+            return imported;
+        }
+
         public void Save(string parentPath = null)
         {
             if (!fromFile)
@@ -184,6 +210,57 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
                         break;
                 }
             }
+        }
+
+        public void ExportCollection(string targetDir)
+        {
+            string tempFolder = Path.Combine(Path.GetTempPath(), "DungeonMapEditor", "export");
+            if (Directory.Exists(tempFolder))
+            {
+                Directory.Delete(tempFolder, true);
+            }
+            tempFolder = Path.Combine(tempFolder, Name);
+
+            Directory.CreateDirectory(tempFolder);
+            Helper.CopyDirectory(filePath, tempFolder);
+            CollectionSet export = new CollectionSet(new DirectoryInfo(tempFolder));
+            export.MakeImagePathsRelative();
+
+            ZipFile.CreateFromDirectory(tempFolder, targetDir);
+            Directory.Delete(new DirectoryInfo(tempFolder).Parent.FullName, true);
+        }
+
+        /// <summary>
+        /// Iterates through all tiles and placeables and makes image path relative. Required by collection export
+        /// </summary>
+        private void MakeImagePathsRelative()
+        {
+            foreach (var tile in TileFile.Data)
+            {
+                tile.ImagePath = "resources/" + new FileInfo(tile.ImagePath).Name;
+            }
+
+            foreach (var placeable in PlaceableFile.Data)
+            {
+                placeable.ImagePath = "resources/" + new FileInfo(placeable.ImagePath).Name;
+            }
+
+            Save();
+        }
+
+        private void MakeImagePathsAbsolute()
+        {
+            foreach (var tile in TileFile.Data)
+            {
+                tile.ImagePath = Path.Combine(filePath, "tiles", "resources", new FileInfo(tile.ImagePath).Name);
+            }
+
+            foreach (var placeable in PlaceableFile.Data)
+            {
+                placeable.ImagePath = Path.Combine(filePath, "placeables", "resources", new FileInfo(placeable.ImagePath).Name);
+            }
+
+            Save();
         }
 
         private void Initialize()

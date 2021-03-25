@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Controls;
+using DungeonMapEditor.Core;
 using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Assignment;
@@ -6,6 +7,7 @@ using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Events;
 using DungeonMapEditor.Core.Observer;
 using DungeonMapEditor.ViewModel;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +30,6 @@ namespace DungeonMapEditor.UI
     /// </summary>
     public partial class TileManager : Grid
     {
-        public event EventHandler<TileManagerDialogButtonClickedEventArgs> DialogButtonClicked;
         public event EventHandler<OpenDialogEventArgs> OpenDialog;
         public event EventHandler<ClosingUnsavedDialogButtonClickedEventArgs> UnsavedDialogsCompleted;
 
@@ -98,6 +99,23 @@ namespace DungeonMapEditor.UI
             TileManagerViewModel vm = DataContext as TileManagerViewModel;
             if (e.DialogResult == DialogResult.OK)
             {
+                FileInfo imageFileInfo = !string.IsNullOrWhiteSpace(e.Tile.ImagePath) ? new FileInfo(e.Tile.ImagePath) : null;
+                if (imageFileInfo != null && imageFileInfo.Exists)
+                {
+                    string localResourcePath = Path.Combine(vm.SelectedCollection.FilePath, "tiles", "resources");
+                    if (!Directory.Exists(localResourcePath))
+                    {
+                        Directory.CreateDirectory(localResourcePath);
+                    }
+
+                    string localImagePath = Path.Combine(localResourcePath, imageFileInfo.Name);
+                    if (!new FileInfo(localImagePath).Exists)
+                    {
+                        File.Copy(imageFileInfo.FullName, localImagePath);
+                    }
+                    e.Tile.ImagePath = localImagePath;
+                }
+
                 if (!vm.IsEditTile)
                 {
                     vm.SelectedCollection.TileFile.Data.Add(e.Tile);
@@ -179,13 +197,6 @@ namespace DungeonMapEditor.UI
             vm.SelectedCollection.Save(collectionDir);
             App.LoadCollections();
             vm.SelectedCollection = App.LoadedCollections[selectedCollectionIndex];
-
-            OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(vm.SelectedCollection.TileFile, DialogResult.OK));
-        }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            OnDialogButtonClicked(new TileManagerDialogButtonClickedEventArgs(DialogResult.Abort));
         }
 
         private void AddPlaceable_Click(object sender, RoutedEventArgs e)
@@ -223,6 +234,23 @@ namespace DungeonMapEditor.UI
             TileManagerViewModel vm = DataContext as TileManagerViewModel;
             if (e.DialogResult == DialogResult.OK)
             {
+                FileInfo imageFileInfo = !string.IsNullOrWhiteSpace(e.Placeable.ImagePath) ? new FileInfo(e.Placeable.ImagePath) : null;
+                if (imageFileInfo != null && imageFileInfo.Exists)
+                {
+                    string localResourcePath = Path.Combine(vm.SelectedCollection.FilePath, "placeables", "resources");
+                    if (!Directory.Exists(localResourcePath))
+                    {
+                        Directory.CreateDirectory(localResourcePath);
+                    }
+
+                    string localImagePath = Path.Combine(localResourcePath, imageFileInfo.Name);
+                    if (!new FileInfo(localImagePath).Exists)
+                    {
+                        File.Copy(imageFileInfo.FullName, localImagePath);
+                    }
+                    e.Placeable.ImagePath = localImagePath;
+                }
+
                 if (!vm.IsEditPlaceable)
                 {
                     vm.SelectedCollection.PlaceableFile.Data.Add(e.Placeable);
@@ -249,11 +277,6 @@ namespace DungeonMapEditor.UI
             }
         }
 
-        protected virtual void OnDialogButtonClicked(TileManagerDialogButtonClickedEventArgs e)
-        {
-            DialogButtonClicked?.Invoke(this, e);
-        }
-
         protected virtual void OnOpenDialog(OpenDialogEventArgs e)
         {
             OpenDialog?.Invoke(this, e);
@@ -262,6 +285,40 @@ namespace DungeonMapEditor.UI
         protected virtual void OnUnsavedDialogsCompleted(ClosingUnsavedDialogButtonClickedEventArgs e)
         {
             UnsavedDialogsCompleted?.Invoke(this, e);
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            SaveFileDialog dialog = new SaveFileDialog()
+            {
+                Filter = "Collection package|*.col",
+                FileName = vm.SelectedCollection.Name + ".col",
+                AddExtension = true
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                vm.SelectedCollection.ExportCollection(dialog.FileName);
+            }
+        }
+
+        private void Import_Click(object sender, RoutedEventArgs e)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            OpenFileDialog dialog = new OpenFileDialog()
+            {
+                Filter = "Collection package|*.col",
+                AddExtension = true
+            };
+
+
+            if (dialog.ShowDialog() == true)
+            {
+                CollectionSet imported = CollectionSet.ImportFromFile(dialog.FileName);
+                vm.LoadedCollections.Add(imported);
+                vm.SelectedCollection = imported;
+            }
         }
     }
 }

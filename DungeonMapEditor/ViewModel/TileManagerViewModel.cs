@@ -24,7 +24,7 @@ namespace DungeonMapEditor.ViewModel
 
         public CollectionSet SelectedCollection
         {
-            get => mSelectedCollection;
+            get => !App.IsDesignMode ? mSelectedCollection : new CollectionSet("Test");
             set
             {
                 mSelectedCollection = value;
@@ -106,7 +106,10 @@ namespace DungeonMapEditor.ViewModel
 
         public TileManagerViewModel()
         {
-            SelectedCollection = LoadedCollections.FirstOrDefault();
+            if (!App.IsDesignMode)
+            {
+                SelectedCollection = LoadedCollections.FirstOrDefault();
+            }
         }
 
         public Tile GetSelectedTile()

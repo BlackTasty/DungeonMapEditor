@@ -11,13 +11,13 @@ namespace DungeonMapEditor.Core.Patcher
     {
         public static List<string> BackupDirectory(string sourcePath, string destPath)
         {
-            return BackupFiles(null, new DirectoryInfo(sourcePath), destPath);
+            return BackupFiles(new DirectoryInfo(sourcePath), destPath);
 
             //Directory.Move(destPath, destPath + ".BAK");
             //Directory.Move(sourcePath, destPath);
         }
 
-        public static List<string> BackupFiles(string root, DirectoryInfo di, string destPath)
+        public static List<string> BackupFiles(DirectoryInfo di, string destPath)
         {
             List<string> paths = new List<string>();
             foreach (FileInfo fi in di.GetFiles())

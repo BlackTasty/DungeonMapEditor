@@ -91,7 +91,7 @@
                 BorderBrush="{StaticResource TabItemSelectedBackground}" BorderThickness="1">
             <Grid>
                 <Image Source="{Binding TileAssignment.Tile.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                              VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None"
+                              VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Width="50"
                                RenderTransformOrigin="0.5,0.5" RenderOptions.BitmapScalingMode="HighQuality">
                     <Image.RenderTransform>
                         <RotateTransform Angle="{Binding TileAssignment.Tile.Rotation, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>

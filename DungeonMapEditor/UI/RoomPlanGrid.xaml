@@ -32,7 +32,7 @@
                                     <TextBlock Text="{Binding Name}"/>
                                     <TextBlock>
                                             <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
-                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} objects)}"/>
                                     </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
@@ -88,7 +88,7 @@
                                             <TextBlock Text="{Binding Name}"/>
                                             <TextBlock>
                                             <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
-                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} objects)}"/>
                                             </TextBlock>
                                         </StackPanel>
                                     </DataTemplate>
@@ -208,8 +208,8 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Name}"/>
                                 <TextBlock>
-                                            <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
-                                            <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} placeables)}"/>
+                                    <Run Text="{Binding TileCount, Mode=OneWay, StringFormat={} ({0} tiles}"/><Run Text=","/>
+                                    <Run Text="{Binding PlaceableCount, Mode=OneWay, StringFormat={}{0} objects)}"/>
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>
