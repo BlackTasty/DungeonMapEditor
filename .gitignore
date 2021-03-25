@@ -338,3 +338,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/icon.xcf
+/icon_base.png
+/icon_v1.xcf
+/icon_v1_small_border.xcf
+/Icon

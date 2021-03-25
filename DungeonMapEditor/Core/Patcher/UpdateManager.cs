@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Tasty.Logging;
 
 namespace DungeonMapEditor.Core.Patcher
 {
@@ -132,7 +133,7 @@ namespace DungeonMapEditor.Core.Patcher
             {
                 if (!UpdatesReady)
                 {
-                    //Logger.Instance.WriteLog("Searching for updates...");
+                    Logger.Instance.WriteLog("Searching for updates...");
                     if (File.Exists(versionFilePath))
                     {
                         File.Delete(versionFilePath);
@@ -147,7 +148,7 @@ namespace DungeonMapEditor.Core.Patcher
             }
             catch (Exception ex)
             {
-                //Logger.Instance.WriteLog("Can't connect to the server. Either your connection is too slow or the server is currently offline.", ex);
+                Logger.Instance.WriteLog("Can't connect to the server. Either your connection is too slow or the server is currently offline.", ex);
                 OnUpdateFailed(new UpdateFailedEventArgs(ex, "Can't connect to the server. Either your connection is too slow or the server is currently offline."));
             }
             finally
@@ -165,7 +166,7 @@ namespace DungeonMapEditor.Core.Patcher
             filesExtraced = false;
             Status = UpdateStatus.DOWNLOADING;
             checkInterval.Stop();
-            //Logger.Instance.WriteLog("Started download of DME v{0}...", newVersion);
+            Logger.Instance.WriteLog("Started download of DME v{0}...", newVersion);
 
             DownloadFile(FixedValues.LOCAL_FILENAME, tempDownloadPath + "\\" + FixedValues.LOCAL_FILENAME, true);
         }
@@ -176,10 +177,10 @@ namespace DungeonMapEditor.Core.Patcher
         private void CheckAppUpdates()
         {
             updatesReady = CheckVersion(true, 0);
-            //Logger.Instance.WriteLog("Current version: {0}; Server version: {1}", currentVersion, newVersion);
+            Logger.Instance.WriteLog("Current version: {0}; Server version: {1}", currentVersion, newVersion);
             if (updatesReady)
             {
-                //Logger.Instance.WriteLog("Updates found!");
+                Logger.Instance.WriteLog("Updates found!");
                 Status = UpdateStatus.UPDATES_FOUND;
                 OnUpdateFound(new UpdateFoundEventArgs(currentVersion, newVersion));
             }
@@ -245,32 +246,32 @@ namespace DungeonMapEditor.Core.Patcher
             catch (UnauthorizedAccessException ex)
             {
                 OnUpdateFailed(new UpdateFailedEventArgs(ex, "Installation failed! Reason: One or more files are locked!"));
-                //Logger.Instance.WriteLog("There was an error during the installation of an update! Can't access one or more files because they are opened!", ex);
+                Logger.Instance.WriteLog("There was an error during the installation of an update! Can't access one or more files because they are opened!", ex);
             }
             catch (FileNotFoundException ex)
             {
                 if (!File.Exists(runtimePath))
                 {
                     OnUpdateFailed(new UpdateFailedEventArgs(ex, "Missing files for installation! Restarting download..."));
-                    //Logger.Instance.WriteLog("Some required files to update DME went missing, restarting download process...", ex);
+                    Logger.Instance.WriteLog("Some required files to update DME went missing, restarting download process...", ex);
                     DownloadUpdate();
                 }
                 else
                 {
                     OnUpdateFailed(new UpdateFailedEventArgs(ex, "Something went wrong during installation!"));
-                    //Logger.Instance.WriteLog("There was an error during the installation of an update!", ex);
+                    Logger.Instance.WriteLog("There was an error during the installation of an update!", ex);
                 }
             }
             catch (Exception ex)
             {
                 OnUpdateFailed(new UpdateFailedEventArgs(ex, "Something went wrong during installation!"));
-                //Logger.Instance.WriteLog("There was an error during the installation of an update!", ex);
+                Logger.Instance.WriteLog("There was an error during the installation of an update!", ex);
             }
         }
 
         internal void CleanupFiles(bool alsoBackup)
         {
-            //Logger.Instance.WriteLogVerbose(this, "Cleaning up files... (alsoBackup: {0})", alsoBackup);
+            Logger.Instance.WriteLog("Cleaning up files... (alsoBackup: {0})", alsoBackup);
             if (alsoBackup && File.Exists(installPath + "cleanup.txt"))
             {
                 string[] files = File.ReadAllLines(installPath + "cleanup.txt");
@@ -285,7 +286,7 @@ namespace DungeonMapEditor.Core.Patcher
                     }
                     catch (Exception ex)
                     {
-                        //Logger.Instance.WriteLog("Error while removing file!", ex, files[i]);
+                        Logger.Instance.WriteLog("Error while removing file!", ex, files[i]);
                         //Logger.Instance.WriteLogVerbose(this, "Unable to delete \"{0}\"!", files[i]);
                     }
                 }
