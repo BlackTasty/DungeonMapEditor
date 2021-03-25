@@ -13,7 +13,7 @@
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{StaticResource TabItemDisabledBackground}"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundDisabled}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -664,6 +664,11 @@
     <Style TargetType="TabItem">
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
         <Setter Property="Template" Value="{DynamicResource TabItemTemplate}"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="RoomTabItem" TargetType="TabItem">

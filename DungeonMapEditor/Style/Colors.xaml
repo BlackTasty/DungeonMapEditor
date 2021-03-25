@@ -5,9 +5,10 @@
 
     <Color x:Key="GoldLightColor">#ffd57c</Color>
     <Color x:Key="GoldDarkColor">#ffb600</Color>
-    
+
     <SolidColorBrush x:Key="Background" Color="#FF211D1D"></SolidColorBrush>
     <SolidColorBrush x:Key="Foreground" Color="#ddFFFFFF"></SolidColorBrush>
+    <SolidColorBrush x:Key="ForegroundDisabled" Color="#ddDDDDDD"></SolidColorBrush>
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderBrushColor}"></SolidColorBrush>
 
     <SolidColorBrush x:Key="ComboBoxItemSelectedBackground" Color="#801D0040"></SolidColorBrush>
