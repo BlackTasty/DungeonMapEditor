@@ -105,6 +105,11 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             changeManager.ResetObservers();
         }
 
+        public override void Delete()
+        {
+            base.Delete(true);
+        }
+
         public static CollectionSet ImportFromFile(string filePath)
         {
             FileInfo fi = new FileInfo(filePath);
@@ -113,8 +118,8 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             string collectionTargetPath = Path.Combine(App.CollectionPath, importedCollectionName);
             if (Directory.Exists(collectionTargetPath))
             {
-                if (MessageBox.Show("Collection exists already!", "A collection with the name \"" + importedCollectionName + 
-                    "\" exists already! Do you wish to override it?", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                if (MessageBox.Show("A collection with the name \"" + importedCollectionName + 
+                    "\" exists already! Do you wish to override it?", "Collection exists already!", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 {
                     return null;
                 }

@@ -267,13 +267,13 @@ namespace DungeonMapEditor.UI
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void CollectionDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<CollectionSet> e)
+        private void CollectionDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.ResultObject is CollectionSet result)
             {
                 TileManagerViewModel vm = DataContext as TileManagerViewModel;
-                vm.LoadedCollections.Add(e.ResultObject);
-                vm.SelectedCollection = e.ResultObject;
+                vm.LoadedCollections.Add(result);
+                vm.SelectedCollection = result;
             }
         }
 
@@ -318,6 +318,27 @@ namespace DungeonMapEditor.UI
                 CollectionSet imported = CollectionSet.ImportFromFile(dialog.FileName);
                 vm.LoadedCollections.Add(imported);
                 vm.SelectedCollection = imported;
+            }
+        }
+
+        private void DeleteCollection_Click(object sender, RoutedEventArgs e)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            DialogRemoveObject dialog = new DialogRemoveObject(vm.SelectedCollection.Name);
+            dialog.DialogCompleted += DialogRemoveCollection_DialogCompleted;
+
+            OnOpenDialog(new OpenDialogEventArgs(dialog));
+        }
+
+        private void DialogRemoveCollection_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
+        {
+            if (e.DialogResult == DialogResult.OK)
+            {
+                TileManagerViewModel vm = DataContext as TileManagerViewModel;
+                CollectionSet selectedCollection = vm.SelectedCollection;
+                selectedCollection.Delete();
+                vm.LoadedCollections.Remove(selectedCollection);
+                vm.SelectedCollection = null;
             }
         }
     }

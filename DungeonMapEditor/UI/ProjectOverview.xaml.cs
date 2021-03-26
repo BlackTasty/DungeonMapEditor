@@ -105,23 +105,23 @@ namespace DungeonMapEditor.UI
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void RoomPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<RoomPlan> e)
+        private void RoomPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.ResultObject is RoomPlan result)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
-                vm.ProjectFile.RoomPlans.Add(new RoomAssignment(e.ResultObject, vm.ProjectFile));
-                OpenRoomPlan(e.ResultObject);
+                vm.ProjectFile.RoomPlans.Add(new RoomAssignment(result, vm.ProjectFile));
+                OpenRoomPlan(result);
             }
         }
 
-        private void FloorPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<FloorPlan> e)
+        private void FloorPlanDialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.ResultObject is FloorPlan result)
             {
                 ProjectOverviewViewModel vm = DataContext as ProjectOverviewViewModel;
-                vm.ProjectFile.FloorPlans.Add(new FloorAssignment(e.ResultObject, vm.ProjectFile));
-                OpenFloorPlan(e.ResultObject);
+                vm.ProjectFile.FloorPlans.Add(new FloorAssignment(result, vm.ProjectFile));
+                OpenFloorPlan(result);
             }
         }
 
@@ -406,11 +406,11 @@ namespace DungeonMapEditor.UI
             OnOpenDialog(new OpenDialogEventArgs(dialog));
         }
 
-        private void DialogExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
+        private void DialogExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.ResultObject is ProjectExport result)
             {
-                string exportDir = e.ResultObject.ExportProject();
+                string exportDir = result.ExportProject();
                 Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
             }
         }

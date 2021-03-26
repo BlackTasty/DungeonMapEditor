@@ -22,9 +22,9 @@ namespace DungeonMapEditor.Controls
     /// <summary>
     /// Interaction logic for DialogCreateFloor.xaml
     /// </summary>
-    public partial class DialogCreateFloor : Border
+    public partial class DialogCreateFloor : Border, ICreateDialog
     {
-        public event EventHandler<CreateDialogCompletedEventArgs<FloorPlan>> DialogCompleted;
+        public event EventHandler<CreateDialogCompletedEventArgs> DialogCompleted;
 
         private ProjectFile projectFile;
 
@@ -38,15 +38,15 @@ namespace DungeonMapEditor.Controls
         private void CreateFloor_Click(object sender, RoutedEventArgs e)
         {
             CreateFloorViewModel vm = DataContext as CreateFloorViewModel;
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<FloorPlan>(DialogResult.OK, new FloorPlan(vm.FloorName)));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs(DialogResult.OK, new FloorPlan(vm.FloorName)));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<FloorPlan>(DialogResult.Abort));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs(DialogResult.Abort));
         }
 
-        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<FloorPlan> e)
+        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs e)
         {
             DialogCompleted?.Invoke(this, e);
         }

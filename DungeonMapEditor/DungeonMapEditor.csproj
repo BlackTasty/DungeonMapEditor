@@ -123,6 +123,9 @@
     <Compile Include="Converter\StringToGeometryConverter.cs" />
     <Compile Include="Core\Dialog\ClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\IClosingUnsavedDialogButtonClickedEventArgs.cs" />
+    <Compile Include="Core\Dialog\IClosingDialog.cs" />
+    <Compile Include="Core\Dialog\ICreateDialog.cs" />
+    <Compile Include="Core\Dialog\IDialog.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dungeon\Assignment\Assignment.cs" />
     <Compile Include="Core\Dungeon\ProjectExport.cs" />

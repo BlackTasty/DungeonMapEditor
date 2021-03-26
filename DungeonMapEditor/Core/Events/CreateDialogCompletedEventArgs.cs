@@ -1,4 +1,5 @@
 ﻿using DungeonMapEditor.Core.Dialog;
+using DungeonMapEditor.Core.Dungeon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace DungeonMapEditor.Core.Events
 {
-    public class CreateDialogCompletedEventArgs<T> : DialogButtonClickedEventArgs
+    public class CreateDialogCompletedEventArgs : DialogButtonClickedEventArgs
     {
-        private T resultObject;
+        private object resultObject;
 
-        public T ResultObject => resultObject;
+        public object ResultObject => resultObject;
 
-        public CreateDialogCompletedEventArgs(DialogResult dialogResult, T resultObject) : this(dialogResult)
+        public CreateDialogCompletedEventArgs(DialogResult dialogResult, object resultObject) : this(dialogResult)
         {
             this.resultObject = resultObject;
         }

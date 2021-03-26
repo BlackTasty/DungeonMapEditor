@@ -19,6 +19,7 @@
     <Grid.RowDefinitions>
         <RowDefinition Height="54"/>
         <RowDefinition/>
+        <RowDefinition Height="36"/>
     </Grid.RowDefinitions>
     <Border Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,4">
         <DockPanel VerticalAlignment="Top" Margin="4,4">
@@ -145,21 +146,13 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
-                    <DockPanel IsEnabled="{Binding IsCollectionSelected}">
-                        <StackPanel DockPanel.Dock="Bottom">
-                            <Button Content="Export collection" Margin="8,4" Click="Export_Click" 
-                                    IsEnabled="{Binding IsCollectionSelected}"/>
-                            <Button Content="Save" Margin="8,4" Click="Save_Click" 
+                    <StackPanel IsEnabled="{Binding IsCollectionSelected}">
+                        <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" />
+                        <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click" 
                                     />
-                        </StackPanel>
-                        <StackPanel>
-                            <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" />
-                            <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click" 
-                                    />
-                            <Button Content="Delete tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
+                        <Button Content="Delete tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
                                     Style="{StaticResource RedButton}"/>
-                        </StackPanel>
-                    </DockPanel>
+                    </StackPanel>
                 </Border>
             </Grid>
         </TabItem>
@@ -258,31 +251,31 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
-                    <DockPanel IsEnabled="{Binding IsCollectionSelected}">
-                        <StackPanel DockPanel.Dock="Bottom">
-                            <Button Content="Export collection" Margin="8,4" Click="Export_Click" 
-                                    IsEnabled="{Binding IsCollectionSelected}"/>
-                            <Button Content="Save" Margin="8,4" Click="Save_Click"/>
-                        </StackPanel>
-                        <StackPanel>
-                            <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click" 
+                    <StackPanel IsEnabled="{Binding IsCollectionSelected}">
+                        <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click" 
                                     />
-                            <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="EditPlaceable_Click" 
+                        <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="EditPlaceable_Click" 
                                     />
-                            <Button Content="Delete object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="RemovePlaceable_Click" 
+                        <Button Content="Delete object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="RemovePlaceable_Click" 
                                     Style="{StaticResource RedButton}"/>
-                        </StackPanel>
-                    </DockPanel>
+                    </StackPanel>
                 </Border>
             </Grid>
         </TabItem>
     </TabControl>
-    <Grid Background="#dd000000" Grid.RowSpan="2"
+    <Border Grid.Row="2" Background="#11ffffff" Margin="-2" BorderBrush="{DynamicResource BorderBrushLight}" BorderThickness="0,1,0,0">
+        <StackPanel Orientation="Horizontal" Margin="4,2" HorizontalAlignment="Right" IsEnabled="{Binding IsCollectionSelected}">
+            <Button Content="Delete" Margin="12,4" Click="DeleteCollection_Click" Style="{DynamicResource RedButton}"/>
+            <Button Content="Export" Margin="8,4" Click="Export_Click"/>
+            <Button Content="Save" Margin="4" Click="Save_Click"/>
+        </StackPanel>
+    </Border>
+    <Grid Background="#dd000000" Grid.RowSpan="3"
           Visibility="{Binding IsTileConfiguratorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
         <local:TileConfigurator x:Name="tileConfigurator" VerticalAlignment="Center" HorizontalAlignment="Center"
                                 DialogButtonClicked="TileConfigurator_DialogButtonClicked"/>
     </Grid>
-    <Grid Background="#dd000000" Grid.RowSpan="2"
+    <Grid Background="#dd000000" Grid.RowSpan="3"
           Visibility="{Binding IsPlaceableConfiguratorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
         <local:PlaceableConfigurator x:Name="placeableConfigurator" VerticalAlignment="Center" HorizontalAlignment="Center"
                                 DialogButtonClicked="PlaceableConfigurator_DialogButtonClicked"/>

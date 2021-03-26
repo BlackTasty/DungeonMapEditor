@@ -22,7 +22,7 @@ namespace DungeonMapEditor.Controls
     /// <summary>
     /// Interaction logic for DialogClosingUnsaved.xaml
     /// </summary>
-    public partial class DialogClosingUnsaved : Border
+    public partial class DialogClosingUnsaved : Border, IClosingDialog
     {
         public event EventHandler<ClosingUnsavedDialogButtonClickedEventArgs> DialogCompleted;
 

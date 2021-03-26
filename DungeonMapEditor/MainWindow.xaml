@@ -9,7 +9,8 @@
         mc:Ignorable="d"
         Title="Dungeon Map Editor BETA" MinHeight="570" MinWidth="950" Height="450" Width="800" 
         Background="{StaticResource Background}"
-        Loaded="Window_Loaded" Icon="Resources/icon.ico">
+        Loaded="Window_Loaded" Icon="Resources/icon.ico"
+        DragEnter="Window_DragEnter" Drop="Window_Drop" AllowDrop="True">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>

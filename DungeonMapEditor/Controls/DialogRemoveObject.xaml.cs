@@ -20,7 +20,7 @@ namespace DungeonMapEditor.Controls
     /// <summary>
     /// Interaction logic for DialogRemoveObject.xaml
     /// </summary>
-    public partial class DialogRemoveObject : Border
+    public partial class DialogRemoveObject : Border, IDialog
     {
         public event EventHandler<DialogButtonClickedEventArgs> DialogCompleted;
 

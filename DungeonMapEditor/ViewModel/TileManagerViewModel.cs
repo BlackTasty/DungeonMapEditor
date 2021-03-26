@@ -31,6 +31,7 @@ namespace DungeonMapEditor.ViewModel
                 InvokePropertyChanged();
                 InvokePropertyChanged("IsCollectionSelected");
                 SelectedTileIndex = -1;
+                SelectedPlaceableIndex = -1;
             }
         }
 

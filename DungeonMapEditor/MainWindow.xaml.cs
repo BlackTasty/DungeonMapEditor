@@ -1,5 +1,6 @@
 ﻿using DungeonMapEditor.Controls;
 using DungeonMapEditor.Core;
+using DungeonMapEditor.Core.Dialog;
 using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.Core.Enum;
@@ -166,6 +167,7 @@ namespace DungeonMapEditor
                     break;
                 case HomeScreenSelectionType.OpenTileManager:
                     TileManager tileManager = new TileManager();
+                    tileManager.OpenDialog += Dialog_OpenDialog;
 
                     selectedTabIndex = AddTab(tileManager, "Collection manager");
                     break;
@@ -183,7 +185,7 @@ namespace DungeonMapEditor
             }
         }
 
-        private void RemoveDialog_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        private void RemoveDialog_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
         {
             if (e.DialogResult == Core.Dialog.DialogResult.OK && e.Data is ProjectFile selectedProject)
             {
@@ -203,12 +205,12 @@ namespace DungeonMapEditor
             (DataContext as MainViewModel).ShowDialog = false;
         }
 
-        private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectFile> e)
+        private void Dialog_DialogCompleted(object sender, CreateDialogCompletedEventArgs e)
         {
-            if (e.DialogResult == Core.Dialog.DialogResult.OK)
+            if (e.DialogResult == Core.Dialog.DialogResult.OK && e.ResultObject is ProjectFile result)
             {
-                e.ResultObject.Save(App.ProjectsPath);
-                OpenProject(e.ResultObject);
+                result.Save(App.ProjectsPath);
+                OpenProject(result);
             }
 
             (DataContext as MainViewModel).ShowDialog = false;
@@ -245,34 +247,23 @@ namespace DungeonMapEditor
 
         private void Dialog_OpenDialog(object sender, OpenDialogEventArgs e)
         {
-            if (e.Dialog is DialogCreateFloor createFloor)
+            if (e.Dialog is IDialog dialog)
             {
-                createFloor.DialogCompleted += Dialog_DialogCompleted;
+                dialog.DialogCompleted += Dialog_DialogCompleted;
             }
-            else if (e.Dialog is DialogCreateRoom createRoom)
+            else if (e.Dialog is IClosingDialog closingDialog)
             {
-                createRoom.DialogCompleted += Dialog_DialogCompleted;
+                closingDialog.DialogCompleted += Dialog_DialogCompleted;
             }
-            else if (e.Dialog is DialogCreateCollection createCollection)
+            else if (e.Dialog is ICreateDialog createDialog)
             {
-                createCollection.DialogCompleted += Dialog_DialogCompleted;
+                createDialog.DialogCompleted += Dialog_DialogCompleted;
             }
-            else if (e.Dialog is DialogExportProject exportProject)
-            {
-                exportProject.DialogCompleted += Dialog_DialogCompleted;
-            }
-            else if (e.Dialog is DialogRemoveObject removeObject)
-            {
-                removeObject.DialogCompleted += Dialog_DialogCompleted;
-            }
-            else if (e.Dialog is DialogClosingUnsaved closingUnsaved)
-            {
-                closingUnsaved.DialogCompleted += Dialog_DialogCompleted;
-            }
+
             (DataContext as MainViewModel).Dialog = e.Dialog;
         }
 
-        private void Dialog_DialogCompleted(object sender, Core.Dialog.DialogButtonClickedEventArgs e)
+        private void Dialog_DialogCompleted(object sender, DialogButtonClickedEventArgs e)
         {
             (DataContext as MainViewModel).ShowDialog = false;
         }
@@ -361,6 +352,7 @@ namespace DungeonMapEditor
             }
 
             tabControl.Items.Remove(e.TargetTab);
+            (DataContext as MainViewModel).ShowDialog = false;
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -415,6 +407,41 @@ namespace DungeonMapEditor
         private void DownloadAndInstallUpdate_Click(object sender, RoutedEventArgs e)
         {
             (DataContext as MainViewModel).UpdateManager.DownloadUpdate();
+        }
+
+        private void Window_DragEnter(object sender, DragEventArgs e)
+        {
+            string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (fileList != null)
+            {
+                foreach (string filePath in fileList)
+                {
+                    if (new FileInfo(filePath).Extension == ".col")
+                    {
+                        e.Effects = DragDropEffects.Link;
+                        return;
+                    }
+                }
+            }
+
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if (fileList != null)
+            {
+                foreach (string filePath in fileList)
+                {
+                    if (new FileInfo(filePath).Extension == ".col")
+                    {
+                        CollectionSet imported = CollectionSet.ImportFromFile(filePath);
+                        App.LoadedCollections.Add(imported);
+                    }
+                }
+            }
         }
     }
 }

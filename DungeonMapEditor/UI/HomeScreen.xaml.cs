@@ -118,11 +118,11 @@ namespace DungeonMapEditor.UI
             }
         }
 
-        private void DialogExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs<ProjectExport> e)
+        private void DialogExportProject_DialogCompleted(object sender, CreateDialogCompletedEventArgs e)
         {
-            if (e.DialogResult == DialogResult.OK)
+            if (e.DialogResult == DialogResult.OK && e.ResultObject is ProjectExport result)
             {
-                string exportDir = e.ResultObject.ExportProject();
+                string exportDir = result.ExportProject();
                 Process.Start("explorer.exe", string.Format("/select,\"{0}\"", exportDir));
             }
         }

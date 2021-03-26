@@ -23,9 +23,9 @@ namespace DungeonMapEditor.Controls
     /// <summary>
     /// Interaction logic for DialogExportProject.xaml
     /// </summary>
-    public partial class DialogExportProject : Border
+    public partial class DialogExportProject : Border, ICreateDialog
     {
-        public event EventHandler<CreateDialogCompletedEventArgs<ProjectExport>> DialogCompleted;
+        public event EventHandler<CreateDialogCompletedEventArgs> DialogCompleted;
 
         private ProjectFile projectFile;
 
@@ -38,16 +38,16 @@ namespace DungeonMapEditor.Controls
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
             DialogExportProjectViewModel vm = DataContext as DialogExportProjectViewModel;
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<ProjectExport>(DialogResult.OK, 
+            OnDialogCompleted(new CreateDialogCompletedEventArgs(DialogResult.OK, 
                                         new ProjectExport(projectFile, vm.ExportType, vm.ExportNotes)));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<ProjectExport>(DialogResult.Abort));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs(DialogResult.Abort));
         }
 
-        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<ProjectExport> e)
+        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs e)
         {
             DialogCompleted?.Invoke(this, e);
         }

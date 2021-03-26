@@ -24,9 +24,9 @@ namespace DungeonMapEditor.Controls
     /// <summary>
     /// Interaction logic for DialogCreateCollection.xaml
     /// </summary>
-    public partial class DialogCreateCollection : Border
+    public partial class DialogCreateCollection : Border, ICreateDialog
     {
-        public event EventHandler<CreateDialogCompletedEventArgs<CollectionSet>> DialogCompleted;
+        public event EventHandler<CreateDialogCompletedEventArgs> DialogCompleted;
 
         private List<DirectoryInfo> existingCollections;
 
@@ -40,15 +40,15 @@ namespace DungeonMapEditor.Controls
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
             CreateCollectionViewModel vm = DataContext as CreateCollectionViewModel;
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<CollectionSet>(DialogResult.OK, new CollectionSet(vm.CollectionName)));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs(DialogResult.OK, (IBaseData)new CollectionSet(vm.CollectionName)));
         }
 
         private void Abort_Click(object sender, RoutedEventArgs e)
         {
-            OnDialogCompleted(new CreateDialogCompletedEventArgs<CollectionSet>(DialogResult.Abort));
+            OnDialogCompleted(new CreateDialogCompletedEventArgs(DialogResult.Abort));
         }
 
-        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs<CollectionSet> e)
+        protected virtual void OnDialogCompleted(CreateDialogCompletedEventArgs e)
         {
             DialogCompleted?.Invoke(this, e);
         }
