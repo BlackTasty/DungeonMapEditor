@@ -48,7 +48,7 @@ Also please follow these guidelines:
 ![Home Screen](https://i.imgur.com/8fqpMlf.png "Home Screen")
 
 ### Collection manager
-![Collection manager](https://i.imgur.com/wv2In89.png "Collection manager")
+![Collection manager](https://i.imgur.com/kGA8tQn.png "Collection manager")
 
 ### Project overview
 ![Project overview](https://i.imgur.com/4raLL5O.png "Project overview")
