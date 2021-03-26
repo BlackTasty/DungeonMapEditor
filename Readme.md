@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/BlackTasty/DungeonMapEditor">
-    <img alt="Dungeon Map Editor" width="256" heigth="256" src="https://via.placeholder.com/256">
+    <img alt="Dungeon Map Editor" width="256" heigth="256" src="https://i.imgur.com/C36wefa.png">
   </a>
 </p>
 
