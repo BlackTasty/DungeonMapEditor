@@ -343,3 +343,5 @@ healthchecksdb
 /icon_v1.xcf
 /icon_v1_small_border.xcf
 /Icon
+/_Release
+/TestData

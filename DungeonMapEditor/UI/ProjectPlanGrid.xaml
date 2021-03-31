@@ -124,7 +124,7 @@
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Template="{DynamicResource ScrollViewerControlTemplate1}">
         <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True" 
                 Width="{Binding ProjectFile.DocumentSize.Width}" Height="{Binding ProjectFile.DocumentSize.Height}"

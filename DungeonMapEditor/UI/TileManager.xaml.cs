@@ -150,8 +150,12 @@ namespace DungeonMapEditor.UI
             {
                 TileManagerViewModel vm = DataContext as TileManagerViewModel;
                 Tile selectedTile = vm.SelectedCollection.TileFile.Data[vm.SelectedTileIndex];
-                vm.SelectedCollection.TileFile.Data.Remove(selectedTile);
-                vm.SelectedTileIndex = -1;
+                int index = vm.SelectedCollection.TileFile.Data.ToList().FindIndex(x => x.Guid == selectedTile.Guid);
+                if (index > -1)
+                {
+                    vm.SelectedCollection.TileFile.Data.RemoveAt(index);
+                    vm.SelectedTileIndex = -1;
+                }
             }
         }
 
@@ -163,7 +167,7 @@ namespace DungeonMapEditor.UI
             vm.IsEditTile = isEdit;
             if (isEdit)
             {
-                tileConfigurator.SetTileAssignment(new TileAssignment(vm.GetSelectedTile()));
+                tileConfigurator.SetTileAssignment(new TileAssignment(vm.SelectedTile));
             }
             else
             {
@@ -179,7 +183,7 @@ namespace DungeonMapEditor.UI
             vm.IsEditPlaceable = isEdit;
             if (isEdit)
             {
-                placeableConfigurator.SetPlaceable(vm.GetSelectedPlaceable());
+                placeableConfigurator.SetPlaceable(vm.SelectedPlaceable);
             }
             else
             {
@@ -224,8 +228,12 @@ namespace DungeonMapEditor.UI
             {
                 TileManagerViewModel vm = DataContext as TileManagerViewModel;
                 Placeable selectedPlaceable = vm.SelectedCollection.PlaceableFile.Data[vm.SelectedPlaceableIndex];
-                vm.SelectedCollection.PlaceableFile.Data.Remove(selectedPlaceable);
-                vm.SelectedPlaceableIndex = -1;
+                int index = vm.SelectedCollection.PlaceableFile.Data.ToList().FindIndex(x => x.Guid == selectedPlaceable.Guid);
+                if (index > -1)
+                {
+                    vm.SelectedCollection.PlaceableFile.Data.RemoveAt(index);
+                    vm.SelectedPlaceableIndex = -1;
+                }
             }
         }
 
@@ -340,6 +348,25 @@ namespace DungeonMapEditor.UI
                 vm.LoadedCollections.Remove(selectedCollection);
                 vm.SelectedCollection = null;
             }
+        }
+
+        private void DuplicatePlaceable_Click(object sender, RoutedEventArgs e)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            Placeable duplicate = vm.SelectedPlaceable.Duplicate(true);
+            duplicate.Name += string.Format(" ({0})", vm.SelectedCollection.PlaceableFile.Data.Count(x => x.Name == duplicate.Name));
+            vm.SelectedCollection.PlaceableFile.Data.Add(duplicate);
+            vm.SelectedPlaceableIndex = vm.SelectedCollection.PlaceableFile.Data.Count - 1;
+        }
+
+        private void DuplicateTile_Click(object sender, RoutedEventArgs e)
+        {
+            TileManagerViewModel vm = DataContext as TileManagerViewModel;
+            Tile duplicate = vm.SelectedTile.Duplicate(true);
+            duplicate.Name += string.Format(" ({0})", vm.SelectedCollection.TileFile.Data.Count(x => x.Name == duplicate.Name));
+            vm.SelectedCollection.TileFile.Data.Add(duplicate);
+            vm.SelectedTileIndex = vm.SelectedCollection.TileFile.Data.Count - 1;
+
         }
     }
 }

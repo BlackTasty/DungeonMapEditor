@@ -177,19 +177,30 @@ namespace DungeonMapEditor.Core.Dungeon
             return !IsEmpty ? base.GetFullPath() : null;
         }
 
-        public override IBaseData Copy()
+        public Tile Duplicate(bool generateGuid)
         {
-            return new Tile(false)
+            Tile duplicate = new Tile(generateGuid)
             {
                 Name = Name,
                 Description = Description,
                 TileRotation = TileRotation,
                 TileText = TileText,
                 TileType = TileType,
-                guid = guid,
                 ImagePath = ImagePath,
                 TextFontSize = TextFontSize
             };
+
+            if (!generateGuid)
+            {
+                duplicate.guid = guid;
+            }
+
+            return duplicate;
+        }
+
+        public override IBaseData Copy()
+        {
+            return Duplicate(false);
         }
     }
 }

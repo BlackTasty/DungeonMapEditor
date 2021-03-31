@@ -113,14 +113,8 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
-        public Tile GetSelectedTile()
-        {
-            return mSelectedTileIndex > -1 ? SelectedCollection.TileFile.Data[mSelectedTileIndex] : null;
-        }
+        public Tile SelectedTile => mSelectedTileIndex > -1 ? SelectedCollection.TileFile.Data[mSelectedTileIndex] : null;
 
-        public Placeable GetSelectedPlaceable()
-        {
-            return mSelectedPlaceableIndex > -1 ? SelectedCollection.PlaceableFile.Data[mSelectedPlaceableIndex] : null;
-        }
+        public Placeable SelectedPlaceable => mSelectedPlaceableIndex > -1 ? SelectedCollection.PlaceableFile.Data[mSelectedPlaceableIndex] : null;
     }
 }

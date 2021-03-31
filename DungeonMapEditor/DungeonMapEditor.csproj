@@ -128,6 +128,8 @@
     <Compile Include="Core\Dialog\IDialog.cs" />
     <Compile Include="Core\Dialog\PlaceableDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dungeon\Assignment\Assignment.cs" />
+    <Compile Include="Core\Dungeon\Combat\Enemy.cs" />
+    <Compile Include="Core\Dungeon\Combat\Player.cs" />
     <Compile Include="Core\Dungeon\ProjectExport.cs" />
     <Compile Include="Core\Enum\DocumentSizeType.cs" />
     <Compile Include="Core\Enum\EnumBindingSourceExtension .cs" />
@@ -189,6 +191,9 @@
     <Compile Include="UI\TileManager.xaml.cs">
       <DependentUpon>TileManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\AttachedProperties\SelectingItemAttachedProperty.cs" />
+    <Compile Include="ViewModel\AttachedProperties\SelectingPlaceableAttachedProperty.cs" />
+    <Compile Include="ViewModel\AttachedProperties\SelectingTileAttachedProperty.cs" />
     <Compile Include="ViewModel\Communication\Mediator.cs" />
     <Compile Include="ViewModel\Communication\MultiDictionary.cs" />
     <Compile Include="ViewModel\Communication\ViewModelMessage.cs" />
@@ -307,6 +312,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Default\Styles\ProgressBarStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Default\Styles\ScrollBarStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Default\Styles\ScrollViewerStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

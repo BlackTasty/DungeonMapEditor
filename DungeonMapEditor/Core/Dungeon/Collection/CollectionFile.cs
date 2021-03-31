@@ -14,7 +14,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
     {
         public event EventHandler<ChangeObservedEventArgs> ChangeObserved;
 
-        private VeryObservableCollection<T> data;
+        private VeryObservableCollection<T> data = new VeryObservableCollection<T>("Data");
         private CollectionType collectionType;
 
         public VeryObservableCollection<T> Data => data;

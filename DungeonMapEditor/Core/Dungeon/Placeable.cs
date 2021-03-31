@@ -110,5 +110,30 @@ namespace DungeonMapEditor.Core.Dungeon
             TileRatioX = placeable.TileRatioX;
             TileRatioY = placeable.TileRatioY;
         }
+
+        public Placeable Duplicate(bool generateGuid)
+        {
+            Placeable duplicate = new Placeable(generateGuid)
+            {
+                Name = Name,
+                Description = Description,
+                Rotation = Rotation,
+                TileRatioX = TileRatioX,
+                TileRatioY = TileRatioY,
+                ImagePath = ImagePath
+            };
+
+            if (!generateGuid)
+            {
+                duplicate.guid = guid;
+            }
+
+            return duplicate;
+        }
+
+        public override IBaseData Copy()
+        {
+            return Duplicate(false);
+        }
     }
 }

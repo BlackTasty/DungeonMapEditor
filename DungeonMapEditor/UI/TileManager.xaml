@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:DungeonMapEditor.UI"
       xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
       xmlns:dvm="clr-namespace:DungeonMapEditor.ViewModel.DesignTime"
-      xmlns:controls="clr-namespace:DungeonMapEditor.Controls"
+      xmlns:attached="clr-namespace:DungeonMapEditor.ViewModel.AttachedProperties"
       mc:Ignorable="d" 
       d:DesignHeight="350" d:DesignWidth="700"
       d:DataContext="{d:DesignInstance {x:Type dvm:TileManagerDesignViewModel}, IsDesignTimeCreatable=True}">
@@ -14,6 +14,18 @@
         <vm:TileManagerViewModel/>
     </Grid.DataContext>
     <Grid.Resources>
+        <ContextMenu x:Key="contextMenu_tiles">
+            <MenuItem Header="Add" Click="AddNewTile_Click"/>
+            <MenuItem Header="Edit" Click="EditTile_Click" IsEnabled="{Binding IsTileSelected}"/>
+            <MenuItem Header="Duplicate" Click="DuplicateTile_Click" IsEnabled="{Binding IsTileSelected}"/>
+            <MenuItem Header="Delete" Click="RemoveTile_Click" IsEnabled="{Binding IsTileSelected}"/>
+        </ContextMenu>
+        <ContextMenu x:Key="contextMenu_placeables">
+            <MenuItem Header="Add" Click="AddPlaceable_Click"/>
+            <MenuItem Header="Edit" Click="EditPlaceable_Click" IsEnabled="{Binding IsPlaceableSelected}"/>
+            <MenuItem Header="Duplicate" Click="DuplicatePlaceable_Click" IsEnabled="{Binding IsPlaceableSelected}"/>
+            <MenuItem Header="Delete" Click="RemovePlaceable_Click" IsEnabled="{Binding IsPlaceableSelected}"/>
+        </ContextMenu>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Grid.Resources>
     <Grid.RowDefinitions>
@@ -52,9 +64,11 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="160"/>
                 </Grid.ColumnDefinitions>
-                <DataGrid ItemsSource="{Binding SelectedCollection.TileFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+                <DataGrid x:Name="list_tiles" ItemsSource="{Binding SelectedCollection.TileFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
                           CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
-                          SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedTileIndex}" Grid.Row="1">
+                          SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedTileIndex}" Grid.Row="1"
+                          ContextMenu="{StaticResource contextMenu_tiles}"
+                          attached:SelectingTileAttachedProperty.SelectingItem="{Binding SelectedTile, Mode=OneWay}">
                     <DataGrid.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
@@ -148,8 +162,8 @@
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
                     <StackPanel IsEnabled="{Binding IsCollectionSelected}">
                         <Button Content="Add new tile" Margin="8,4" Click="AddNewTile_Click" />
-                        <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click" 
-                                    />
+                        <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click"/>
+                        <Button Content="Duplicate tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="DuplicateTile_Click"/>
                         <Button Content="Delete tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
                                     Style="{StaticResource RedButton}"/>
                     </StackPanel>
@@ -162,9 +176,11 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="160"/>
                 </Grid.ColumnDefinitions>
-                <DataGrid ItemsSource="{Binding SelectedCollection.PlaceableFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+                <DataGrid x:Name="list_placeables" ItemsSource="{Binding SelectedCollection.PlaceableFile.Data, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
                           CanUserReorderColumns="False" CanUserSortColumns="False" CanUserDeleteRows="False" SelectionMode="Single" 
-                          SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedPlaceableIndex}" Grid.Row="1">
+                          SelectionUnit="FullRow" BorderThickness="0" SelectedIndex="{Binding SelectedPlaceableIndex}" Grid.Row="1"
+                          ContextMenu="{StaticResource contextMenu_placeables}"
+                          attached:SelectingPlaceableAttachedProperty.SelectingItem="{Binding SelectedPlaceable, Mode=OneWay}">
                     <DataGrid.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="{StaticResource BorderBrushColor}"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource BorderBrushColor}"/>
@@ -252,10 +268,9 @@
                 </DataGrid>
                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0" Grid.Row="1">
                     <StackPanel IsEnabled="{Binding IsCollectionSelected}">
-                        <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click" 
-                                    />
-                        <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="EditPlaceable_Click" 
-                                    />
+                        <Button Content="Add new object" Margin="8,4" Click="AddPlaceable_Click"/>
+                        <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="EditPlaceable_Click"/>
+                        <Button Content="Duplicate object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="DuplicatePlaceable_Click"/>
                         <Button Content="Delete object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="RemovePlaceable_Click" 
                                     Style="{StaticResource RedButton}"/>
                     </StackPanel>
@@ -265,7 +280,7 @@
     </TabControl>
     <Border Grid.Row="2" Background="#11ffffff" Margin="-2" BorderBrush="{DynamicResource BorderBrushLight}" BorderThickness="0,1,0,0">
         <StackPanel Orientation="Horizontal" Margin="4,2" HorizontalAlignment="Right" IsEnabled="{Binding IsCollectionSelected}">
-            <Button Content="Delete" Margin="12,4" Click="DeleteCollection_Click" Style="{DynamicResource RedButton}"/>
+            <Button Content="Delete collection" Margin="12,4" Click="DeleteCollection_Click" Style="{DynamicResource RedButton}"/>
             <Button Content="Export" Margin="8,4" Click="Export_Click"/>
             <Button Content="Save" Margin="4" Click="Save_Click"/>
         </StackPanel>

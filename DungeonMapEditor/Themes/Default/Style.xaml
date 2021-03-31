@@ -9,6 +9,8 @@
         <ResourceDictionary Source="Styles/ListStyle.xaml"/>
         <ResourceDictionary Source="Styles/MenuStyle.xaml"/>
         <ResourceDictionary Source="Styles/ProgressBarStyle.xaml"/>
+        <ResourceDictionary Source="Styles/ScrollBarStyle.xaml"/>
+        <ResourceDictionary Source="Styles/ScrollViewerStyle.xaml"/>
         <ResourceDictionary Source="Styles/SliderStyle.xaml"/>
         <ResourceDictionary Source="Styles/TabControlStyle.xaml"/>
         <ResourceDictionary Source="Styles/TextBlockStyle.xaml"/>

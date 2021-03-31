@@ -8,7 +8,7 @@
 
     <SolidColorBrush x:Key="Background" Color="#FF211D1D"></SolidColorBrush>
     <SolidColorBrush x:Key="Foreground" Color="#ddFFFFFF"></SolidColorBrush>
-    <SolidColorBrush x:Key="ForegroundDisabled" Color="#ddDDDDDD"></SolidColorBrush>
+    <SolidColorBrush x:Key="ForegroundDisabled" Color="#ddBBBBBB"></SolidColorBrush>
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderBrushColor}"></SolidColorBrush>
     <SolidColorBrush x:Key="BorderBrushLight" Color="{StaticResource BorderBrushLightColor}"></SolidColorBrush>
 
