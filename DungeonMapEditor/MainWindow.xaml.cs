@@ -45,6 +45,7 @@ namespace DungeonMapEditor
             homeInstance.SelectionMade += HomeScreen_SelectionMade;
             homeInstance.OpenDialog += Dialog_OpenDialog;
             AddTab(homeInstance, "Home", true);
+
             Title += string.Format(" (v{0})", (DataContext as MainViewModel).UpdateManager.Version);
         }
 
@@ -120,10 +121,7 @@ namespace DungeonMapEditor
             };
             Button tabCloseButton = new Button()
             {
-                Content = "X",
                 Margin = new Thickness(8, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Thickness(4, 0, 4, 0),
                 Style = Application.Current.Resources.MergedDictionaries[1]["CloseButton"] as Style
             };
             tabCloseButton.Click += TabCloseButton_Click;
@@ -209,7 +207,7 @@ namespace DungeonMapEditor
         {
             if (e.DialogResult == Core.Dialog.DialogResult.OK && e.ResultObject is ProjectFile result)
             {
-                result.Save(App.ProjectsPath);
+                result.Save(App.Settings.ProjectDirectory);
                 OpenProject(result);
             }
 
@@ -328,7 +326,7 @@ namespace DungeonMapEditor
             }
         }
 
-        private void DialogClosingUnsaved_DialogCompleted(object sender, Core.Dialog.ClosingUnsavedDialogButtonClickedEventArgs e)
+        private void DialogClosingUnsaved_DialogCompleted(object sender, ClosingUnsavedDialogButtonClickedEventArgs e)
         {
             if (e.DialogResult == Core.Dialog.DialogResult.Abort)
             {
@@ -442,6 +440,51 @@ namespace DungeonMapEditor
                     }
                 }
             }
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).ShowSettings = true;
+        }
+
+        private void Settings_Closing(object sender, SettingsClosingEventArgs e)
+        {
+            if (e.UnsavedChanges)
+            {
+                DialogClosingSettingsUnsaved dialog = new DialogClosingSettingsUnsaved();
+                dialog.DialogCompleted += Dialog_DialogCompleted1;
+
+                (DataContext as MainViewModel).Dialog = dialog;
+            }
+            else
+            {
+                (DataContext as MainViewModel).ShowSettings = false;
+            }
+        }
+
+        private void Dialog_DialogCompleted1(object sender, ClosingUnsavedDialogButtonClickedEventArgs e)
+        {
+            MainViewModel vm = DataContext as MainViewModel;
+            if (e.DialogResult == Core.Dialog.DialogResult.Abort)
+            {
+                vm.ShowDialog = false;
+                return;
+            }
+
+            if (e.DialogResult == Core.Dialog.DialogResult.Yes)
+            {
+                settings.Save();
+                vm.UpdateManager.SetAutoSearchEnabled(App.Settings.UpdatesEnabled);
+                vm.UpdateManager.SetInterval(App.Settings.UpdateSearchIntervalMin);
+            }
+            else
+            {
+                settings.DiscardChanges();
+            }
+
+            tabControl.Items.Remove(e.TargetTab);
+            vm.ShowDialog = false;
+            vm.ShowSettings = false;
         }
     }
 }

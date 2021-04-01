@@ -18,31 +18,27 @@
             Height="1" />
             <Track x:Name="PART_Track" Grid.Row="1">
                 <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="{x:Static Slider.DecreaseLarge}" BorderThickness="2" FontSize="2" Style="{DynamicResource SpeedSliderRepeatButtonStyle}">
-                        <RepeatButton.BorderBrush>
-                            <LinearGradientBrush>
-                                <GradientStop Color="#FF4105AA" Offset="0"/>
-                                <GradientStop Color="#FF5C0290" Offset="1"/>
-                            </LinearGradientBrush>
-                        </RepeatButton.BorderBrush>
+                    <RepeatButton Command="{x:Static Slider.DecreaseLarge}" BorderThickness="2" FontSize="2" 
+                                  Style="{DynamicResource SpeedSliderRepeatButtonStyle}"
+                                  BorderBrush="{DynamicResource BorderGradientBrush}">
                     </RepeatButton>
                 </Track.DecreaseRepeatButton>
                 <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="{x:Static Slider.IncreaseLarge}" BorderBrush="#1E2328" BorderThickness="2" FontSize="2" Tag="Right" Style="{DynamicResource SpeedSliderRepeatButtonStyle}"/>
+                    <RepeatButton Command="{x:Static Slider.IncreaseLarge}" BorderBrush="{DynamicResource InputBackgroundGradientBrush}" 
+                                  BorderThickness="2" FontSize="2" Tag="Right" Style="{DynamicResource SpeedSliderRepeatButtonStyle}"/>
                 </Track.IncreaseRepeatButton>
                 <Track.Thumb>
                     <Thumb x:Name="Thumb" Focusable="False" Height="18" OverridesDefaultStyle="True" VerticalAlignment="Center" Width="18">
                         <Thumb.Template>
                             <ControlTemplate TargetType="{x:Type Thumb}">
-                                <Border HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center" BorderBrush="#FF080113" Background="#FF080113" BorderThickness="1" CornerRadius="12">
-                                    <Ellipse Fill="#1E2328" Width="16" Height="16" x:Name="grip" StrokeThickness="1" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Center">
-                                        <Ellipse.Stroke>
-                                            <LinearGradientBrush EndPoint="0,1">
-                                                <GradientStop Color="#FF4C3380" Offset="0"/>
-                                                <GradientStop Color="#FF684D83" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Ellipse.Stroke>
-                                    </Ellipse>
+                                <Border HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center" 
+                                        BorderBrush="{DynamicResource InputBackgroundGradientBrush}" 
+                                        Background="{DynamicResource InputBackgroundGradientBrush}" 
+                                        BorderThickness="1" CornerRadius="12">
+                                    <Ellipse Fill="{DynamicResource InputBackgroundGradientBrush}" Width="16" Height="16" 
+                                             x:Name="grip" StrokeThickness="1" SnapsToDevicePixels="True" UseLayoutRounding="True" 
+                                             VerticalAlignment="Center"
+                                             Stroke="{DynamicResource BorderGradientBrush}"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
@@ -66,7 +62,7 @@
                                         </Setter>
                                     </Trigger>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Stroke" TargetName="grip" Value="#5C5B57"/>
+                                        <Setter Property="Stroke" TargetName="grip" Value="{DynamicResource ForegroundDisabled}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -74,7 +70,8 @@
                     </Thumb>
                 </Track.Thumb>
             </Track>
-            <TickBar x:Name="BottomTick" Grid.Row="2" Visibility="Collapsed" Fill="LightGray" Placement="Bottom" SnapsToDevicePixels="True" Height="4" Margin="0,2,0,0"/>
+            <TickBar x:Name="BottomTick" Grid.Row="2" Visibility="Collapsed" Fill="LightGray" Placement="Bottom" SnapsToDevicePixels="True" 
+                     Height="4" Margin="0,2,0,0"/>
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="TickPlacement" Value="TopLeft">
@@ -130,9 +127,7 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Stretch"
                         StrokeThickness="0"
-                        Fill="{TemplateBinding BorderBrush}"
-                />
-
+                        Fill="{TemplateBinding BorderBrush}"/>
                         <Grid x:Name="RightColumn" Grid.Column="2">
                             <Grid.Style>
                                 <Style TargetType="{x:Type Grid}">

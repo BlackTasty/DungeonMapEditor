@@ -31,7 +31,7 @@ namespace DungeonMapEditor.Controls
         public DialogCreateProject()
         {
             InitializeComponent();
-            existingProjects = new DirectoryInfo(App.ProjectsPath).EnumerateDirectories().ToList();
+            existingProjects = new DirectoryInfo(App.Settings.ProjectDirectory).EnumerateDirectories().ToList();
             CheckProjectNameExists();
         }
 

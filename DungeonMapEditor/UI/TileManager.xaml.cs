@@ -368,5 +368,15 @@ namespace DungeonMapEditor.UI
             vm.SelectedTileIndex = vm.SelectedCollection.TileFile.Data.Count - 1;
 
         }
+
+        private void TileRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ShowTileConfigurator(true);
+        }
+
+        private void PlaceableRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ShowPlaceableConfigurator(true);
+        }
     }
 }

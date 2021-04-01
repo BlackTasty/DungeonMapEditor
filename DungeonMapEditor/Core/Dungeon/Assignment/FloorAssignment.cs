@@ -76,7 +76,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public FloorAssignment(string assignedProjectName, string floorPlanFile, double x, double y, double rotationOverride, 
             string notes) : base(notes)
         {
-            floorPlan = new FloorPlan(new FileInfo(Path.Combine(App.ProjectsPath, assignedProjectName, floorPlanFile)));
+            floorPlan = new FloorPlan(new FileInfo(Path.Combine(App.Settings.ProjectDirectory, assignedProjectName, floorPlanFile)));
             AssignedProjectName = assignedProjectName;
             X = x;
             Y = y;

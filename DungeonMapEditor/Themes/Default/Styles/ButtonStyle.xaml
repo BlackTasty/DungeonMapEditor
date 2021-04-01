@@ -4,10 +4,11 @@
     <converter:StringToGeometryConverter x:Key="StringToGeometryConverter"/>
 
     <Style TargetType="{x:Type Button}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="4"/>
-        <Setter Property="Foreground" Value="#9CBEBE"/>
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -22,7 +23,9 @@
                             </Border.BorderBrush>
                             <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-                                          TextElement.FontWeight="Bold"/>
+                                          TextElement.FontWeight="Bold"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -77,7 +80,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="YellowButton" TargetType="{x:Type Button}">
+    <Style x:Key="WarnButton" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="#FFBEBC9C"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -93,7 +96,9 @@
                             </Border.BorderBrush>
                             <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-                                          TextElement.FontWeight="Bold"/>
+                                          TextElement.FontWeight="Bold"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -147,7 +152,8 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="RedButton" TargetType="{x:Type Button}">
+    <Style x:Key="DangerButton" TargetType="{x:Type Button}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Foreground" Value="#BE9C9C"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -163,7 +169,9 @@
                             </Border.BorderBrush>
                             <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-                                          TextElement.FontWeight="Bold"/>
+                                          TextElement.FontWeight="Bold"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -220,7 +228,7 @@
 
     <Style x:Key="SettingsButton" TargetType="{x:Type Button}">
         <Setter Property="Padding" Value="1"/>
-        <Setter Property="Foreground" Value="#BFB58A"/>
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -291,14 +299,20 @@
     </Style>
 
     <Style x:Key="CloseButton" TargetType="{x:Type Button}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="#A09B8C"/>
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid Background="{TemplateBinding Background}">
-                        <ContentPresenter />
+                        <Path Name="path" Margin="{TemplateBinding Padding}"
+                              Height="8"
+                              Stretch="Uniform"
+                              Fill="{TemplateBinding Foreground}"
+                              Data="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

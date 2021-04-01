@@ -6,6 +6,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
         <Setter Property="Background" Value="{DynamicResource Background}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
@@ -36,21 +37,31 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
             </Grid.ColumnDefinitions>
-            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
-                <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
-                    <Border x:Name="DropDownBorder" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" 
+                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" 
+                   PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" 
+                                               MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
+                    <Border x:Name="DropDownBorder" 
+                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0" 
+                            Background="{DynamicResource Background}">
                         <ScrollViewer x:Name="DropDownScrollViewer">
                             <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                 <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
-                                    <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=DropDownBorder}" Height="{Binding ActualHeight, ElementName=DropDownBorder}" Width="{Binding ActualWidth, ElementName=DropDownBorder}"/>
+                                    <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=DropDownBorder}" 
+                                               Height="{Binding ActualHeight, ElementName=DropDownBorder}" 
+                                               Width="{Binding ActualWidth, ElementName=DropDownBorder}"/>
                                 </Canvas>
-                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" 
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             </Grid>
                         </ScrollViewer>
                     </Border>
                 </Themes:SystemDropShadowChrome>
             </Popup>
-            <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+            <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                          Background="{TemplateBinding Background}" Grid.ColumnSpan="2" 
+                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                 <ToggleButton.Style>
                     <Style TargetType="{x:Type ToggleButton}">
                         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -60,21 +71,13 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                    <Border x:Name="templateRoot" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                                        <Border.BorderBrush>
-                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                                <GradientStop Color="#FF4105AA" Offset="0"/>
-                                                <GradientStop Color="#FF5C0290" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Border.BorderBrush>
-                                        <Border.Background>
-                                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                                <GradientStop Color="#FF070A0E" Offset="0"/>
-                                                <GradientStop Color="#FF171819" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Border.Background>
+                                    <Border x:Name="templateRoot" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True"
+                                            BorderBrush="{DynamicResource BorderGradientBrush}"
+                                            Background="{DynamicResource InputBackgroundGradientBrush}">
                                         <Border x:Name="splitBorder" BorderBrush="Transparent" BorderThickness="1" HorizontalAlignment="Right" Margin="0" SnapsToDevicePixels="True" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
-                                            <Path x:Name="Arrow" Data="F1M0,0L2.667,2.66665 5.3334,0 5.3334,-1.78168 2.6667,0.88501 0,-1.78168 0,0z" Fill="#FF606060" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+                                            <Path x:Name="Arrow" 
+                                                  Data="F1M0,0L2.667,2.66665 5.3334,0 5.3334,-1.78168 2.6667,0.88501 0,-1.78168 0,0z" 
+                                                  Fill="{DynamicResource Foreground}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
                                         </Border>
                                     </Border>
                                     <ControlTemplate.Triggers>

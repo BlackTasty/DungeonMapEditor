@@ -57,7 +57,7 @@
             </ComboBox>
         </DockPanel>
     </Border>
-    <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+    <TabControl Grid.Row="1">
         <TabItem Header="Tiles">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -77,6 +77,7 @@
                         <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                             <Setter Property="Height" Value="60"/>
                             <Setter Property="Padding" Value="0"/>
+                            <EventSetter Event="MouseDoubleClick" Handler="TileRow_MouseDoubleClick"/>
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
@@ -165,7 +166,7 @@
                         <Button Content="Edit tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="EditTile_Click"/>
                         <Button Content="Duplicate tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="DuplicateTile_Click"/>
                         <Button Content="Delete tile" Margin="8,4" IsEnabled="{Binding IsTileSelected}" Click="RemoveTile_Click" 
-                                    Style="{StaticResource RedButton}"/>
+                                    Style="{StaticResource DangerButton}"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -189,6 +190,7 @@
                         <Style TargetType="DataGridRow" BasedOn="{StaticResource RowStyle}">
                             <Setter Property="Height" Value="60"/>
                             <Setter Property="Padding" Value="0"/>
+                            <EventSetter Event="MouseDoubleClick" Handler="PlaceableRow_MouseDoubleClick"/>
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
@@ -272,7 +274,7 @@
                         <Button Content="Edit object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="EditPlaceable_Click"/>
                         <Button Content="Duplicate object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="DuplicatePlaceable_Click"/>
                         <Button Content="Delete object" Margin="8,4" IsEnabled="{Binding IsPlaceableSelected}" Click="RemovePlaceable_Click" 
-                                    Style="{StaticResource RedButton}"/>
+                                Style="{StaticResource DangerButton}"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -280,7 +282,7 @@
     </TabControl>
     <Border Grid.Row="2" Background="#11ffffff" Margin="-2" BorderBrush="{DynamicResource BorderBrushLight}" BorderThickness="0,1,0,0">
         <StackPanel Orientation="Horizontal" Margin="4,2" HorizontalAlignment="Right" IsEnabled="{Binding IsCollectionSelected}">
-            <Button Content="Delete collection" Margin="12,4" Click="DeleteCollection_Click" Style="{DynamicResource RedButton}"/>
+            <Button Content="Delete collection" Margin="12,4" Click="DeleteCollection_Click" Style="{DynamicResource DangerButton}"/>
             <Button Content="Export" Margin="8,4" Click="Export_Click"/>
             <Button Content="Save" Margin="4" Click="Save_Click"/>
         </StackPanel>
@@ -293,6 +295,6 @@
     <Grid Background="#dd000000" Grid.RowSpan="3"
           Visibility="{Binding IsPlaceableConfiguratorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
         <local:PlaceableConfigurator x:Name="placeableConfigurator" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                DialogButtonClicked="PlaceableConfigurator_DialogButtonClicked"/>
+                                     DialogButtonClicked="PlaceableConfigurator_DialogButtonClicked"/>
     </Grid>
 </Grid>

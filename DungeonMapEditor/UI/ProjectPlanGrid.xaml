@@ -31,8 +31,7 @@
         </ObjectDataProvider>
     </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="180">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0,1,0,0" 
-                    BorderBrush="{StaticResource BorderGradientBrush}">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="Floors">
                 <DockPanel>
                     <TextBlock Text="Floors" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
@@ -124,7 +123,7 @@
         </StackPanel>
     </StackPanel>
     <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Top"/>
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Template="{DynamicResource ScrollViewerControlTemplate1}">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Grid Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Canvas x:Name="grid" RenderOptions.BitmapScalingMode="HighQuality" AllowDrop="True" ClipToBounds="True" 
                 Width="{Binding ProjectFile.DocumentSize.Width}" Height="{Binding ProjectFile.DocumentSize.Height}"

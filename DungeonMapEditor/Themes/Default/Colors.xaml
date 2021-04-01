@@ -3,11 +3,15 @@
     <Color x:Key="BorderBrushColor">#FF4C3380</Color>
     <Color x:Key="BorderBrushLightColor">#FF8A73B8</Color>
 
+    <Color x:Key="InputBackgroundBrushColor">#FF070A0E</Color>
+    <Color x:Key="InputBackgroundBrushLightColor">#FF171819</Color>
+
     <Color x:Key="GoldLightColor">#ffd57c</Color>
     <Color x:Key="GoldDarkColor">#ffb600</Color>
 
     <SolidColorBrush x:Key="Background" Color="#FF211D1D"></SolidColorBrush>
     <SolidColorBrush x:Key="Foreground" Color="#ddFFFFFF"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonForeground" Color="#77FFFFFF"></SolidColorBrush>
     <SolidColorBrush x:Key="ForegroundDisabled" Color="#ddBBBBBB"></SolidColorBrush>
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderBrushColor}"></SolidColorBrush>
     <SolidColorBrush x:Key="BorderBrushLight" Color="{StaticResource BorderBrushLightColor}"></SolidColorBrush>
@@ -29,6 +33,11 @@
 
     <Color x:Key="SplitterGradientStart">#1B1B1B</Color>
     <Color x:Key="SplitterGradientEnd">#5B5E5B</Color>
+
+    <LinearGradientBrush x:Key="InputBackgroundGradientBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="{StaticResource InputBackgroundBrushColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource InputBackgroundBrushLightColor}" Offset="1"/>
+    </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="BorderGradientBrush" EndPoint="0.5,1" StartPoint="0.5,0">
         <GradientStop Color="{StaticResource BorderBrushColor}" Offset="0"/>

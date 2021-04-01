@@ -1,4 +1,5 @@
-﻿using DungeonMapEditor.Core.Dungeon;
+﻿using DungeonMapEditor.Core;
+using DungeonMapEditor.Core.Dungeon;
 using DungeonMapEditor.Core.Dungeon.Collection;
 using DungeonMapEditor.ViewModel;
 using DungeonMapEditor.ViewModel.Communication;
@@ -19,10 +20,12 @@ namespace DungeonMapEditor
     /// </summary>
     public partial class App : Application
     {
+        public static event EventHandler<EventArgs> ProjectsChanged;
+
         private static readonly string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Dungeon Map Editor");
         private static VeryObservableStackCollection<ProjectFile> mProjectHistory = new VeryObservableStackCollection<ProjectFile>("ProjectHistory", 7);
 
-        public static string CollectionPath => Path.Combine(BasePath, "Collections");
+        public static string DefaultCollectionPath => Path.Combine(BasePath, "Collections");
 
         public static bool IsDesignMode => DesignerProperties.GetIsInDesignMode(new DependencyObject());
 
@@ -33,15 +36,31 @@ namespace DungeonMapEditor
 
         public static string BasePath => basePath;
 
-        public static string ProjectsPath => Path.Combine(BasePath, "Projects");
+        public static string DefaultProjectsPath => Path.Combine(BasePath, "Projects");
 
         public static VeryObservableStackCollection<ProjectFile> ProjectHistory => mProjectHistory;
 
         public static bool IsHistoryEmpty => ProjectHistory.Count == 0;
 
+        public static AppSettings Settings
+        {
+            get; set;
+        }
+
         [STAThread]
         public static void Main()
         {
+            FileInfo fi = new FileInfo("settings.json");
+            if (fi.Exists)
+            {
+                Settings = new AppSettings(fi);
+            }
+            else
+            {
+                Settings = new AppSettings();
+                Settings.Save(AppDomain.CurrentDomain.BaseDirectory);
+            }
+
             ProjectHistory.TriggerAlso("IsHistoryEmpty");
 
             LoadCollections();
@@ -58,12 +77,12 @@ namespace DungeonMapEditor
         public static void LoadCollections()
         {
             LoadedCollections.Clear();
-            if (!Directory.Exists(CollectionPath))
+            if (!Directory.Exists(Settings.CollectionDirectory))
             {
-                Directory.CreateDirectory(CollectionPath);
+                Directory.CreateDirectory(Settings.CollectionDirectory);
             }
 
-            foreach (DirectoryInfo di in new DirectoryInfo(CollectionPath).EnumerateDirectories())
+            foreach (DirectoryInfo di in new DirectoryInfo(Settings.CollectionDirectory).EnumerateDirectories())
             {
                 var validDirs = di.EnumerateDirectories().Where(x => x.Name.StartsWith("placeables", StringComparison.CurrentCultureIgnoreCase) ||
                                                                   x.Name.StartsWith("tiles", StringComparison.CurrentCultureIgnoreCase)).ToList();
@@ -79,13 +98,13 @@ namespace DungeonMapEditor
         {
             ProjectHistory.Clear();
 
-            if (!Directory.Exists(ProjectsPath))
+            if (!Directory.Exists(Settings.ProjectDirectory))
             {
-                Directory.CreateDirectory(ProjectsPath);
+                Directory.CreateDirectory(Settings.ProjectDirectory);
             }
 
             List<ProjectFile> history = new List<ProjectFile>();
-            foreach (DirectoryInfo di in new DirectoryInfo(ProjectsPath).EnumerateDirectories())
+            foreach (DirectoryInfo di in new DirectoryInfo(Settings.ProjectDirectory).EnumerateDirectories())
             {
                 if (di.EnumerateFiles(di.Name + ".dm").Count() > 0)
                 {
@@ -94,6 +113,7 @@ namespace DungeonMapEditor
             }
 
             ProjectHistory.Add(history.OrderBy(x => x.LastModifyDate).Reverse().Take(ProjectHistory.Limit));
+            OnProjectsChanged(EventArgs.Empty);
         }
 
         public static List<Tile> GetLoadedTiles()
@@ -142,6 +162,11 @@ namespace DungeonMapEditor
         {
             Placeable target = GetLoadedPlaceables().FirstOrDefault(x => x.Guid == guid);
             return target != null ? target : new Placeable(false);
+        }
+
+        protected static void OnProjectsChanged(EventArgs e)
+        {
+            ProjectsChanged?.Invoke(App.Current, e);
         }
     }
 }

@@ -92,7 +92,7 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public RoomAssignment(string assignedProjectName, string roomPlanFile, int x, int y, double rotationOverride,
             int roomNumberOverride, string notes) : base(notes)
         {
-            roomPlan = new RoomPlan(new FileInfo(Path.Combine(App.ProjectsPath, assignedProjectName, roomPlanFile)));
+            roomPlan = new RoomPlan(new FileInfo(Path.Combine(App.Settings.ProjectDirectory, assignedProjectName, roomPlanFile)));
             AssignedProjectName = assignedProjectName;
             X = x;
             Y = y;

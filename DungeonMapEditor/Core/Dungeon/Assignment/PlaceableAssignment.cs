@@ -133,10 +133,10 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
         public double RealRotation => Placeable.Rotation + RotationOverride;
 
         [JsonIgnore]
-        public double Width => mTileRatioXOverride > 0 ? App.SnapValue * mTileRatioXOverride : mPlaceable.Width;
+        public double Width => mTileRatioXOverride > 0 ? App.Settings.GridScaling * mTileRatioXOverride : mPlaceable.Width;
 
         [JsonIgnore]
-        public double Height => mTileRatioYOverride > 0 ? App.SnapValue * mTileRatioYOverride : mPlaceable.Height;
+        public double Height => mTileRatioYOverride > 0 ? App.Settings.GridScaling * mTileRatioYOverride : mPlaceable.Height;
 
         /// <summary>
         /// Only required by JSON parser!

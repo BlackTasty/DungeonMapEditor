@@ -178,7 +178,7 @@ namespace DungeonMapEditor.Core.Dungeon
             }
             else
             {
-                SaveFile(JsonConvert.SerializeObject(this));
+                SaveFile(this);
             }
 
             Mediator.Instance.NotifyColleagues(ViewModelMessage.RoomsChanged, RoomPlans);

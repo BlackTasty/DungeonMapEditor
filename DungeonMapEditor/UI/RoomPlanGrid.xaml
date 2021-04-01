@@ -19,7 +19,7 @@
         <converter:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="210">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderGradientBrush}">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header=" Object catalog">
                 <DockPanel>
                     <TextBlock Text="Objects" FontSize="20" Margin="4" DockPanel.Dock="Top"/>
@@ -195,9 +195,9 @@
         <StackPanel Orientation="Horizontal" Visibility="{Binding IsRoomDrawEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Button x:Name="confirmDrawRoom" Content="Confirm room"  VerticalAlignment="Center" 
                     Height="30" Margin="8,0" Click="ConfirmDrawRoom_Click" IsEnabled="False"/>
-            <Button Content="Reset" Style="{StaticResource YellowButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
+            <Button Content="Reset" Style="{StaticResource WarnButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
                     Click="ResetDrawRoom_Click"/>
-            <Button Content="Clear grid" Style="{StaticResource RedButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
+            <Button Content="Clear grid" Style="{StaticResource DangerButton}" VerticalAlignment="Center" Height="30" Margin="8,0" 
                     Click="ClearGrid_Click"/>
             <StackPanel>
                 <TextBlock Text="Collection" Margin="12,4,12,2"/>

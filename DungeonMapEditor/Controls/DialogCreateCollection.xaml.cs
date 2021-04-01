@@ -33,7 +33,7 @@ namespace DungeonMapEditor.Controls
         public DialogCreateCollection()
         {
             InitializeComponent();
-            existingCollections = new DirectoryInfo(App.CollectionPath).EnumerateDirectories().ToList();
+            existingCollections = new DirectoryInfo(App.Settings.CollectionDirectory).EnumerateDirectories().ToList();
             CheckCollectionNameExists();
         }
 

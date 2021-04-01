@@ -76,9 +76,11 @@ namespace DungeonMapEditor.Core.Patcher
 
             Version = Helper.SerializeVersionNumber(Assembly.GetExecutingAssembly().GetName().Version.ToString(), 3);
             checkInterval.Tick += CheckForUpdates;
-            checkInterval.Interval = TimeSpan.FromMinutes(15);
-            checkInterval.IsEnabled = true;
-            checkInterval.Start();
+            checkInterval.Interval = TimeSpan.FromMinutes(App.Settings.UpdateSearchIntervalMin);
+            if (App.Settings.UpdatesEnabled)
+            {
+                checkInterval.Start();
+            }
             Status = UpdateStatus.IDLE;
         }
 
@@ -99,7 +101,16 @@ namespace DungeonMapEditor.Core.Patcher
             }
         }
 
-        internal void SetIntervall(double interval)
+        public void SetAutoSearchEnabled(bool autoSearchEnabled)
+        {
+            checkInterval.IsEnabled = autoSearchEnabled;
+        }
+
+        /// <summary>
+        /// Set the update interval in minutes
+        /// </summary>
+        /// <param name="interval">Interval in minutes</param>
+        public void SetInterval(double interval)
         {
             checkInterval.Stop();
             checkInterval.Interval = TimeSpan.FromMinutes(interval);

@@ -7,21 +7,15 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
         <Setter Property="CaretBrush" Value="{DynamicResource Foreground}"/>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF4C3380" Offset="0"/>
-                    <GradientStop Color="#FF684D83" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF070A0E" Offset="0"/>
-                    <GradientStop Color="#FF171819" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderGradientBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundGradientBrush}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource ComboBoxItemSelectedBackground}" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderBrush"  Value="{DynamicResource BorderGradientBrush}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

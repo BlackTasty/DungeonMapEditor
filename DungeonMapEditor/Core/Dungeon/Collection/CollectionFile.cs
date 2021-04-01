@@ -114,7 +114,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             }
             else
             {
-                SaveFile(JsonConvert.SerializeObject(this));
+                SaveFile(this);
             }
         }
 

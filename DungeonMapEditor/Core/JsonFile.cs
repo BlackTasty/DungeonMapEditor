@@ -99,8 +99,9 @@ namespace DungeonMapEditor.Core
             }
         }
 
-        protected void SaveFile(string json)
+        protected void SaveFile(T @object)
         {
+            string json = JsonConvert.SerializeObject(@object);
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 throw new Exception("FilePath must be set! Use SaveFile(string filePath, T @object) to create a new file instead!");
@@ -120,7 +121,7 @@ namespace DungeonMapEditor.Core
             }
 
             this.filePath = filePath;
-            SaveFile(JsonConvert.SerializeObject(@object));
+            SaveFile(@object);
         }
 
         protected T LoadFile()

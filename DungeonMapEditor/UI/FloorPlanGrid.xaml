@@ -17,8 +17,7 @@
         <converter:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
     </DockPanel.Resources>
     <Border BorderThickness="1,0,0,0" BorderBrush="{StaticResource BorderGradientBrush}" DockPanel.Dock="Right" Width="180">
-        <TabControl SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0,1,0,0" 
-                    BorderBrush="{StaticResource BorderGradientBrush}">
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="Rooms">
                 <DockPanel>
                     <TextBlock Text="Rooms" FontSize="20" Margin="4" DockPanel.Dock="Top"/>

@@ -41,6 +41,12 @@
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -76,6 +82,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Controls\DialogClosingSettingsUnsaved.xaml.cs">
+      <DependentUpon>DialogClosingSettingsUnsaved.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DialogCreateCollection.xaml.cs">
       <DependentUpon>DialogCreateCollection.xaml</DependentUpon>
     </Compile>
@@ -121,6 +130,7 @@
     <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Converter\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\StringToGeometryConverter.cs" />
+    <Compile Include="Core\AppSettings.cs" />
     <Compile Include="Core\Dialog\ClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\IClosingUnsavedDialogButtonClickedEventArgs.cs" />
     <Compile Include="Core\Dialog\IClosingDialog.cs" />
@@ -138,6 +148,8 @@
     <Compile Include="Core\Enum\TileType.cs" />
     <Compile Include="Core\Events\CreateDialogCompletedEventArgs.cs" />
     <Compile Include="Core\Events\OpenDialogEventArgs.cs" />
+    <Compile Include="Core\Events\PatcherSettingsChangedEventArgs.cs" />
+    <Compile Include="Core\Events\SettingsClosingEventArgs.cs" />
     <Compile Include="Core\ExtensionMethods.cs" />
     <Compile Include="Core\Observer\ObserverManager.cs" />
     <Compile Include="Core\Observer\Observer.cs" />
@@ -185,6 +197,9 @@
     <Compile Include="UI\ProjectOverview.xaml.cs">
       <DependentUpon>ProjectOverview.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\TileConfigurator.xaml.cs">
       <DependentUpon>TileConfigurator.xaml</DependentUpon>
     </Compile>
@@ -217,12 +232,17 @@
     <Compile Include="ViewModel\ProjectPlanViewModel.cs" />
     <Compile Include="ViewModel\RoomControlViewModel.cs" />
     <Compile Include="ViewModel\RoomPlanViewModel.cs" />
+    <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\TileConfiguratorViewModel.cs" />
     <Compile Include="ViewModel\TileControlViewModel.cs" />
     <Compile Include="ViewModel\TileManagerViewModel.cs" />
     <Compile Include="ViewModel\VeryObservableStackCollection.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\VeryObservableCollection.cs" />
+    <Page Include="Controls\DialogClosingSettingsUnsaved.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DialogCreateCollection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -391,6 +411,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\ProjectOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

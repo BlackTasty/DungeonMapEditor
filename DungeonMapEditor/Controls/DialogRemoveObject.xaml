@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DungeonMapEditor.Controls"
         xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
         mc:Ignorable="d" 
-        Height="140" Width="300" Padding="4" Background="{StaticResource Background}" BorderBrush="{StaticResource BorderBrush}" 
+        MinHeight="140" MinWidth="300" Padding="4" Background="{StaticResource Background}" BorderBrush="{StaticResource BorderBrush}" 
         BorderThickness="1">
     <Border.DataContext>
         <vm:DialogRemoveObjectViewModel/>
@@ -15,14 +15,14 @@
         <TextBlock FontSize="20" Margin="4,0" DockPanel.Dock="Top">
             <Run Text="Remove '"/><Run Text="{Binding Name}"/><Run Text="'?"/>
         </TextBlock>
-        <TextBlock TextWrapping="Wrap" Margin="8" DockPanel.Dock="Top">
-            <Run Text="Are you sure you want to remove '"/><Run Text="{Binding Name}"/><Run Text="'? This is irreversible!"/>
+        <TextBlock TextWrapping="Wrap" Margin="8" DockPanel.Dock="Top" MaxWidth="300" HorizontalAlignment="Left">
+            <Run Text="Are you sure you want to remove &quot;"/><Run Text="{Binding Name}"/><Run Text="&quot;? This is irreversible!"/>
         </TextBlock>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Confirm" Margin="8" Padding="8,2" Click="CreateFloor_Click"
                     />
             <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
-                    Style="{StaticResource RedButton}"/>
+                    Style="{StaticResource DangerButton}"/>
         </StackPanel>
     </DockPanel>
 </Border>

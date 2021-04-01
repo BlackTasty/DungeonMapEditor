@@ -16,14 +16,14 @@
         <TextBlock TextWrapping="Wrap" Margin="8" DockPanel.Dock="Top">
             <Run Text="Do you want to save the"/>
             <Run Text="{Binding ObjectName, FallbackValue=room}"/>
-            <Run Text="'"/><Run Text="{Binding Name, StringFormat={}{0}, FallbackValue=Test}"/><Run Text="' before closing?"/>
+            <Run Text="&quot;"/><Run Text="{Binding Name, StringFormat={}{0}, FallbackValue=Test}"/><Run Text="&quot; before closing?"/>
         </TextBlock>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
             <Button Content="Yes" Margin="8" Padding="8,2" Click="Yes_Click"/>
             <Button Content="No" Margin="8" Padding="8,2" Click="No_Click"
-                    Style="{StaticResource YellowButton}"/>
+                    Style="{StaticResource WarnButton}"/>
             <Button Content="Cancel" Margin="8" Padding="8,2" Click="Abort_Click"
-                    Style="{StaticResource RedButton}"/>
+                    Style="{StaticResource DangerButton}"/>
         </StackPanel>
     </DockPanel>
 </Border>

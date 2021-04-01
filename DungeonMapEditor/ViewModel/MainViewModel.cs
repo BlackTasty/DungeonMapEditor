@@ -23,6 +23,7 @@ namespace DungeonMapEditor.ViewModel
         private double mDownloadSize;
         private double mDownloadCurrent;
         private bool mIsUpdateReady;
+        private bool mShowSettings;
 
         public UpdateManager UpdateManager => updateManager;
 
@@ -140,19 +141,40 @@ namespace DungeonMapEditor.ViewModel
             }
         }
 
+        public bool ShowSettings
+        {
+            get => mShowSettings;
+            set
+            {
+                mShowSettings = value;
+                InvokePropertyChanged();
+            }
+        }
+
         public MainViewModel()
         {
-            updateManager = new UpdateManager();
-            updateManager.DownloadProgressChanged += UpdateManager_DownloadProgressChanged;
-            updateManager.UpdateFailed += UpdateManager_UpdateFailed;
-            updateManager.SearchStatusChanged += UpdateManager_SearchStatusChanged;
-            updateManager.StatusChanged += UpdateManager_StatusChanged;
-
             if (!App.IsDesignMode)
             {
+                updateManager = new UpdateManager();
+                updateManager.DownloadProgressChanged += UpdateManager_DownloadProgressChanged;
+                updateManager.UpdateFailed += UpdateManager_UpdateFailed;
+                updateManager.SearchStatusChanged += UpdateManager_SearchStatusChanged;
+                updateManager.StatusChanged += UpdateManager_StatusChanged;
+
+                App.Settings.PatcherSettingsChanged += Settings_PatcherSettingsChanged;
+
                 mDialog = new DialogCreateProject();
-                updateManager.CheckForUpdates();
+                if (App.Settings.UpdatesEnabled)
+                {
+                    updateManager.CheckForUpdates();
+                }
             }
+        }
+
+        private void Settings_PatcherSettingsChanged(object sender, Core.Events.PatcherSettingsChangedEventArgs e)
+        {
+            updateManager.SetAutoSearchEnabled(e.UpdatesEnabled);
+            updateManager.SetInterval(e.UpdateInterval);
         }
 
         private void UpdateManager_StatusChanged(object sender, UpdateStatus e)

@@ -23,7 +23,7 @@ namespace DungeonMapEditor.ViewModel
         public event EventHandler<EventArgs> ObserveChanges;
 
         protected bool autoSort;
-        protected string triggerAlso;
+        protected List<string> triggerAlso = new List<string>();
         protected bool observeChanges = true; //If this flag is set to false the collection won't fire CollectionChanged events
         protected ViewModelMessage message;
         protected ObserverManager changeManager;
@@ -101,7 +101,10 @@ namespace DungeonMapEditor.ViewModel
         /// <param name="propertyName">The name of the property (the property which is exposed to XAML)</param>
         public void TriggerAlso(string propertyName)
         {
-            triggerAlso = propertyName;
+            if (!triggerAlso.Contains(propertyName))
+            {
+                triggerAlso.Add(propertyName);
+            }
         }
 
         private void Collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -243,9 +246,12 @@ namespace DungeonMapEditor.ViewModel
             OnObserveChanges(EventArgs.Empty);
 
             OnPropertyChanged(this, new PropertyChangedEventArgs(CollectionName));
-            if (triggerAlso != null)
+            if (triggerAlso.Count > 0)
             {
-                OnPropertyChanged(this, new PropertyChangedEventArgs(triggerAlso));
+                foreach (string trigger in triggerAlso)
+                {
+                    OnPropertyChanged(this, new PropertyChangedEventArgs(trigger));
+                }
             }
 
             changeManager?.ObserveProperty(this, CollectionName);

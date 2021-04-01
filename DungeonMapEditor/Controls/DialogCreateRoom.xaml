@@ -46,7 +46,7 @@
             <Button Content="Create!" Margin="8" Padding="8,2" Click="Create_Click" IsEnabled="{Binding IsValid}"
                     />
             <Button Content="Abort" Margin="8" Padding="8,2" Click="Abort_Click"
-                    Style="{StaticResource RedButton}"/>
+                    Style="{StaticResource DangerButton}"/>
         </StackPanel>
     </DockPanel>
 </Border>

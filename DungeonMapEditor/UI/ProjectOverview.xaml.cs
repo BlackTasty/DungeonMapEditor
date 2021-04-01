@@ -280,10 +280,7 @@ namespace DungeonMapEditor.UI
             };
             Button tabCloseButton = new Button()
             {
-                Content = "X",
                 Margin = new Thickness(8, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Thickness(4, 0, 4, 0),
                 Style = Application.Current.Resources.MergedDictionaries[1]["CloseButton"] as Style
             };
             tabCloseButton.Click += TabCloseButton_Click;

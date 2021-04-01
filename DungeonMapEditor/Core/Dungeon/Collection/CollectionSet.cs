@@ -115,7 +115,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             FileInfo fi = new FileInfo(filePath);
             string importedCollectionName = fi.Name.Replace(fi.Extension, "");
 
-            string collectionTargetPath = Path.Combine(App.CollectionPath, importedCollectionName);
+            string collectionTargetPath = Path.Combine(App.Settings.CollectionDirectory, importedCollectionName);
             if (Directory.Exists(collectionTargetPath))
             {
                 if (MessageBox.Show("A collection with the name \"" + importedCollectionName + 
@@ -150,7 +150,7 @@ namespace DungeonMapEditor.Core.Dungeon.Collection
             }
             else
             {
-                SaveFile(JsonConvert.SerializeObject(this));
+                SaveFile(this);
             }
 
             if (TileFile.HasData)

@@ -21,7 +21,7 @@ namespace DungeonMapEditor.Controls
     /// </summary>
     public partial class NumericUpDown : Border
     {
-        public event EventHandler<TextChangedEventArgs> ValueChanged;
+        public event EventHandler<EventArgs> ValueChanged;
 
         private DispatcherTimer valueDelayTimer;
         private DispatcherTimer valueChangeTimer;
@@ -102,8 +102,25 @@ namespace DungeonMapEditor.Controls
         #region Value
         public double Value
         {
-            get { return DecimalPlaces >= 0 ? Math.Round((double)GetValue(ValueProperty), DecimalPlaces) : (double)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get 
+            {
+                return (double)GetValue(ValueProperty); 
+            }
+            set
+            {
+                if (DecimalPlaces > 0)
+                {
+                    value = Math.Round((double)GetValue(ValueProperty), DecimalPlaces);
+                }
+                else
+                {
+                    value = Math.Round((double)GetValue(ValueProperty), 0);
+                }
+
+                value = Math.Max(value, Minimum);
+                value = Math.Min(value, Maximum);
+                SetValue(ValueProperty, value); 
+            }
         }
 
         // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
@@ -177,15 +194,16 @@ namespace DungeonMapEditor.Controls
                 value += ChangeAmount;
                 if (value <= Maximum)
                 {
-                    Value = value;
-                    Text = value.ToString();
+                    //Value = value;
+                    input.Text = value.ToString();
                 }
             }
             else
             {
-                Value = 1;
-                Text = "1";
+                //Value = 1;
+                input.Text = "1";
             }
+            RefreshValue();
         }
 
         private void ValueDown_Click(object sender, RoutedEventArgs e)
@@ -195,27 +213,33 @@ namespace DungeonMapEditor.Controls
                 value -= ChangeAmount;
                 if (value >= Minimum)
                 {
-                    Value = value;
-                    Text = value.ToString();
+                    //Value = value;
+                    input.Text = value.ToString();
                 }
             }
             else
             {
-                Value = -1;
-                Text = "-1";
+                //Value = -1;
+                input.Text = "-1";
             }
+            RefreshValue();
         }
 
-        protected virtual void OnValueChanged(TextChangedEventArgs e)
+        protected virtual void OnValueChanged(EventArgs e)
         {
             ValueChanged?.Invoke(this, e);
         }
 
         private void NumericTextBox_ValueChanged(object sender, TextChangedEventArgs e)
         {
-            Text = (sender as TextBox).Text;
+            RefreshValue();
+        }
+
+        private void RefreshValue()
+        {
+            Text = input.Text;
             Value = double.Parse(Text.Replace('.', ','));
-            OnValueChanged(e);
+            OnValueChanged(EventArgs.Empty);
         }
 
         private void ValueUp_MouseDown(object sender, MouseButtonEventArgs e)
@@ -239,7 +263,7 @@ namespace DungeonMapEditor.Controls
             {
                 StartRaiseValue(sender, e.RoutedEvent);
             }
-            else
+            else if (e.Key == Key.Down)
             {
                 StartLowerValue(sender, e.RoutedEvent);
             }

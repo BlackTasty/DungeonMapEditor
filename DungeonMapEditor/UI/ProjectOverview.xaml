@@ -33,8 +33,7 @@
             <Button Content="Save" Margin="4" Click="SaveProject_Click"/>
         </StackPanel>
     </Grid>
-    <TabControl x:Name="tabControl" BorderThickness="0,1" Margin="-2,0,-2,2" Background="Transparent" SelectionChanged="tabControl_SelectionChanged"
-                BorderBrush="{StaticResource BorderGradientBrush}">
+    <TabControl x:Name="tabControl" Margin="-2,0,-2,2" SelectionChanged="tabControl_SelectionChanged">
         <TabItem Header="Project overview">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top">
@@ -58,7 +57,7 @@
                         <Button Content="Create room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="CreateRoom_Click"
                                 />
                         <Button Content="Remove room" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveRoom_Click"
-                                Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
+                                Style="{StaticResource DangerButton}" Margin="0,0,8,0" IsEnabled="{Binding IsRoomAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.RoomPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
                               CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"
@@ -145,7 +144,7 @@
                         <Button Content="Create floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="CreateFloor_Click"
                                 />
                         <Button Content="Remove floor" DockPanel.Dock="Right" VerticalAlignment="Center" Click="RemoveFloor_Click"
-                                Style="{StaticResource RedButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
+                                Style="{StaticResource DangerButton}" Margin="0,0,8,0" IsEnabled="{Binding IsFloorAssignmentSelected}"/>
                     </DockPanel>
                     <DataGrid ItemsSource="{Binding ProjectFile.FloorPlans}" AutoGenerateColumns="False" Margin="0,8,0,0" CanUserReorderColumns="False"
                               CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" HeadersVisibility="Column"

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DungeonMapEditor"
         xmlns:converter="clr-namespace:DungeonMapEditor.Converter"
         xmlns:vm="clr-namespace:DungeonMapEditor.ViewModel"
+        xmlns:ui="clr-namespace:DungeonMapEditor.UI"
         mc:Ignorable="d"
         Title="Dungeon Map Editor BETA" MinHeight="570" MinWidth="950" Height="450" Width="800" 
         Background="{StaticResource Background}"
@@ -28,6 +29,7 @@
                     <MenuItem Header="Load from file" Click="LoadFromFile_Click"/>
                 </MenuItem>
                 <MenuItem Header="System">
+                    <MenuItem Header="Settings" Click="Settings_Click"/>
                     <MenuItem Header="Search for updates" Click="SearchUpdates_Click" 
                               IsEnabled="{Binding IsSearching, Converter={StaticResource InverseBooleanConverter}}"/>
                 </MenuItem>
@@ -43,9 +45,18 @@
             </DockPanel>
         </Grid>
         <Grid>
-            <TabControl x:Name="tabControl" Background="Transparent" BorderThickness="0" Margin="0,2,0,0" SelectionChanged="tabControl_SelectionChanged">
-            </TabControl>
-            <Grid Background="#dd000000" Visibility="{Binding ShowDialog, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <TabControl x:Name="tabControl" Margin="0,2,0,0" SelectionChanged="tabControl_SelectionChanged" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="{DynamicResource BorderBrushLight}" BorderThickness="1,0,0,0" HorizontalAlignment="Stretch"
+                    Visibility="{Binding ShowSettings, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Grid.Column="1">
+                <ui:Settings x:Name="settings" Background="{DynamicResource Background}" Closing="Settings_Closing"/>
+            </Border>
+            <Grid Background="#dd000000" Visibility="{Binding ShowDialog, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Grid.ColumnSpan="2">
                 <ContentPresenter Content="{Binding Dialog}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Grid>
         </Grid>

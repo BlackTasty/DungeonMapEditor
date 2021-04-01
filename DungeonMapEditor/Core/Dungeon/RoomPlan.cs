@@ -207,7 +207,7 @@ namespace DungeonMapEditor.Core.Dungeon
             }
             else
             {
-                SaveFile(JsonConvert.SerializeObject(this));
+                SaveFile(this);
             }
 
         }

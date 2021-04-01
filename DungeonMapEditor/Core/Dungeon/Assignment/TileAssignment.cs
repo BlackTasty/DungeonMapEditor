@@ -76,8 +76,8 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             X = x;
             Y = y;
 
-            canvasX = X * App.SnapValue - 50;
-            canvasY = Y * App.SnapValue - 50;
+            canvasX = X * App.Settings.GridScaling - 50;
+            canvasY = Y * App.Settings.GridScaling - 50;
             changeManager.ResetObservers();
         }
 
@@ -92,8 +92,8 @@ namespace DungeonMapEditor.Core.Dungeon.Assignment
             X = x;
             Y = y;
 
-            canvasX = X * App.SnapValue - 50;
-            canvasY = Y * App.SnapValue - 50;
+            canvasX = X * App.Settings.GridScaling - 50;
+            canvasY = Y * App.Settings.GridScaling - 50;
         }
 
         /// <summary>

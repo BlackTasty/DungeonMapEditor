@@ -15,6 +15,12 @@ namespace DungeonMapEditor.ViewModel
 
         public HomeScreenViewModel()
         {
+            App.ProjectsChanged += App_ProjectsChanged;
+        }
+
+        private void App_ProjectsChanged(object sender, EventArgs e)
+        {
+            InvokePropertyChanged("IsHistoryEmpty");
         }
     }
 }

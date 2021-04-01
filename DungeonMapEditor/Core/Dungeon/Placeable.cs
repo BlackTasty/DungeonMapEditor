@@ -65,10 +65,10 @@ namespace DungeonMapEditor.Core.Dungeon
         }
 
         [JsonIgnore]
-        public double Width => TileRatioX * App.SnapValue;
+        public double Width => TileRatioX * App.Settings.GridScaling;
 
         [JsonIgnore]
-        public double Height => TileRatioY * App.SnapValue;
+        public double Height => TileRatioY * App.Settings.GridScaling;
 
         /// <summary>
         /// Only required by JSON parser!
